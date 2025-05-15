@@ -1,0 +1,26 @@
+{
+    "files.associations": {
+        "__locale": "cpp",
+        "typeinfo": "cpp",
+        "chrono": "cpp",
+        "ratio": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "unordered_map": "cpp",
+        "cstdlib": "cpp",
+        "new": "cpp",
+        "compare": "cpp",
+        "limits": "cpp",
+        "memory": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "__hash_table": "cpp",
+        "array": "cpp",
+        "complex": "cpp",
+        "forward_list": "cpp",
+        "variant": "cpp",
+        "charconv": "cpp",
+        "functional": "cpp",
+        "tuple": "cpp"
+    }
+}

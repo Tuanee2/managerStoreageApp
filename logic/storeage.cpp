@@ -1,0 +1,134 @@
+#include "storeage.h"
+
+storeage::storeage(QObject *parent)
+    : QObject{parent}
+{}
+
+void storeage::initialize() {
+    db = new DatabaseManager(this);  // Bây giờ `this` đã ở thread mới!
+    qDebug() << "[storeage] Đang khởi tạo cơ sở dữ liệu";
+    if (!db->initialize()) {
+        qDebug() << "⚠️ Fail to create database";
+    } else {
+        qDebug() << "✅ Khởi tạo DB hoàn tất";
+    }
+}
+
+Products* storeage::sreachProduct(const QString& id) {
+    return store.value(id, nullptr);
+}
+
+Products* storeage::sreachProductByName(const QString& name) {
+    for (auto product : store) {
+        if (product->getProductName() == name) {
+            return product;
+        }
+    }
+    return nullptr;
+}
+
+int storeage::totalProductTypes() const{
+    return store.size();
+}
+
+// ****< Kiểm tra tên trùng lặp >****
+void storeage::handleCheckProductName(const QString& name) {
+    bool exists = db->checkProductNameExists(name);  
+    emit productNameCheckResult(exists);
+}
+
+// ****************************************
+
+// ****< Thêm/xoá/cập nhật sản phẩm mới >****
+void storeage::handleProductCommand(Products pro, cmdContext cmd) {
+    if(cmd.cmd == Cmd::ADD){
+        Products newone;
+        newone.setProductId(pro.getProductId());
+        newone.setProductName(pro.getProductName());
+        newone.setCost(pro.getCost());
+        newone.setIsValue(true);
+        newone.setDescription(pro.getDescription());
+        bool done = db->insertProduct(newone);
+        emit productCommandResult(done);
+    }else if(cmd.cmd == Cmd::DELETE){
+        bool done = db->deleteProduct(pro.getProductName());
+        if (done) {
+            store.remove(pro.getProductId());
+            qDebug() << "✅ Xoá sản phẩm thành công:" << pro.getProductName();
+        } else {
+            qWarning() << "❌ Xoá sản phẩm thất bại:" << pro.getProductName();
+        }
+        emit productCommandResult(done);
+    }
+}
+
+// ****************************************
+
+// ****< Lấy danh sách sản phẩm >****
+void storeage::handleProductListRequest(Cmd cmd, const QString& keyword, int numPage) {
+    QList<Products*> fetchedProducts;
+    if(cmd == Cmd::LIST){
+        fetchedProducts = db->getProductsByPage(numPage);
+    }else if(cmd == Cmd::SEARCH){
+        fetchedProducts = db->getProductListByName(keyword);
+    }else if(cmd == Cmd::ONE){
+        fetchedProducts = db->getAProductByName(keyword);
+    }
+
+    QList<QVariantMap> result;
+    for (Products* p : fetchedProducts) {
+        QVariantMap item;
+        item["productName"] = p->getProductName();
+        item["productId"] = p->getProductId();
+        item["cost"] = p->getCost();
+        item["description"] = p->getDescription();
+        item["isValue"] = p->getIsValue();
+        item["totalValue"] = p->totalValue();
+        result.append(item);
+    }
+    emit productListReady(result, cmd);
+}
+
+// ****************************************
+
+
+// <<<<<<<<<< FOR BATCHES >>>>>>>>>>
+void storeage::handleBatchCommand(cmdContext cmd, const QString& name, Batch batch) {
+    bool done = false;
+
+    if (cmd.cmd == Cmd::ADD) {
+        Batch newone;
+        newone.setQuantity(batch.getQuantity());
+        newone.setImportDate(batch.getImportDate());
+        newone.setExpiryDate(batch.getExpiryDate());
+
+        done = db->addBatch(name, newone);
+
+        if (done) {
+            qDebug() << "✅ Thêm lô sản phẩm thành công cho:" << name;
+        } else {
+            qWarning() << "❌ Thêm lô sản phẩm thất bại cho:" << name;
+        }
+    }
+
+    emit batchCommandResult(done);
+}
+
+void storeage::handleBatchListRequest(cmdContext cmd, const QString& productName, int numPage){
+    QList<Batch*> fetchedBatches;
+    if(cmd.cmd == Cmd::LIST){
+        fetchedBatches = db->getBatchByPage(productName, numPage);
+    }
+
+    QList<QVariantMap> result;
+    for(Batch* b : fetchedBatches){
+        QVariantMap item;
+        item["quantity"] = b->getQuantity();
+        item["importdate"] = b->getImportDate();
+        item["expireddate"] = b->getExpiryDate();
+        result.append(item);
+    }
+    emit batchListReady(result, cmd);
+}
+
+// ****************************************
