@@ -13,6 +13,14 @@ void Batch::setQuantity(int num) {
     quantity = num;
 }
 
+double Batch::getCost() const{
+    return cost;
+}
+
+void Batch::setCost(double cost){
+    this->cost = cost;
+}
+
 QDateTime Batch::getImportDate() const {
     return importDate;
 }

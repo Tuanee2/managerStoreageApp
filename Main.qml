@@ -163,30 +163,6 @@ Window {
                     }
                 }
 
-                // Menu {
-                //     id: suggestionMenu
-                //     width: searchBar.width
-                  
-
-                //     // MenuItem {
-                //     //     visible: suggestionModel.count === 0
-                //     //     text: "Không có gợi ý"
-                //     //     enabled: false
-                //     // }
-
-                //     Repeater {
-                //         model: suggestionModel
-                //         delegate: MenuItem {
-                //             text: model.name
-                //             onTriggered: {
-                //                 suggestionMenu.close()
-                //                 searchField.text = ""
-                //                 searchField.text = model.name
-                //             }
-                //         }
-                //     }
-                // }
-
                 Rectangle {
                     id: suggestionBox
                     width: searchBar.width
@@ -294,6 +270,7 @@ Window {
 
                     onClicked:{
                         pageLoader.source = "components/ImportBatch.qml"
+                        drawerLoader.source = "components/ProductDrawer.qml"
                     }
                 }
             }

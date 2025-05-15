@@ -55,6 +55,22 @@ Item {
             }
 
             TextField {
+                id: costtextfield
+                placeholderText: "Giá 1 sản phẩm của lô (BẮT BUỘC)"
+                font.pixelSize: 24
+                placeholderTextColor: Qt.rgba( 1, 1, 1, 0.8)
+                verticalAlignment: Text.AlignVCenter
+
+                background: Rectangle {
+                    radius: 10
+                    color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
+                }
+                width: importBatchBG.width*0.6
+                height: importBatchBG.height*0.1
+                color: "white"
+            }
+
+            TextField {
                 id: importdatetextfield
                 placeholderText: "ngày nhập kho sản phẩm (định dạng DD-MM-YYYY)(BẮT BUỘC)"
                 font.pixelSize: 24
@@ -109,6 +125,7 @@ Item {
                     onClicked: {
                         let name = nametextfield.text.trim();
                         let num = parseInt(numtextfield.text);
+                        let cost = parseFloat(costtextfield.text);
                         let importDate = importdatetextfield.text.trim();
                         let expiredDate = expireddatetextfield.text.trim();
 
@@ -119,6 +136,11 @@ Item {
                         }
                         if (isNaN(num) || num <= 0){
                             rootWindow.notification.showNotification("⚠️ Số lượng sản phẩm của lô không hợp lệ")
+                            return;
+                        }
+
+                        if (isNaN(cost) || cost <= 0){
+                            rootWindow.notification.showNotification("⚠️ Giá 1 sản phẩm của lô không hợp lệ")
                             return;
                         }
 
@@ -161,9 +183,9 @@ Item {
         function onProductNameChecked(exists) {
             if(exists){
                 rootWindow.notification.showNotification("Tên sản phẩm hợp lệ");
-                comfirmAddNewBatch.open()
+                comfirmAddNewBatch.open();
             }else{
-                rootWindow.notification.showNotification("⚠️ sản phẩm không tồn tại")
+                rootWindow.notification.showNotification("⚠️ sản phẩm không tồn tại");
             }
         }
     }
@@ -182,10 +204,11 @@ Item {
             // code gọi api thêm vào database
             let name = nametextfield.text.trim();
             let num = parseInt(numtextfield.text);
+            let cost = parseFloat(costtextfield.text);
             let importDate = importdatetextfield.text.trim();
             let expiredDate = expireddatetextfield.text.trim();
 
-            controller.requestBatchCommand("ADD", name, num, importDate, expiredDate);
+            controller.requestBatchCommand("ADD", name, num, cost, importDate, expiredDate);
             followupDialog.open()
         }
         onRejected: {

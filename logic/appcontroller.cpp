@@ -104,13 +104,14 @@ void appcontroller::onProductListReady(QList<QVariantMap> list, Cmd cmd){
 // <<<<<<<<<< FOR BATCHES >>>>>>>>>>
 // ****< thêm lô sản phẩm >****
 
-void appcontroller::requestBatchCommand(const QString& cmd, const QString& name, int num, const QString& importDate, const QString& expiredDate){
+void appcontroller::requestBatchCommand(const QString& cmd, const QString& name, int num, double cost, const QString& importDate, const QString& expiredDate){
     Batch batch;
     cmdContext CMD;
     CMD.cmd = QStringToCmd(cmd);
 
     if(cmd == "ADD"){
         batch.setQuantity(num);
+        batch.setCost(cost);
         QDateTime dtImport = QDateTime::fromString(importDate, "dd-MM-yyyy");
         batch.setImportDate(dtImport);
         QDateTime dtExpired = QDateTime::fromString(expiredDate, "dd-MM-yyyy");
@@ -124,17 +125,6 @@ void appcontroller::onBatchCommandResult(bool done){
 
 }
 
-// ****************************************
-
-// ****< Lấy thông tin các lô 1 sản phẩm >****
-void appcontroller::requestToTakeBatchInfo(const QString& name, const QString& type, const QString& cmd, const QString& duration){
-    emit batchInfo(name, QStringToCmdContext(cmd, type, duration));
-}
-
-void appcontroller::onListOfBatch(QList<QVariantMap> list){
-    emit listOfBatch(list);
-}
-
 void appcontroller::requestBatchList(const QString& cmd, const QString& productName, int numPage){
     cmdContext CMD;
     CMD.cmd = QStringToCmd(cmd);
@@ -142,10 +132,11 @@ void appcontroller::requestBatchList(const QString& cmd, const QString& productN
 }
 
 void appcontroller::onBatchListReady(QList<QVariantMap> list, cmdContext cmd){
+    
     emit batchListReady(list, CmdtoQString(cmd.cmd));
 }
-
 // ****************************************
+
 
 
 

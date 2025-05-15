@@ -38,6 +38,7 @@ bool DatabaseManager::initialize(){
             "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             "product_name TEXT NOT NULL,"
             "quantity INTEGER NOT NULL,"
+            "cost REAL NOT NULL,"
             "import_date TEXT NOT NULL,"
             "expiry_date TEXT NOT NULL,"
             "FOREIGN KEY(product_name) REFERENCES products(product_name))";
@@ -46,6 +47,8 @@ bool DatabaseManager::initialize(){
             qWarning() << "Failed to create product_batches table:" << query.lastError().text();
             return false;
         }
+
+
     }
     qDebug() << "Database file is located at:" << QDir::current().absoluteFilePath("database.db");
     return true;
@@ -83,10 +86,11 @@ bool DatabaseManager::checkProductNameExists(const QString& name) {
 
 bool DatabaseManager::addBatch(const QString& productName, const Batch& batch) {
     QSqlQuery query;
-    query.prepare("INSERT INTO product_batches (product_name, quantity, import_date, expiry_date) "
-                  "VALUES (?, ?, ?, ?)");
+    query.prepare("INSERT INTO product_batches (product_name, quantity, cost, import_date, expiry_date) "
+                  "VALUES (?, ?, ?, ?, ?)");
     query.addBindValue(productName);
     query.addBindValue(batch.getQuantity());
+    query.addBindValue(batch.getCost());
     query.addBindValue(batch.getImportDate().toString("dd-MM-yyyy"));
     query.addBindValue(batch.getExpiryDate().toString("dd-MM-yyyy"));
 
@@ -217,7 +221,7 @@ QList<Batch*> DatabaseManager::getBatchByPage(const QString& productName, int nu
     int limit = 9;
     int offset = numPage * limit;
 
-    query.prepare("SELECT product_name, quantity, import_date, expiry_date "
+    query.prepare("SELECT product_name, quantity, cost, import_date, expiry_date "
                   "FROM product_batches "
                   "WHERE product_name = :productName "
                   "LIMIT :limit OFFSET :offset");
@@ -233,8 +237,9 @@ QList<Batch*> DatabaseManager::getBatchByPage(const QString& productName, int nu
     while (query.next()) {
         Batch* b = new Batch();
         b->setQuantity(query.value(1).toInt());
-        b->setImportDate(QDateTime::fromString(query.value(2).toString(), "dd-MM-yyyy").date().startOfDay());
-        b->setExpiryDate(QDateTime::fromString(query.value(3).toString(), "dd-MM-yyyy").date().startOfDay());
+        b->setCost(query.value(2).toFloat());
+        b->setImportDate(QDateTime::fromString(query.value(3).toString(), "dd-MM-yyyy").date().startOfDay());
+        b->setExpiryDate(QDateTime::fromString(query.value(4).toString(), "dd-MM-yyyy").date().startOfDay());
         list.append(b);
     }
 

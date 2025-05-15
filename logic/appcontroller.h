@@ -72,7 +72,7 @@ public slots:
 
 // **********< thêm / sửa / xoá lô sản phẩm>
 public:
-    Q_INVOKABLE void requestBatchCommand(const QString& cmd, const QString& name, int num, const QString& importDate, const QString& expiredDate);
+    Q_INVOKABLE void requestBatchCommand(const QString& cmd, const QString& name, int num, double cost, const QString& importDate, const QString& expiredDate);
 
 signals:
     // for database thread
@@ -83,19 +83,6 @@ public slots:
     void onBatchCommandResult(bool done);
 
 // ****************************************
-
-// ****< Lấy thông tin các lô sản phẩm theo lệnh >****
-public:
-    Q_INVOKABLE void requestToTakeBatchInfo(const QString& name, const QString& type, const QString& cmd, const QString& duration);
-
-signals:
-    // for database thread
-    void batchInfo(const QString& name, cmdContext context);
-    //for UI
-    void listOfBatch(QList<QVariantMap> list);
-
-public slots:
-    void onListOfBatch(QList<QVariantMap> list);
 
 // *********< Lấy danh sách các lô sản phẩm >*********
 public: 

@@ -11,6 +11,9 @@ public:
     int getQuantity() const;
     void setQuantity(int num);
 
+    double getCost() const;
+    void setCost(double cost);
+
     QDateTime getImportDate() const;
     void setImportDate(const QDateTime& time);
 
@@ -19,6 +22,7 @@ public:
 
 private:
     int quantity = 0;
+    double cost = 0;
     QDateTime importDate;
     QDateTime expiryDate;
 };

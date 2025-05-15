@@ -21,6 +21,10 @@
         "variant": "cpp",
         "charconv": "cpp",
         "functional": "cpp",
-        "tuple": "cpp"
+        "tuple": "cpp",
+        "__bit_reference": "cpp",
+        "bitset": "cpp",
+        "deque": "cpp",
+        "vector": "cpp"
     }
 }

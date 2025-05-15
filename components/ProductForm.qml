@@ -70,6 +70,7 @@ Item {
             height: parent.height*0.75
             // liệt kê các lô sản phẩm 
             color: "transparent"
+            clip: true
 
             ListView {
                 id: batchListView
@@ -79,7 +80,7 @@ Item {
  
                 delegate: Rectangle{
                     width: batchInfo.width
-                    height: batchInfo.height*0.1
+                    height: batchInfo.height*0.18
                     color: Qt.rgba(1, 1, 1, 0.3)
                     radius: 8
                     Rectangle {
@@ -92,60 +93,68 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "Số lượng: " + modelData.quantity
                             color: "white"
-                            font.pixelSize: 16
+                            font.pixelSize: 20
                         }
 
                     }
+                    
+
                     Rectangle {
+                        anchors.top: parent.top
                         anchors.left: parent.left
-                        anchors.leftMargin: parent.width*0.16
-                        width: parent.width*0.20
-                        height: parent.height
+                        anchors.leftMargin: parent.width*0.20
+                        width: parent.width*0.3
+                        height: parent.height*0.5
                         color: "transparent"
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
-                            text: "| Giá 1 sản phẩm: " 
+                            text: "| Giá 1 sản phẩm: " + Number(modelData.cost).toLocaleString(Qt.locale(), 'f', 0) + " VND"
                             color: "white"
-                            font.pixelSize: 16
+                            font.pixelSize: 18
                         }
                     }
                     Rectangle {
+                        anchors.bottom: parent.bottom
                         anchors.left: parent.left
-                        anchors.leftMargin: parent.width*0.36
-                        width: parent.width*0.20
-                        height: parent.height
+                        anchors.leftMargin: parent.width*0.20
+                        width: parent.width*0.3
+                        height: parent.height*0.5
                         color: "transparent"
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
-                            text: "| Giá Lô hàng: " 
+                            text: "| Giá Lô hàng: " + Number(modelData.cost * modelData.quantity).toLocaleString(Qt.locale(), 'f', 0) + " VND"
                             color: "white"
-                            font.pixelSize: 16
+                            font.pixelSize: 18
                         }
                     }
+                    
+
                     Rectangle {
                         anchors.left: parent.left
-                        anchors.leftMargin: parent.width*0.56
-                        width: parent.width*0.22
-                        height: parent.height
+                        anchors.top: parent.top
+                        anchors.leftMargin: parent.width*0.5
+                        width: parent.width*0.3
+                        height: parent.height*0.5
                         color: "transparent"
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "| Ngày nhập hàng: " + Qt.formatDate(new Date(modelData.importdate), "dd-MM-yyyy")
                             color: "white"
-                            font.pixelSize: 16
+                            font.pixelSize: 18
                         }
                     }
                     Rectangle {
+                        anchors.bottom: parent.bottom
                         anchors.left: parent.left
-                        anchors.leftMargin: parent.width*0.78
-                        width: parent.width*0.22
-                        height: parent.height
+                        anchors.leftMargin: parent.width*0.5
+                        width: parent.width*0.3
+                        height: parent.height*0.5
                         color: "transparent"
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "| ngày hết hạn: " + Qt.formatDate(new Date(modelData.expireddate), "dd-MM-yyyy")
                             color: "white"
-                            font.pixelSize: 16
+                            font.pixelSize: 18
                         }
                     }
                 }

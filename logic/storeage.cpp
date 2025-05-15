@@ -99,9 +99,9 @@ void storeage::handleBatchCommand(cmdContext cmd, const QString& name, Batch bat
     if (cmd.cmd == Cmd::ADD) {
         Batch newone;
         newone.setQuantity(batch.getQuantity());
+        newone.setCost(batch.getCost());
         newone.setImportDate(batch.getImportDate());
         newone.setExpiryDate(batch.getExpiryDate());
-
         done = db->addBatch(name, newone);
 
         if (done) {
@@ -124,6 +124,7 @@ void storeage::handleBatchListRequest(cmdContext cmd, const QString& productName
     for(Batch* b : fetchedBatches){
         QVariantMap item;
         item["quantity"] = b->getQuantity();
+        item["cost"] = b->getCost();
         item["importdate"] = b->getImportDate();
         item["expireddate"] = b->getExpiryDate();
         result.append(item);
