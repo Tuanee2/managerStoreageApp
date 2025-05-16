@@ -3,6 +3,8 @@
 appcontroller::appcontroller(storeage* store, QObject* parent)
     : QObject(parent), m_store(store)
 {
+
+    // <<<<<<<<<< FOR PRODUCTS >>>>>>>>>>
     // ****< Kiểm tra tên trùng lặp >****
     connect(this, &appcontroller::checkProductNameConflictSignal,
         m_store, &storeage::handleCheckProductName, Qt::QueuedConnection);
@@ -47,7 +49,26 @@ appcontroller::appcontroller(storeage* store, QObject* parent)
     connect(m_store, &storeage::batchListReady,
         this, &appcontroller::onBatchListReady, Qt::QueuedConnection);
     // ****************************************
+
+
+
+
+
+    // <<<<<<<<<< FOR CUSTOMER >>>>>>>>>>
+    connect(this, &appcontroller::customerCommand,
+        m_store, &storeage::handleCustomerCommand, Qt::QueuedConnection);
+
+    connect(m_store, &storeage::customerCommandResult,
+        this, &appcontroller::onCustomerCommandResult, Qt::QueuedConnection);
+
+    connect(this, &appcontroller::customerListRequested,
+        m_store, &storeage::handleCustomerListRequest, Qt::QueuedConnection);
+
+    connect(m_store, &storeage::customerListReady,
+        this, &appcontroller::onCustomerListReady, Qt::QueuedConnection);
     
+    // ****************************************
+
 }
 
 // ****< Kiểm tra tên trùng lặp >****
@@ -142,5 +163,31 @@ void appcontroller::onBatchListReady(QList<QVariantMap> list, cmdContext cmd){
 
 
 // <<<<<<<<<< FOR CUSTOMERS >>>>>>>>>>
+
+void appcontroller::requestCustomerCommand(const QString& cmd, const QString& name, int yearOfBirth, bool gender, const QString& phoneNumber){
+    cmdContext CMD;
+    CMD.cmd = QStringToCmd(cmd);
+    Customer customer;
+    customer.setCustomerName(name);
+    customer.setCustomerYearOfBirth(yearOfBirth);
+    customer.setCustomerGender(gender ? Gender::FEMALE : Gender::MALE);
+    customer.setCustomerPhoneNumber(phoneNumber);
+
+    emit customerCommand(CMD, customer);
+}
+
+void appcontroller::onCustomerCommandResult(bool done){
+    emit customerCommandResult(done);
+}
+
+void appcontroller::requestCustomerList(const QString& cmd, int numPage){
+    cmdContext CMD;
+    CMD.cmd = QStringToCmd(cmd);
+    emit customerListRequested(CMD, numPage);
+}
+
+void appcontroller::onCustomerListReady(QList<QVariantMap> list, cmdContext cmd){
+    emit customerListReady(list, CmdtoQString(cmd.cmd));
+}
 
 // ****************************************

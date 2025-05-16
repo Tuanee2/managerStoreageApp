@@ -36,23 +36,10 @@ Item {
 
         Rectangle {
             id: button01
-            width: navigationDrawer.width*0.8
+            width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
             color: mouseArea01.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
-
-            // Button {
-            //     id: icon01
-            //     width: parent.width/4
-            //     height: parent.height
-            //     anchors.left: parent.left
-            //     anchors.top: parent.QObject
-            //     icon.source: "qrc:/images/cuida--clipboard-text-outline.svg"
-            //     icon.color: "white"
-            //     icon.width: icon01.width*0.8
-            //     icon.height: icon01.height*0.8
-
-            // }
 
             Button {
                 id: icon01
@@ -96,8 +83,7 @@ Item {
                 }
 
                 onClicked: {
-                    console.log("Click: Bảng thông tin")
-                    rootWindow.currentNavigation = "Bảng thông tin"
+                    rootWindow.currentNavigation = "Danh sách sản phẩm"
                     pageLoader.source = "components/ProductList.qml"
                 }
             }
@@ -105,7 +91,7 @@ Item {
 
         Rectangle {
             id: button02
-            width: navigationDrawer.width*0.8
+            width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
             color: mouseArea02.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
@@ -129,7 +115,7 @@ Item {
             Text{
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: icon02.right
-                text: "thêm sản phẩm mới"
+                text: "Thêm sản phẩm mới"
                 color: "white"
                 font.pixelSize: rootWindow.baseFontSize
             }
@@ -161,7 +147,7 @@ Item {
 
         Rectangle {
             id: button03
-            width: navigationDrawer.width*0.8
+            width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
             color: mouseArea03.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
@@ -217,7 +203,7 @@ Item {
 
         Rectangle {
             id: button04
-            width: navigationDrawer.width*0.8
+            width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
             color: mouseArea04.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"

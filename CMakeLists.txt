@@ -49,6 +49,7 @@ qt_add_qml_module(appforHa
         QML_FILES components/SuggestionBox.qml
         QML_FILES components/CustomerDrawer.qml
         QML_FILES components/AddNewCustomer.qml
+        QML_FILES components/CustomerList.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

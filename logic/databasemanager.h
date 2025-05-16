@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QFile>
 #include "products.h"
+#include "customer.h"
 
 class DatabaseManager : public QObject
 {
@@ -35,6 +36,13 @@ public:
     QList<Batch*> getBatchByPage(const QString& productName, int numPage);
     //
 
+    // *********< FOR CUSTOMERS >**********
+    bool insertCustomer(const Customer& customer);
+    bool deleteCustomer(const QString& name);
+    QList<Customer*> getCustomersByPage(int numPage);
+    QList<Customer*> getACustomerByName(const QString& name);
+    QList<Customer*> getACustomerByPhoneNumber(const QString& phone);
+    // ************************************
 };
 
 #endif // DATABASEMANAGER_H

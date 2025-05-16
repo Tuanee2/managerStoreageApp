@@ -133,3 +133,16 @@ void storeage::handleBatchListRequest(cmdContext cmd, const QString& productName
 }
 
 // ****************************************
+
+
+
+
+// <<<<<<<<<< FOR CUSTOMER >>>>>>>>>>
+void storeage::handleCustomerCommand(cmdContext cmd, Customer customer){
+
+}
+
+void storeage::handleCustomerListRequest(cmdContext cmd, int numPage){
+
+}
+// ****************************************

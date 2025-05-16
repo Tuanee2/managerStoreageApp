@@ -4,6 +4,7 @@
 #include <QObject>
 #include "storeage.h"
 #include "configcommand.h"
+#include "customer.h"
 
 class appcontroller : public QObject
 {
@@ -70,7 +71,7 @@ public slots:
 
 // <<<<<<<<<< FOR BATCHES >>>>>>>>>>
 
-// **********< thêm / sửa / xoá lô sản phẩm>
+// **********< thêm / sửa / xoá lô sản phẩm>**********
 public:
     Q_INVOKABLE void requestBatchCommand(const QString& cmd, const QString& name, int num, double cost, const QString& importDate, const QString& expiredDate);
 
@@ -102,6 +103,32 @@ public slots:
 
 
 // <<<<<<<<<< FOR CUSTOMERS >>>>>>>>>>
+// **********< thêm / sửa / xoá lô sản phẩm>**********
+public:
+    Q_INVOKABLE void requestCustomerCommand(const QString& cmd, const QString& name, int yearOfBirth, bool gender, const QString& phoneNumber);
+
+signals:
+    // for database thread
+    void customerCommand(cmdContext cmd, Customer customer);
+    // for UI
+    void customerCommandResult(bool done);
+
+public slots:
+    void onCustomerCommandResult(bool done);
+
+// ****************************************
+
+// *********< Lấy danh sách khách hàng >*********
+public:
+    Q_INVOKABLE void requestCustomerList(const QString& cmd, int numPage);
+
+signals:
+    // for database thread
+    void customerListRequested(cmdContext cmd, int numPage);
+    // for UI
+    void customerListReady(QList<QVariantMap> list, const QString& cmd);
+public slots:
+    void onCustomerListReady(QList<QVariantMap> list, cmdContext cmd);
 
 // ****************************************
 };

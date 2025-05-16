@@ -16,6 +16,16 @@ Customer::Customer(QObject *parent)
     : QObject{parent}
 {}
 
+Customer::Customer(const QString& name, const QString& phoneNumber, int yearOfBirth, Gender gender,  QObject *parent) : 
+name(name), phoneNumber(phoneNumber), yearOfBirth(yearOfBirth), gender(gender) {}
+
+Customer::Customer(const Customer &other) 
+    : QObject(nullptr), 
+    name(other.name),
+    yearOfBirth(other.yearOfBirth),
+    gender(other.gender),
+    phoneNumber(other.phoneNumber) {}
+
 QString Customer::getCustomerName() const {
     return name;
 }
@@ -30,6 +40,14 @@ QString Customer::getCustomerPhoneNumber() const{
 
 void Customer::setCustomerPhoneNumber(const QString& phoneNumber){
     this->phoneNumber = phoneNumber;
+}
+
+int Customer::getCustomerYearOfBirth() const{
+    return yearOfBirth;
+}
+
+void Customer::setCustomerYearOfBirth(int year){
+    this->yearOfBirth = year;
 }
 
 int Customer::getCustomerAge() const{

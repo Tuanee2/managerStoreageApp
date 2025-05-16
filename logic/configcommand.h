@@ -9,6 +9,8 @@ typedef enum{
     SEARCH,
     LIST,
     ONE,
+    CHECKNAME,
+    CHECKPHONENUMBER,
     CMD_INVALID
 } Cmd;
 

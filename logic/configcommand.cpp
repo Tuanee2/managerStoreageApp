@@ -11,8 +11,13 @@ Cmd QStringToCmd(const QString& cmd){
         return Cmd::LIST;
     }else if(cmd == "ONE"){
         return Cmd::ONE;
+    }else if(cmd == "CHECKNAME"){
+        return Cmd::CHECKNAME;
+    }else if(cmd == "CHECKPHONENUMBER"){
+        return Cmd::CHECKPHONENUMBER;
     }
-        return Cmd::CMD_INVALID;
+        
+    return Cmd::CMD_INVALID;
 }
 
 QString CmdtoQString(Cmd cmd){
@@ -26,8 +31,13 @@ QString CmdtoQString(Cmd cmd){
         return "LIST";
     }else if(cmd == Cmd::ONE){
         return "ONE";
+    }else if(cmd == Cmd::CHECKNAME){
+        return "CHECKNAME";
+    }else if(cmd == Cmd::CHECKPHONENUMBER){
+        return "CHECKPHONENUMBER";
     }
-        return "CMD_INVALID";
+    
+    return "CMD_INVALID";
 }
 
 Duration QStringToDuration(const QString& duration) {

@@ -37,7 +37,7 @@ Item {
 
         Rectangle {
             id: button01
-            width: navigationDrawer.width*0.8
+            width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
             color: mouseArea01.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
@@ -138,7 +138,7 @@ Item {
 
         Rectangle {
             id: button02
-            width: navigationDrawer.width*0.8
+            width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
             color: mouseArea02.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
@@ -195,7 +195,7 @@ Item {
 
         Rectangle {
             id: button03
-            width: navigationDrawer.width*0.8
+            width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
             color: mouseArea03.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
@@ -243,15 +243,15 @@ Item {
                 }
 
                 onClicked: {
-                    console.log("Click: Bảng thông tin")
                     rootWindow.currentNavigation = "Khách hàng"
+                    drawerLoader.source = "components/CustomerDrawer.qml"
                 }
             }
         }
 
         Rectangle {
             id: button04
-            width: navigationDrawer.width*0.8
+            width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
             color: mouseArea04.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
@@ -307,7 +307,7 @@ Item {
 
         Rectangle {
             id: button05
-            width: navigationDrawer.width*0.8
+            width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
             color: mouseArea05.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
@@ -354,7 +354,6 @@ Item {
                 }
 
                 onClicked: {
-                    console.log("Click: Bảng thông tin")
                     rootWindow.currentNavigation = "Lịch sử giao dịch"
 
                 }
@@ -363,7 +362,7 @@ Item {
 
         Rectangle {
             id: button06
-            width: navigationDrawer.width*0.8
+            width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
             color: mouseArea06.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
@@ -410,7 +409,6 @@ Item {
                 }
 
                 onClicked: {
-                    console.log("Click: Bảng thông tin")
                     rootWindow.currentNavigation = "Cài đặt"
                     pageLoader.source = "components/Setting.qml"
                 }
@@ -419,7 +417,7 @@ Item {
 
         Rectangle {
             id: button07
-            width: navigationDrawer.width*0.8
+            width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
             color: mouseArea07.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"

@@ -6,6 +6,7 @@
 #include <QHash>
 #include "databasemanager.h"
 #include "configcommand.h"
+#include "customer.h"
 
 class storeage : public QObject
 {
@@ -69,8 +70,26 @@ public slots:
     void handleBatchListRequest(cmdContext cmd, const QString& productName, int numPage);
 signals:
     void batchListReady(QList<QVariantMap> list, cmdContext cmd);
-};
 
 // ****************************************
+
+
+
+// <<<<<<<<<< FOR CUSTOMER >>>>>>>>>>
+public slots:
+    void handleCustomerCommand(cmdContext cmd, Customer customer);
+signals:
+    void customerCommandResult(bool done);
+
+public slots:
+    void handleCustomerListRequest(cmdContext cmd, int numPage);
+signals:
+    void customerListReady(QList<QVariantMap> list, cmdContext cmd);
+    
+// ****************************************
+
+};
+
+
 
 #endif // STOREAGE_H

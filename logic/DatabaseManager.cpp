@@ -48,6 +48,19 @@ bool DatabaseManager::initialize(){
             return false;
         }
 
+        QString createCustomersTableQuery =
+            "CREATE TABLE IF NOT EXISTS customers ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "name TEXT NOT NULL,"
+            "phone_number TEXT NOT NULL,"
+            "gender TEXT NOT NULL,"
+            "year_of_birth INTEGER NOT NULL"
+            ")";
+
+        if (!query.exec(createCustomersTableQuery)) {
+            qWarning() << "Failed to create customers table:" << query.lastError().text();
+            return false;
+        }
 
     }
     qDebug() << "Database file is located at:" << QDir::current().absoluteFilePath("database.db");
@@ -247,3 +260,103 @@ QList<Batch*> DatabaseManager::getBatchByPage(const QString& productName, int nu
 }
 
 // ****************************************
+
+bool DatabaseManager::insertCustomer(const Customer& customer) {
+    QSqlQuery query;
+    query.prepare("INSERT INTO customers (name, phone_number, gender, year_of_birth) VALUES (?, ?, ?, ?)");
+    query.addBindValue(customer.getCustomerName());
+    query.addBindValue(customer.getCustomerPhoneNumber());
+    query.addBindValue(GenderToQString(customer.getCustomerGender()));
+    query.addBindValue(customer.getCustomerYearOfBirth());
+
+    if (!query.exec()) {
+        qWarning() << "Failed to insert customer:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+bool DatabaseManager::deleteCustomer(const QString& name) {
+    QSqlQuery query;
+    query.prepare("DELETE FROM customers WHERE name = ?");
+    query.addBindValue(name);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to delete customer:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+QList<Customer*> DatabaseManager::getCustomersByPage(int numPage) {
+    QList<Customer*> list;
+    QSqlQuery query;
+    int limit = 12;
+    int offset = numPage * limit;
+
+    query.prepare("SELECT name, phone_number, gender, year_of_birth FROM customers LIMIT :limit OFFSET :offset");
+    query.bindValue(":limit", limit);
+    query.bindValue(":offset", offset);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to fetch customers by page:" << query.lastError().text();
+        return list;
+    }
+
+    while (query.next()) {
+        Customer* c = new Customer();
+        c->setCustomerName(query.value(0).toString());
+        c->setCustomerPhoneNumber(query.value(1).toString());
+        c->setCustomerGender(QStringToGender(query.value(2).toString()));
+        c->setCustomerYearOfBirth(query.value(3).toInt());
+        list.append(c);
+    }
+
+    return list;
+}
+
+QList<Customer*> DatabaseManager::getACustomerByName(const QString& name) {
+    QList<Customer*> list;
+    QSqlQuery query;
+    query.prepare("SELECT name, phone_number, gender, year_of_birth FROM customers WHERE name = :name LIMIT 1");
+    query.bindValue(":name", name);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to fetch customer by name:" << query.lastError().text();
+        return list;
+    }
+
+    if (query.next()) {
+        Customer* c = new Customer();
+        c->setCustomerName(query.value(0).toString());
+        c->setCustomerPhoneNumber(query.value(1).toString());
+        c->setCustomerGender(QStringToGender(query.value(2).toString()));
+        c->setCustomerYearOfBirth(query.value(3).toInt());
+        list.append(c);
+    }
+
+    return list;
+}
+
+QList<Customer*> DatabaseManager::getACustomerByPhoneNumber(const QString& phone) {
+    QList<Customer*> list;
+    QSqlQuery query;
+    query.prepare("SELECT name, phone_number, gender, year_of_birth FROM customers WHERE phone_number = :phone LIMIT 1");
+    query.bindValue(":phone", phone);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to fetch customer by phone:" << query.lastError().text();
+        return list;
+    }
+
+    if (query.next()) {
+        Customer* c = new Customer();
+        c->setCustomerName(query.value(0).toString());
+        c->setCustomerPhoneNumber(query.value(1).toString());
+        c->setCustomerGender(QStringToGender(query.value(2).toString()));
+        c->setCustomerYearOfBirth(query.value(3).toInt());
+        list.append(c);
+    }
+
+    return list;
+}

@@ -16,6 +16,9 @@ Window {
     property alias notification: notificationHost
     property real baseFontSize: Screen.height * 0.022
 
+    property bool productSearch: false
+    property bool cutomerSearch:false
+
     // Ảnh nền
     Image {
         id: background
@@ -155,59 +158,71 @@ Window {
                     onTextChanged: {
                         if(text.length > 0){
                             controller.requestProductList("SEARCH", text, 0)
-                            // suggestionMenu.popup(searchBar.mapToItem(null, 0, searchBar.height).x,
-                            //                      searchBar.mapToItem(null, 0, searchBar.height).y)
+                            
                         }else{
-                            // suggestionMenu.close()
+                            
                         }
                     }
                 }
 
-                Rectangle {
-                    id: suggestionBox
+                SuggestionBox {
+                    id: suggestionPopup
+                    x: 0
+                    y: searchBar.height
                     width: searchBar.width
-                    color: Qt.rgba(1, 1, 1, 1)
-                    radius: 6
-                    anchors.top: searchBar.bottom
-                    anchors.left: searchBar.left
-                    visible: false
-                    z: 999
-
-                    ListView {
-                        width: parent.width
-                        height: Math.min(200, suggestionModel.count * 40)
-                        model: suggestionModel
-                        clip: true
-
-                        delegate: Item {
-                            width: suggestionBox.width
-                            height: 40
-
-                            Rectangle {
-                                anchors.fill: parent
-                                color: "white"
-                            }
-
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: {
-                                    searchField.text = model.name
-                                    suggestionBox.visible = false
-                                    //controller.requestProductList("SEARCH", model.name, 0)
-                                }
-
-                                Text {
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    anchors.left: parent.left
-                                    anchors.leftMargin: 10
-                                    text: model.name
-                                    font.pixelSize: rootWindow.baseFontSize * 0.9
-                                    color: "black"
-                                }
-                            }
-                        }
+                    model: suggestionModel
+                    visible: false  // không cần vì dùng open()
+                    onSuggestionSelected: (text) => {
+                        searchField.text = text
+                        close()
                     }
                 }
+
+                // Rectangle {
+                //     id: suggestionBox
+                //     width: searchBar.width
+                //     color: Qt.rgba(1, 1, 1, 1)
+                //     radius: 6
+                //     anchors.top: searchBar.bottom
+                //     anchors.left: searchBar.left
+                //     visible: false
+                //     z: 999
+
+                //     ListView {
+                //         width: parent.width
+                //         height: Math.min(200, suggestionModel.count * 40)
+                //         model: suggestionModel
+                //         clip: true
+
+                //         delegate: Item {
+                //             width: suggestionBox.width
+                //             height: 40
+
+                //             Rectangle {
+                //                 anchors.fill: parent
+                //                 color: "white"
+                //             }
+
+                //             MouseArea {
+                //                 anchors.fill: parent
+                //                 onClicked: {
+                //                     searchField.text = model.name
+                //                     suggestionBox.visible = false
+                //                     //controller.requestProductList("SEARCH", model.name, 0)
+                //                 }
+
+                //                 Text {
+                //                     anchors.verticalCenter: parent.verticalCenter
+                //                     anchors.left: parent.left
+                //                     anchors.leftMargin: 10
+                //                     text: model.name
+                //                     font.pixelSize: rootWindow.baseFontSize * 0.9
+                //                     color: "black"
+                //                 }
+                //             }
+                //         }
+                //     }
+                // }
             }
 
             Rectangle {
@@ -325,7 +340,14 @@ Window {
                 for (var i = 0; i < list.length; ++i) {
                     suggestionModel.append({ name: list[i]["productName"] })
                 }
-                suggestionBox.visible = suggestionModel.count > 0
+                //suggestionBox.visible = suggestionModel.count > 0
+                if (suggestionModel.count > 0) {
+                    suggestionPopup.x = 0
+                    suggestionPopup.y = searchBar.height
+                    suggestionPopup.open()
+                } else {
+                    suggestionPopup.close()
+                }
             }
         }
     }

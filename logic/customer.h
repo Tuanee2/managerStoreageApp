@@ -18,10 +18,13 @@ class Customer : public QObject
     Q_OBJECT
 public:
     explicit Customer(QObject *parent = nullptr);
+    Customer(const QString& name, const QString& phoneNumber, int yearOfBirth, Gender gender, QObject *parent = nullptr);
+    Customer(const Customer &other);
 
 private:
     QString name;
     QString phoneNumber;
+    int yearOfBirth;
     int age = 0;
     Gender gender = Gender::UNKNOW;
 
@@ -30,6 +33,8 @@ public:
     void setCustomerName(const QString& name);
     QString getCustomerPhoneNumber() const;
     void setCustomerPhoneNumber(const QString& phoneNumber);
+    int getCustomerYearOfBirth() const;
+    void setCustomerYearOfBirth(int year);
     int getCustomerAge() const;
     void setCustomerAge(int age);
     Gender getCustomerGender() const;

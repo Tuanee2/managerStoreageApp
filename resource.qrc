@@ -20,5 +20,6 @@
         <file>file-circle-info.svg</file>
         <file>angle-left.svg</file>
         <file>angle-right.svg</file>
+        <file>Icon/user-add.svg</file>
     </qresource>
 </RCC>
