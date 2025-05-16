@@ -20,7 +20,7 @@ Cmd QStringToCmd(const QString& cmd){
     return Cmd::CMD_INVALID;
 }
 
-QString CmdtoQString(Cmd cmd){
+QString CmdToQString(Cmd cmd){
     if(cmd == Cmd::ADD){
         return "ADD";
     }else if(cmd == Cmd::DELETE){

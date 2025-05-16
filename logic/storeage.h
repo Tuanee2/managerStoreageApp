@@ -79,10 +79,10 @@ signals:
 public slots:
     void handleCustomerCommand(cmdContext cmd, Customer customer);
 signals:
-    void customerCommandResult(bool done);
+    void customerCommandResult(bool done, cmdContext cmd);
 
 public slots:
-    void handleCustomerListRequest(cmdContext cmd, int numPage);
+    void handleCustomerListRequest(cmdContext cmd, const QString& keyword, int numPage);
 signals:
     void customerListReady(QList<QVariantMap> list, cmdContext cmd);
     

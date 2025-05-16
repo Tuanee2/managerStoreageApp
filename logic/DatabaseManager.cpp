@@ -276,7 +276,7 @@ bool DatabaseManager::insertCustomer(const Customer& customer) {
     return true;
 }
 
-bool DatabaseManager::deleteCustomer(const QString& name) {
+bool DatabaseManager::deleteCustomerByName(const QString& name) {
     QSqlQuery query;
     query.prepare("DELETE FROM customers WHERE name = ?");
     query.addBindValue(name);
@@ -286,6 +286,30 @@ bool DatabaseManager::deleteCustomer(const QString& name) {
         return false;
     }
     return true;
+}
+
+bool DatabaseManager::deleteCustomerByPhoneNumber(const QString& phoneNumer) {
+    QSqlQuery query;
+    query.prepare("DELETE FROM customers WHERE phone_number = ?");
+    query.addBindValue(phoneNumer);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to delete customer:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+bool DatabaseManager::checkCustomerPhoneNumberExists(const QString& phoneNumber) {
+    QSqlQuery query;
+    query.prepare("SELECT EXISTS (SELECT 1 FROM customers WHERE phone_number = :phone LIMIT 1)");
+    query.bindValue(":phone", phoneNumber);
+
+    if (query.exec() && query.next()) {
+        return query.value(0).toBool();
+    }
+
+    return false;
 }
 
 QList<Customer*> DatabaseManager::getCustomersByPage(int numPage) {
@@ -360,3 +384,4 @@ QList<Customer*> DatabaseManager::getACustomerByPhoneNumber(const QString& phone
 
     return list;
 }
+

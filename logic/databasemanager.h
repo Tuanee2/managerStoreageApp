@@ -38,7 +38,9 @@ public:
 
     // *********< FOR CUSTOMERS >**********
     bool insertCustomer(const Customer& customer);
-    bool deleteCustomer(const QString& name);
+    bool deleteCustomerByName(const QString& name);
+    bool deleteCustomerByPhoneNumber(const QString& phoneNumber);
+    bool checkCustomerPhoneNumberExists(const QString& phoneNumber);
     QList<Customer*> getCustomersByPage(int numPage);
     QList<Customer*> getACustomerByName(const QString& name);
     QList<Customer*> getACustomerByPhoneNumber(const QString& phone);

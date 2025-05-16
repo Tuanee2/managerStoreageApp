@@ -36,7 +36,7 @@ Item {
 
         Rectangle {
             id: button01
-            width: navigationDrawer.width*0.8
+            width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
             color: mouseArea01.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
@@ -84,14 +84,14 @@ Item {
 
                 onClicked: {
                     rootWindow.currentNavigation = "Danh sách khác hàng"
-                    pageLoader.source = "components/ProductList.qml"
+                    pageLoader.source = "components/CustomerList.qml"
                 }
             }
         }
 
         Rectangle {
             id: button02
-            width: navigationDrawer.width*0.8
+            width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
             color: mouseArea02.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
@@ -139,14 +139,14 @@ Item {
 
                 onClicked: {
                     rootWindow.currentNavigation = "Thêm khách hàng mới"
-                    pageLoader.source = "components/AddNewProduct.qml"
+                    pageLoader.source = "components/AddNewCustomer.qml"
                 }
             }
         }
 
         Rectangle {
             id: button03
-            width: navigationDrawer.width*0.8
+            width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
             color: mouseArea03.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"

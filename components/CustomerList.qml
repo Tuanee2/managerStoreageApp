@@ -4,30 +4,33 @@ import QtQuick.Layouts 1.15
 import QtQuick.Controls.Material
 
 Item {
+    id: rootCustomerList
     anchors.fill: parent
 
-    property var products: []
-    property string selectedProductName: ""
+    property var customers: []
+    property string selectedCustomerName: ""
+    property string selectedCustomerPhoneNumber: ""
     property string filterType: "SREACH"
     property string filterText: "Tìm kiếm"
+    property int currentPage: 0
 
-    // Component.onCompleted: {
-    //     controller.requestProductList("LIST", "", 0);
-    // }
+    Component.onCompleted: {
+        controller.requestCustomerList("LIST", "", currentPage);
+    }
 
-    // Connections {
-    //     target: controller
-    //     function onProductListReady(list, cmd) {
-    //         if(filterType === "LIST" || cmd === "LIST"){
-    //             products = list;
-    //         }else if(filterType === "SEARCH" || cmd === "SEARCH"){
-    //             products = list;
-    //         }
-    //     }
-    // }
+    Connections {
+        target: controller
+        function onCustomerListReady(list, cmd) {
+            if(filterType === "LIST" || cmd === "LIST"){
+                customers = list;
+            }else if(filterType === "SEARCH" || cmd === "SEARCH"){
+                customers = list;
+            }
+        }
+    }
 
     Rectangle {
-        id: productList
+        id: customerList
         anchors.fill: parent
         color: "transparent"
 
@@ -89,41 +92,41 @@ Item {
                     }
                 }
 
-                MenuItem {
-                    text: "Hết hạn"
-                    onTriggered: {
-                        filterType = "EXPIRED"
-                        filterText = "Hết hạn"
-                        controller.requestProductList("EXPIRED", "", 0)
-                    }
-                }
+                // MenuItem {
+                //     text: "Hết hạn"
+                //     onTriggered: {
+                //         filterType = "EXPIRED"
+                //         filterText = "Hết hạn"
+                //         controller.requestProductList("EXPIRED", "", 0)
+                //     }
+                // }
 
-                MenuItem {
-                    text: "Còn hạn"
-                    onTriggered: {
-                        filterType = "VALID"
-                        filterText = "Còn hạn"
-                        controller.requestProductList("VALID", "", 0)
-                    }
-                }
+                // MenuItem {
+                //     text: "Còn hạn"
+                //     onTriggered: {
+                //         filterType = "VALID"
+                //         filterText = "Còn hạn"
+                //         controller.requestProductList("VALID", "", 0)
+                //     }
+                // }
             }
         }
 
 
         Grid {
-            id: productGrid
+            id: customerGrid
             columns: 2
             anchors.fill: parent
-            anchors.margins: productList.width * 0.05
-            rowSpacing: productList.height * 0.03
-            columnSpacing: productList.width * 0.05
+            anchors.margins: customerList.width * 0.05
+            rowSpacing: customerList.height * 0.03
+            columnSpacing: customerList.width * 0.05
 
             Repeater {
-                model: products
+                model: customers
 
                 delegate: Rectangle {
-                    width: productList.width*0.85/2
-                    height: productList.height * 0.1
+                    width: customerList.width*0.85/2
+                    height: customerList.height * 0.1
                     radius: 8
                     color: Qt.rgba( 1, 1, 1, 0.3)
                     border.color: Qt.rgba( 1, 1, 1, 0.5)
@@ -144,13 +147,13 @@ Item {
                             anchors.left: parent.left
                             anchors.leftMargin: parent.width*0.05
                             Text {
-                                text: "Tên: " + modelData["productName"]
+                                text: "Tên: " + modelData["name"]
                                 font.pixelSize: rootWindow.baseFontSize*0.9
                                 color: "white"
                             }
 
                             Text {
-                                text: "Giá: " + modelData["cost"] + " VND"
+                                text: "SĐT: " + modelData["phone_number"]
                                 font.pixelSize: rootWindow.baseFontSize*0.9
                                 color: "white"
                             }
@@ -163,7 +166,7 @@ Item {
                         height: parent.height
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.right: parent.right
-                        anchors.rightMargin: 3*parent.height
+                        anchors.rightMargin: 2*parent.height
 
                         background: Rectangle{
                             anchors.fill: parent
@@ -194,7 +197,7 @@ Item {
                         height: parent.height
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.right: parent.right
-                        anchors.rightMargin: 2*parent.height
+                        anchors.rightMargin: 1*parent.height
 
                         background: Rectangle{
                             anchors.fill: parent
@@ -221,31 +224,6 @@ Item {
                     }
 
                     Button{
-                        id: saleButton
-                        width: parent.height
-                        height: parent.height
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.right: parent.right
-                        anchors.rightMargin: parent.height
-                        background: Rectangle{
-                            anchors.fill: parent
-                            color: masaleButton.containsMouse ? Qt.rgba(1, 1, 1, 0.3) : "transparent"
-                            radius: 8
-
-                        }
-                        icon.source: "qrc:/images/minus-circle.svg"
-                        icon.color: "white"
-
-                        MouseArea{
-                            id: masaleButton
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: {
-
-                            }
-                        }
-                    }
-                    Button{
                         id: deleteProductButton
                         width: parent.height
                         height: parent.height
@@ -264,8 +242,9 @@ Item {
                             anchors.fill: parent
                             hoverEnabled: true
                             onClicked: {
-                                selectedProductName = modelData["productName"]
-                                deleteProductConfirmDialog.open()
+                                selectedCustomerName = modelData["name"]
+                                selectedCustomerPhoneNumber = modelData["phone_number"]
+                                deleteCustomerConfirmDialog.open()
                             }
                         }
                     }
@@ -275,14 +254,15 @@ Item {
     }
 
     Dialog{
-        id: deleteProductConfirmDialog
-        title: "Bạn có chắc chắn muốn xoá sản phẩm?"
+        id: deleteCustomerConfirmDialog
+        title: "Bạn có chắc chắn muốn xoá khách hàng?"
         standardButtons: Dialog.Yes | Dialog.No
         visible: false
         onAccepted: {
-            controller.requestProductCommand("DELETE", "", selectedProductName, "", "", "")
-            selectedProductName = ""
-            controller.requestProductList("LIST", "", 0)
+            controller.requestCustomerCommand("DELETE", rootCustomerList.selectedCustomerName, "", "", rootCustomerList.selectedCustomerPhoneNumber)
+            rootCustomerList.selectedCustomerName = ""
+            rootCustomerList.selectedCustomerPhoneNumber = ""
+            controller.requestCustomerList("LIST", "", currentPage)
         }
     }
 

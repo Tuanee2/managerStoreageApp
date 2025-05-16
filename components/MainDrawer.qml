@@ -244,6 +244,7 @@ Item {
 
                 onClicked: {
                     rootWindow.currentNavigation = "Khách hàng"
+                    pageLoader.source = "components/CustomerList.qml"
                     drawerLoader.source = "components/CustomerDrawer.qml"
                 }
             }

@@ -15,7 +15,7 @@ typedef enum{
 } Cmd;
 
 Cmd QStringToCmd(const QString& cmd);
-QString CmdtoQString(Cmd cmd);
+QString CmdToQString(Cmd cmd);
 
 typedef enum {
     ALL,

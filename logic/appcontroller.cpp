@@ -114,7 +114,7 @@ void appcontroller::requestProductList(const QString& cmd, const QString& keywor
 }
 
 void appcontroller::onProductListReady(QList<QVariantMap> list, Cmd cmd){
-    emit productListReady(list, CmdtoQString(cmd));
+    emit productListReady(list, CmdToQString(cmd));
 }
 
 // ****************************************
@@ -154,7 +154,7 @@ void appcontroller::requestBatchList(const QString& cmd, const QString& productN
 
 void appcontroller::onBatchListReady(QList<QVariantMap> list, cmdContext cmd){
     
-    emit batchListReady(list, CmdtoQString(cmd.cmd));
+    emit batchListReady(list, CmdToQString(cmd.cmd));
 }
 // ****************************************
 
@@ -164,30 +164,30 @@ void appcontroller::onBatchListReady(QList<QVariantMap> list, cmdContext cmd){
 
 // <<<<<<<<<< FOR CUSTOMERS >>>>>>>>>>
 
-void appcontroller::requestCustomerCommand(const QString& cmd, const QString& name, int yearOfBirth, bool gender, const QString& phoneNumber){
+void appcontroller::requestCustomerCommand(const QString& cmd, const QString& name, int yearOfBirth, const QString& gender, const QString& phoneNumber){
     cmdContext CMD;
     CMD.cmd = QStringToCmd(cmd);
     Customer customer;
     customer.setCustomerName(name);
     customer.setCustomerYearOfBirth(yearOfBirth);
-    customer.setCustomerGender(gender ? Gender::FEMALE : Gender::MALE);
+    customer.setCustomerGender(QStringToGender(gender));
     customer.setCustomerPhoneNumber(phoneNumber);
 
     emit customerCommand(CMD, customer);
 }
 
-void appcontroller::onCustomerCommandResult(bool done){
-    emit customerCommandResult(done);
+void appcontroller::onCustomerCommandResult(bool done, cmdContext cmd){
+    emit customerCommandResult(done, CmdToQString(cmd.cmd));
 }
 
-void appcontroller::requestCustomerList(const QString& cmd, int numPage){
+void appcontroller::requestCustomerList(const QString& cmd, const QString& keyword, int numPage){
     cmdContext CMD;
     CMD.cmd = QStringToCmd(cmd);
-    emit customerListRequested(CMD, numPage);
+    emit customerListRequested(CMD, keyword, numPage);
 }
 
 void appcontroller::onCustomerListReady(QList<QVariantMap> list, cmdContext cmd){
-    emit customerListReady(list, CmdtoQString(cmd.cmd));
+    emit customerListReady(list, CmdToQString(cmd.cmd));
 }
 
 // ****************************************

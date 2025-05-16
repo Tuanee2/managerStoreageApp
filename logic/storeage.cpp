@@ -139,10 +139,45 @@ void storeage::handleBatchListRequest(cmdContext cmd, const QString& productName
 
 // <<<<<<<<<< FOR CUSTOMER >>>>>>>>>>
 void storeage::handleCustomerCommand(cmdContext cmd, Customer customer){
+    bool done;
+    if(cmd.cmd == Cmd::ADD){
+        done = db->insertCustomer(customer);
+    }else if(cmd.cmd == Cmd::CHECKPHONENUMBER){
+        done = db->checkCustomerPhoneNumberExists(customer.getCustomerPhoneNumber());
+    }else if(cmd.cmd == Cmd::DELETE){
+        if(customer.getCustomerPhoneNumber() != ""){
+            done = db->deleteCustomerByPhoneNumber(customer.getCustomerPhoneNumber());
+        }else{
+            done = db->deleteCustomerByName(customer.getCustomerName());
+        }
+    }
 
+    emit customerCommandResult(done, cmd);
 }
 
-void storeage::handleCustomerListRequest(cmdContext cmd, int numPage){
+void storeage::handleCustomerListRequest(cmdContext cmd, const QString& keyword, int numPage){
+    QList<Customer*> fetchedCutomers;
 
+    if(cmd.cmd == Cmd::LIST){
+        fetchedCutomers = db->getCustomersByPage(numPage);
+    }else if(cmd.cmd == Cmd::SEARCH){
+        fetchedCutomers = db->getACustomerByPhoneNumber(keyword);
+        if(fetchedCutomers.size() == 0){
+            fetchedCutomers = db->getACustomerByName(keyword);
+        }
+    }
+
+    QList<QVariantMap> result;
+
+    for(Customer* c : fetchedCutomers){
+        QVariantMap item;
+        item["name"] = c->getCustomerName();
+        item["phone_number"] = c->getCustomerPhoneNumber();
+        item["year_of_birth"] = c->getCustomerYearOfBirth();
+        item["gender"] = GenderToQString(c->getCustomerGender());
+        result.append(item);
+    }
+
+    emit customerListReady(result, cmd);
 }
 // ****************************************

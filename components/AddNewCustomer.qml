@@ -61,16 +61,38 @@ Item {
                     radius: 10
                     color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
                 }
-                width: addNewProduct.width*0.6
-                height: addNewProduct.height*0.1
+                width: addNewCustomer.width*0.6
+                height: addNewCustomer.height*0.1
                 color: "white"
+            }
+
+            ComboBox {
+                id: genderComboBox
+                model: ["Nam", "Nữ", "Khác"]
+                width: addNewCustomer.width * 0.6
+                height: addNewCustomer.height * 0.1
+                font.pixelSize: 20
+                background: Rectangle {
+                    radius: 10
+                    color: Qt.rgba(1, 1, 1, 0.5)
+                }
+                contentItem: Text {
+                    text: genderComboBox.currentText
+                    color: "white"
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignLeft
+                    font.pixelSize: 20
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 10
+                }
             }
 
 
             Rectangle {
                 id: button4add
-                width: addNewProduct.width*0.3
-                height: addNewProduct.height*0.1
+                width: addNewCustomer.width*0.3
+                height: addNewCustomer.height*0.1
                 radius: 10
                 color: ma4button4add.containsMouse ? Qt.rgba( 73/255, 145/255, 230/255, 1) : Qt.rgba( 53/255, 125/255, 210/255, 1)
 
@@ -88,15 +110,15 @@ Item {
 
                     onClicked: {
                         let name = nametextfield.text.trim();
+                        let phoneNumber = phonenumbertextfield.text.trim();
 
                         if (name === "") {
-                            console.log("⚠️ Tên sản phẩm bắt buộc");
-                            rootWindow.notification.showNotification("⚠️ Tên sản phẩm bắt buộc")
+                            rootWindow.notification.showNotification("⚠️ Tên khách hàng bắt buộc")
                             return;
                         }
 
                         // kiểm tra trùng tên
-                        controller.checkProductNameConflict(name);
+                        controller.requestCustomerCommand("CHECKPHONENUMBER", "", "", true, phoneNumber);
                     }
 
                 }
@@ -114,12 +136,14 @@ Item {
         visible: false
         onAccepted: {
             // code gọi api thêm vào database
-            let id = idtextfield.text.trim();
             let name = nametextfield.text.trim();
-            let price = parseFloat(pricetextfield.text);
-            let description = destextfield.text.trim();
+            let yearofbirth = parseInt(agetextfield.text);
+            let phoneNumber = phonenumbertextfield.text.trim();
+            // let gender = genderComboBox.currentIndex
+            let gender = genderComboBox.currentText === "Nam" ? "MALE" :
+                         genderComboBox.currentText === "Nữ" ? "FEMALE" : "UNKNOW";
+            controller.requestCustomerCommand("ADD", name, yearofbirth, gender, phoneNumber);
 
-            controller.requestProductCommand("ADD", id, name, price, true, description);
         }
         onRejected: {
             followupDialog.open()
@@ -127,10 +151,9 @@ Item {
     }
 
     function clearFields() {
-        idtextfield.text = ""
         nametextfield.text = ""
-        pricetextfield.text = ""
-        destextfield.text = ""
+        agetextfield.text = ""
+        phonenumbertextfield.text = ""
     }
 
     Dialog {
@@ -143,33 +166,37 @@ Item {
             clearFields() // Xoá nội dung textfield để nhập mới
         }
         onRejected: {
-            pageLoader.source = "components/Dashboard.qml" // Quay lại trang chính
+            pageLoader.source = "components/CustomerList.qml" // Quay lại trang chính
         }
     }
 
     // Trong cùng QML file
     Connections {
         target: controller
-        function onProductNameChecked(exists) {
-            if (exists) {
-                rootWindow.notification.showNotification("⚠️ Tên khách hàn đã tồn tại");
-            } else {
-                // Tiếp tục thêm sản phẩm
-                rootWindow.notification.showNotification("Thêm sản phẩm");
-                confirmDialog.open()
+        function onCustomerCommandResult(exists, cmd) {
+            if(cmd === "CHECKPHONENUMBER"){
+                if (exists) {
+                    rootWindow.notification.showNotification("⚠️ Số điện thoại khách hàng đã tồn tại");
+                } else {
+                    confirmDialog.open()
+                }
             }
         }
     }
 
     Connections {
         target: controller
-        function onProductCommandResult(done) {
-            if(done){
-                followupDialog.open()
-            }else{
-                clearFields()
-                rootWindow.notification.showNotification("⚠️ Thêm sản phẩm thất bại");
+        function onCustomerCommandResult(done, cmd) {
+            if(cmd === "ADD"){
+                if(done){
+                    followupDialog.open()
+                }else{
+                    clearFields()
+                    rootWindow.notification.showNotification("⚠️ Thêm sản phẩm thất bại");
+                    followupDialog.open()
+                }
             }
+
         }
     }
 
