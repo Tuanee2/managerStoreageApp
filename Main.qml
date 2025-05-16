@@ -146,83 +146,18 @@ Window {
 
                 }
 
-                TextField {
-                    id: searchField
+                CustomerSearchTextField {
+                    id: mainSearch
                     width: parent.width - parent.height
                     height: parent.height
                     anchors.right: parent.right
-                    placeholderText: "Tìm kiếm sản phẩm..."
-                    color: "white"
-                    font.pixelSize: rootWindow.baseFontSize
-                    
-                    onTextChanged: {
-                        if(text.length > 0){
-                            controller.requestProductList("SEARCH", text, 0)
-                            
-                        }else{
-                            
-                        }
-                    }
-                }
-
-                SuggestionBox {
-                    id: suggestionPopup
-                    x: 0
-                    y: searchBar.height
-                    width: searchBar.width
-                    model: suggestionModel
-                    visible: false  // không cần vì dùng open()
+                    color: "transparent"
+                    placeholderText: "Nhập tên sản phẩm"
                     onSuggestionSelected: (text) => {
-                        searchField.text = text
-                        close()
+                        console.log("Đã chọn khách hàng:", text)
                     }
+                    target: "PRODUCT"
                 }
-
-                // Rectangle {
-                //     id: suggestionBox
-                //     width: searchBar.width
-                //     color: Qt.rgba(1, 1, 1, 1)
-                //     radius: 6
-                //     anchors.top: searchBar.bottom
-                //     anchors.left: searchBar.left
-                //     visible: false
-                //     z: 999
-
-                //     ListView {
-                //         width: parent.width
-                //         height: Math.min(200, suggestionModel.count * 40)
-                //         model: suggestionModel
-                //         clip: true
-
-                //         delegate: Item {
-                //             width: suggestionBox.width
-                //             height: 40
-
-                //             Rectangle {
-                //                 anchors.fill: parent
-                //                 color: "white"
-                //             }
-
-                //             MouseArea {
-                //                 anchors.fill: parent
-                //                 onClicked: {
-                //                     searchField.text = model.name
-                //                     suggestionBox.visible = false
-                //                     //controller.requestProductList("SEARCH", model.name, 0)
-                //                 }
-
-                //                 Text {
-                //                     anchors.verticalCenter: parent.verticalCenter
-                //                     anchors.left: parent.left
-                //                     anchors.leftMargin: 10
-                //                     text: model.name
-                //                     font.pixelSize: rootWindow.baseFontSize * 0.9
-                //                     color: "black"
-                //                 }
-                //             }
-                //         }
-                //     }
-                // }
             }
 
             Rectangle {
@@ -255,7 +190,7 @@ Window {
                     anchors.fill: parent
                     hoverEnabled: true
                     onClicked:{
-                        pageLoader.source = "components/AddNewProduct.qml"
+                        pageLoader.source = "components/CreateTransaction.qml"
                     }
                 }
             }
@@ -328,26 +263,6 @@ Window {
             let comp = Qt.createComponent("components/Toast.qml")
             if (comp.status === Component.Ready) {
                 let note = comp.createObject(notificationColumn, { "text": message });
-            }
-        }
-    }
-
-    Connections {
-        target: controller
-        function onProductListReady(list, cmd) {
-            if(cmd === "SEARCH"){
-                suggestionModel.clear()
-                for (var i = 0; i < list.length; ++i) {
-                    suggestionModel.append({ name: list[i]["productName"] })
-                }
-                //suggestionBox.visible = suggestionModel.count > 0
-                if (suggestionModel.count > 0) {
-                    suggestionPopup.x = 0
-                    suggestionPopup.y = searchBar.height
-                    suggestionPopup.open()
-                } else {
-                    suggestionPopup.close()
-                }
             }
         }
     }

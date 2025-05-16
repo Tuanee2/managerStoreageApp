@@ -139,11 +139,8 @@ Item {
             let name = nametextfield.text.trim();
             let yearofbirth = parseInt(agetextfield.text);
             let phoneNumber = phonenumbertextfield.text.trim();
-            // let gender = genderComboBox.currentIndex
-            let gender = genderComboBox.currentText === "Nam" ? "MALE" :
-                         genderComboBox.currentText === "Nữ" ? "FEMALE" : "UNKNOW";
+            let gender = genderComboBox.currentIndex // 0: Nam, 1: Nữ, 2: Khác
             controller.requestCustomerCommand("ADD", name, yearofbirth, gender, phoneNumber);
-
         }
         onRejected: {
             followupDialog.open()
@@ -173,30 +170,24 @@ Item {
     // Trong cùng QML file
     Connections {
         target: controller
-        function onCustomerCommandResult(exists, cmd) {
-            if(cmd === "CHECKPHONENUMBER"){
-                if (exists) {
-                    rootWindow.notification.showNotification("⚠️ Số điện thoại khách hàng đã tồn tại");
-                } else {
-                    confirmDialog.open()
-                }
+        function onProductNameChecked(exists) {
+            if (exists) {
+                rootWindow.notification.showNotification("⚠️ Số điện thoại khách hàng đã tồn tại");
+            } else {
+                confirmDialog.open()
             }
         }
     }
 
     Connections {
         target: controller
-        function onCustomerCommandResult(done, cmd) {
-            if(cmd === "ADD"){
-                if(done){
-                    followupDialog.open()
-                }else{
-                    clearFields()
-                    rootWindow.notification.showNotification("⚠️ Thêm sản phẩm thất bại");
-                    followupDialog.open()
-                }
+        function onProductCommandResult(done) {
+            if(done){
+                followupDialog.open()
+            }else{
+                clearFields()
+                rootWindow.notification.showNotification("⚠️ Thêm sản phẩm thất bại");
             }
-
         }
     }
 

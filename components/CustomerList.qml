@@ -213,8 +213,9 @@ Item {
                             anchors.fill: parent
                             hoverEnabled: true
                             onClicked: {
-                                pageLoader.setSource("ImportBatch.qml", {
-                                    productName: modelData["productName"]
+                                pageLoader.setSource("CreateTransaction.qml", {
+                                    customerName: modelData["name"],
+                                    customerPhoneNumber: modelData["phone_number"]
                                 })
 
                             }

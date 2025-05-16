@@ -122,7 +122,7 @@ Item {
                         color: "transparent"
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
-                            text: "| Giá Lô hàng: " + Number(modelData.cost * modelData.quantity).toLocaleString(Qt.locale(), 'f', 0) + " VND"
+                            text: "| Giá lô hàng: " + Number(modelData.cost * modelData.quantity).toLocaleString(Qt.locale(), 'f', 0) + " VND"
                             color: "white"
                             font.pixelSize: 18
                         }
@@ -152,7 +152,7 @@ Item {
                         color: "transparent"
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
-                            text: "| ngày hết hạn: " + Qt.formatDate(new Date(modelData.expireddate), "dd-MM-yyyy")
+                            text: "| Ngày hết hạn: " + Qt.formatDate(new Date(modelData.expireddate), "dd-MM-yyyy")
                             color: "white"
                             font.pixelSize: 18
                         }
