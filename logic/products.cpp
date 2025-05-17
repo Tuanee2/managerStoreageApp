@@ -14,6 +14,12 @@ Products::Products(const Products &other)
     cost(other.cost),
     isValue(other.isValue) {}
 
+Products::~Products(){
+    for(Batch* b : batches){
+        delete b;
+    }
+}
+
 QString Products::getProductName() const{
     return productName;
 }
@@ -59,7 +65,7 @@ double Products::totalValue(){
     if(batches.size() != 0){
         int total = 0;
         for(int i = 0; i < batches.size(); i++){
-            total += batches[i].getQuantity();
+            total += batches[i]->getQuantity();
         }
         return static_cast<double>(total) * cost;;
     }
@@ -78,12 +84,16 @@ void Products::setDescription(const QString &des){
 }
 
 void Products::addBatch(const Batch& bat){
-    batches.append(bat);
+    batches.append(new Batch(bat));
+}
+
+QList<Batch*> Products::getBatchList() const{
+    return batches;
 }
 
 void Products::deleteBatchByImportTime(const QDateTime& time) {
     for (int i = batches.size() - 1; i >= 0; --i) {
-        if (batches[i].getImportDate() == time) {
+        if (batches[i]->getImportDate() == time) {
             batches.removeAt(i);
         }
     }
@@ -91,7 +101,7 @@ void Products::deleteBatchByImportTime(const QDateTime& time) {
 
 void Products::deleteBatchByExpiryDate(const QDateTime& time) {
     for (int i = batches.size() - 1; i >= 0; --i) {
-        if (batches[i].getExpiryDate() == time) {
+        if (batches[i]->getExpiryDate() == time) {
             batches.removeAt(i);
         }
     }

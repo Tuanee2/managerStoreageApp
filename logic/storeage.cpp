@@ -85,6 +85,7 @@ void storeage::handleProductListRequest(Cmd cmd, const QString& keyword, int num
         item["isValue"] = p->getIsValue();
         item["totalValue"] = p->totalValue();
         result.append(item);
+        delete p;
     }
     emit productListReady(result, cmd);
 }
@@ -128,6 +129,7 @@ void storeage::handleBatchListRequest(cmdContext cmd, const QString& productName
         item["importdate"] = b->getImportDate();
         item["expireddate"] = b->getExpiryDate();
         result.append(item);
+        delete b;
     }
     emit batchListReady(result, cmd);
 }
@@ -161,9 +163,10 @@ void storeage::handleCustomerListRequest(cmdContext cmd, const QString& keyword,
     if(cmd.cmd == Cmd::LIST){
         fetchedCutomers = db->getCustomersByPage(numPage);
     }else if(cmd.cmd == Cmd::SEARCH){
-        fetchedCutomers = db->getACustomerByPhoneNumber(keyword);
+        fetchedCutomers = db->getCustomerByPhoneNumber(keyword);
         if(fetchedCutomers.size() == 0){
-            fetchedCutomers = db->getACustomerByName(keyword);
+
+            fetchedCutomers = db->getCustomerByName(keyword);
         }
     }
 
@@ -176,6 +179,7 @@ void storeage::handleCustomerListRequest(cmdContext cmd, const QString& keyword,
         item["year_of_birth"] = c->getCustomerYearOfBirth();
         item["gender"] = GenderToQString(c->getCustomerGender());
         result.append(item);
+        delete c;
     }
 
     emit customerListReady(result, cmd);

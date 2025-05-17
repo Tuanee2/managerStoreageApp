@@ -125,7 +125,7 @@ Window {
                 width: parent.width*0.54
                 height: parent.width*0.05
                 radius: 10
-                color: Qt.rgba( 1, 1, 1, 0.2)
+                color: Qt.rgba(1, 1, 1, 0.1)
                 anchors.top: parent.top
                 anchors.topMargin: parent.height*0.075
                 anchors.left: parent.left
@@ -151,7 +151,7 @@ Window {
                     width: parent.width - parent.height
                     height: parent.height
                     anchors.right: parent.right
-                    color: "transparent"
+                    color: Qt.rgba( 1, 1, 1, 0.2)
                     placeholderText: "Nhập tên sản phẩm"
                     onSuggestionSelected: (text) => {
                         console.log("Đã chọn khách hàng:", text)
@@ -264,6 +264,17 @@ Window {
             if (comp.status === Component.Ready) {
                 let note = comp.createObject(notificationColumn, { "text": message });
             }
+        }
+    }
+
+    Dialog {
+        id: quitProgram
+        title: "Bạn muốn thoát chương trình đúng ko?"
+        standardButtons: Dialog.Yes | Dialog.No
+        anchors.centerIn: parent
+        visible: false
+        onAccepted: {
+            Qt.quit()
         }
     }
 }

@@ -111,7 +111,6 @@ bool DatabaseManager::addBatch(const QString& productName, const Batch& batch) {
         qWarning() << "❌ Lỗi khi thêm lô hàng:" << query.lastError().text();
         return false;
     }
-    qDebug() << "i'm run";
 
     return true;
 }
@@ -339,6 +338,32 @@ QList<Customer*> DatabaseManager::getCustomersByPage(int numPage) {
     return list;
 }
 
+QList<Customer*> DatabaseManager::getCustomerByName(const QString& name) {
+    QList<Customer*> list;
+    QSqlQuery query;
+    int limit = 6;
+
+    QString sql = QString("SELECT name, phone_number, gender, year_of_birth FROM customers WHERE name LIKE :name LIMIT %1").arg(limit);
+    query.prepare(sql);
+    query.bindValue(":name", "%" + name + "%");
+
+    if (!query.exec()) {
+        qWarning() << "Failed to fetch customer by name:" << query.lastError().text();
+        return list;
+    }
+
+    while (query.next()) {
+        Customer* c = new Customer();
+        c->setCustomerName(query.value(0).toString());
+        c->setCustomerPhoneNumber(query.value(1).toString());
+        c->setCustomerGender(QStringToGender(query.value(2).toString()));
+        c->setCustomerYearOfBirth(query.value(3).toInt());
+        list.append(c);
+    }
+
+    return list;
+}
+
 QList<Customer*> DatabaseManager::getACustomerByName(const QString& name) {
     QList<Customer*> list;
     QSqlQuery query;
@@ -351,6 +376,32 @@ QList<Customer*> DatabaseManager::getACustomerByName(const QString& name) {
     }
 
     if (query.next()) {
+        Customer* c = new Customer();
+        c->setCustomerName(query.value(0).toString());
+        c->setCustomerPhoneNumber(query.value(1).toString());
+        c->setCustomerGender(QStringToGender(query.value(2).toString()));
+        c->setCustomerYearOfBirth(query.value(3).toInt());
+        list.append(c);
+    }
+
+    return list;
+}
+
+QList<Customer*> DatabaseManager::getCustomerByPhoneNumber(const QString& phone) {
+    QList<Customer*> list;
+    QSqlQuery query;
+    int limit = 6;
+
+    QString sql = QString("SELECT name, phone_number, gender, year_of_birth FROM customers WHERE phone_number LIKE :phone LIMIT %1").arg(limit);
+    query.prepare(sql);
+    query.bindValue(":phone", "%" + phone + "%");
+
+    if (!query.exec()) {
+        qWarning() << "Failed to fetch customer by phone:" << query.lastError().text();
+        return list;
+    }
+
+    while (query.next()) {
         Customer* c = new Customer();
         c->setCustomerName(query.value(0).toString());
         c->setCustomerPhoneNumber(query.value(1).toString());

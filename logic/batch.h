@@ -7,6 +7,7 @@ class Batch
 public:
     Batch();
     Batch(int quantity, const QDateTime& importDate, const QDateTime& expiryDate);
+    Batch(const Batch& other);
 
     int getQuantity() const;
     void setQuantity(int num);

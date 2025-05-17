@@ -104,37 +104,6 @@ Item {
             }
         }
 
-        // Button {
-        //     id: button02
-        //     width: navigationDrawer.width*0.8
-        //     height: width/4
-
-        //     background: Rectangle {
-        //         width: parent.width
-        //         height: parent.height
-        //         radius: 4
-        //         color: button02.hovered ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
-        //     }
-
-
-        //     // icon.source: "qrc:/images/cuida--clipboard-text-outline.svg"
-        //     // icon.width: button02.width*0.8
-        //     // icon.height: button02.width*0.8
-        //     // icon.color: "white"
-
-        //     contentItem: Item {
-        //         anchors.fill: parent
-
-        //         Text {
-        //             anchors.centerIn: parent
-        //             text: "Sản phẩm"
-        //             color: "white"
-        //             font.pixelSize: 22
-        //             horizontalAlignment: Text.AlignHCenter
-        //             verticalAlignment: Text.AlignVCenter
-        //         }
-        //     }
-        // }
 
         Rectangle {
             id: button02
@@ -466,7 +435,7 @@ Item {
                 }
 
                 onClicked: {
-                    Qt.quit()
+                    quitProgram.open()
                 }
             }
         }

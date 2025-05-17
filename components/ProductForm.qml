@@ -57,9 +57,6 @@ Item {
             width: parent.width*0.9
             height: parent.height*0.2
             color: "transparent"
-
-            
-
         }
 
         Rectangle{

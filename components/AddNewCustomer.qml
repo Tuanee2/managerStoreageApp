@@ -170,23 +170,27 @@ Item {
     // Trong cùng QML file
     Connections {
         target: controller
-        function onProductNameChecked(exists) {
-            if (exists) {
-                rootWindow.notification.showNotification("⚠️ Số điện thoại khách hàng đã tồn tại");
-            } else {
-                confirmDialog.open()
+        function onCustomerCommandResult(exists, cmd) {
+            if(cmd === "CHECKPHONENUMBER"){
+                if (exists) {
+                    rootWindow.notification.showNotification("⚠️ Số điện thoại khách hàng đã tồn tại");
+                } else {
+                    confirmDialog.open()
+                }
             }
         }
     }
 
     Connections {
         target: controller
-        function onProductCommandResult(done) {
-            if(done){
-                followupDialog.open()
-            }else{
-                clearFields()
-                rootWindow.notification.showNotification("⚠️ Thêm sản phẩm thất bại");
+        function onCustomerCommandResult(done, cmd) {
+            if(cmd === "ADD"){
+                if(done){
+                    followupDialog.open()
+                }else{
+                    clearFields()
+                    rootWindow.notification.showNotification("⚠️ Thêm khách hàng thất bại");
+                }
             }
         }
     }

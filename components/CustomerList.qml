@@ -36,7 +36,7 @@ Item {
 
         Rectangle{
             id: filter
-            height: parent.height*0.08
+            height: parent.height*0.07
             width: parent.width*0.15
             radius: 8
             anchors.right: parent.right

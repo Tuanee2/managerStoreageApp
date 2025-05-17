@@ -19,6 +19,7 @@ public:
     explicit Products(QObject *parent = nullptr);
     Products(const QString &id, const QString &name, double price, bool value, const QString& des, QObject *parent = nullptr);
     Products(const Products &other);
+    ~Products();
 
     QString getProductName() const;
     void setProductName(const QString &name);
@@ -32,6 +33,7 @@ public:
     QString getDescription() const;
     void setDescription(const QString &des);
     void addBatch(const Batch& bat);
+    QList<Batch*> getBatchList() const;
     void deleteBatchByImportTime(const QDateTime& time);
     void deleteBatchByExpiryDate(const QDateTime& time);
 
@@ -41,7 +43,7 @@ private:
     double cost;
     bool isValue;
     QString description;
-    QList<Batch> batches;
+    QList<Batch*> batches;
 
 signals:
     void productNameChanged(const QString &newName);

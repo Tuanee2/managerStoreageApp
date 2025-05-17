@@ -5,6 +5,13 @@ Batch::Batch() {}
 Batch::Batch(int quantity, const QDateTime& importDate, const QDateTime& expiryDate)
     : quantity(quantity), importDate(importDate), expiryDate(expiryDate) {}
 
+Batch::Batch(const Batch& other){
+    this->quantity = other.quantity;
+    this->cost = other.cost;
+    this->importDate = other.importDate;
+    this->expiryDate = other.expiryDate;
+}
+
 int Batch::getQuantity() const {
     return quantity;
 }

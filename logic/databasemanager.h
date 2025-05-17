@@ -41,6 +41,8 @@ public:
     bool deleteCustomerByName(const QString& name);
     bool deleteCustomerByPhoneNumber(const QString& phoneNumber);
     bool checkCustomerPhoneNumberExists(const QString& phoneNumber);
+    QList<Customer*> getCustomerByName(const QString& name); 
+    QList<Customer*> getCustomerByPhoneNumber(const QString& phone);
     QList<Customer*> getCustomersByPage(int numPage);
     QList<Customer*> getACustomerByName(const QString& name);
     QList<Customer*> getACustomerByPhoneNumber(const QString& phone);
