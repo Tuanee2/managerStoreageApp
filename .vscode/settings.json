@@ -25,6 +25,7 @@
         "__bit_reference": "cpp",
         "bitset": "cpp",
         "deque": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "span": "cpp"
     }
 }

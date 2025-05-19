@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick)
 find_package(Qt6 REQUIRED COMPONENTS Sql)
+find_package(Qt6 REQUIRED COMPONENTS Charts)
 
 qt_standard_project_setup(REQUIRES 6.5)
 
@@ -53,6 +54,7 @@ qt_add_qml_module(appforHa
         QML_FILES components/CreateTransaction.qml
         QML_FILES components/CustomerSearchTextField.qml
         SOURCES logic/order.h logic/order.cpp
+        QML_FILES components/CustomChart.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -67,7 +69,7 @@ set_target_properties(appforHa PROPERTIES
 )
 
 target_link_libraries(appforHa
-    PRIVATE Qt6::Quick  Qt6::Sql
+    PRIVATE Qt6::Quick  Qt6::Sql Qt6::Charts
 )
 
 include(GNUInstallDirs)

@@ -5,6 +5,7 @@
 #include "storeage.h"
 #include "configcommand.h"
 #include "customer.h"
+#include "order.h"
 
 class appcontroller : public QObject
 {
@@ -103,7 +104,7 @@ public slots:
 
 
 // <<<<<<<<<< FOR CUSTOMERS >>>>>>>>>>
-// **********< thêm / sửa / xoá lô sản phẩm>**********
+// **********< thêm / sửa / xoá khách hàng>**********
 public:
     Q_INVOKABLE void requestCustomerCommand(const QString& cmd, const QString& name, int yearOfBirth, const QString& gender, const QString& phoneNumber);
 
@@ -131,6 +132,41 @@ public slots:
     void onCustomerListReady(QList<QVariantMap> list, cmdContext cmd);
 
 // ****************************************
+
+
+
+// <<<<<<<<<< FOR ORDERS >>>>>>>>>>
+// **********< thêm / sửa / xoá đơn hàng>**********
+public: 
+    Q_INVOKABLE void requestOrderCommand(const QString& cmd, const QString& phoneNumber, const QString& dateExport, const QString& data);
+
+signals:
+    // for database thread
+    void orderCommand(cmdContext cmd, const QString& phoneNumber, Order order);
+    // for UI
+    void orderCommandResult(bool done, const QString& cmd);
+
+public slots:
+    void onOrderCommandResult(bool done, cmdContext cmd);
+
+// ****************************************
+
+// *********< Lấy danh sách đơn hàng >*********
+public:
+    Q_INVOKABLE void requestOrderList(const QString& cmd, const QString& dateBegin, const QString& dateEnd, int numPage);
+
+signals:
+    // for database thread
+    void orderListRequested(cmdContext cmd, const QString& dateBegin, const QString& dateEnd, int numPage);
+    // for UI
+    void orderListReady(QList<QVariantMap> list, const QString& cmd);
+
+public slots:
+    void onOrderListReady(QList<QVariantMap> list, cmdContext cmd);
+
+// ****************************************
+
 };
+
 
 #endif // APPCONTROLLER_H

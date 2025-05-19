@@ -73,7 +73,7 @@ Window {
 
         Rectangle {
             id: navigationDrawer
-            width: parent.width*0.2
+            width: Math.min(parent.width*0.2, 300)
             height: parent.height
             anchors.left: parent.left
             anchors.top: parent.top
@@ -90,7 +90,7 @@ Window {
 
         Rectangle {
             id: contentArea
-            width: parent.width*0.8
+            width: parent.width - navigationDrawer.width
             height: parent.height
             anchors.top: parent.top
             anchors.right: parent.right

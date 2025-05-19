@@ -191,3 +191,31 @@ void appcontroller::onCustomerListReady(QList<QVariantMap> list, cmdContext cmd)
 }
 
 // ****************************************
+
+
+
+
+
+// <<<<<<<<<< FOR ORDERS >>>>>>>>>>
+void appcontroller::requestOrderCommand(const QString& cmd, const QString& phoneNumber, const QString& dateExport, const QString& data){
+    cmdContext CMD;
+    CMD.cmd = QStringToCmd(cmd);
+    Order order;
+    order.setCustomerPhoneNumber(phoneNumber);
+    order.setListItem(Order::QStringToItems(data));
+    emit orderCommand(CMD, phoneNumber, order);
+}
+
+void appcontroller::onOrderCommandResult(bool done, cmdContext cmd){
+    emit orderCommandResult(done, CmdToQString(cmd.cmd));
+}
+
+void appcontroller::requestOrderList(const QString& cmd, const QString& dateBegin, const QString& dateEnd, int numPage){
+
+}
+
+void appcontroller::onOrderListReady(QList<QVariantMap> list, cmdContext cmd){
+
+}
+
+// ****************************************
