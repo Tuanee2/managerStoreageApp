@@ -97,7 +97,7 @@ Item {
                 }
 
                 onClicked: {
-                    console.log("Click: Bảng thông tin")
+
                     rootWindow.currentNavigation = "Bảng thông tin"
                     pageLoader.source = "components/Dashboard.qml"
                 }
@@ -154,7 +154,7 @@ Item {
                 }
 
                 onClicked: {
-                    console.log("Click: Bảng thông tin")
+
                     rootWindow.currentNavigation = "Sản phẩm"
                     pageLoader.source = "components/ProductList.qml"
                     drawerLoader.source = "components/ProductDrawer.qml"
@@ -268,9 +268,10 @@ Item {
                 }
 
                 onClicked: {
-                    console.log("Click: Bảng thông tin")
+
                     rootWindow.currentNavigation = "Doanh thu"
                     pageLoader.source = "components/Sales.qml"
+
                 }
             }
         }

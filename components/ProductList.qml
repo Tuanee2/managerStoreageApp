@@ -5,14 +5,17 @@ import QtQuick.Controls.Material
 
 Item {
     anchors.fill: parent
-
+    id: rootProductList
     property var products: []
     property string selectedProductName: ""
     property string filterType: "SREACH"
     property string filterText: "Tìm kiếm"
+    property int currentPage: 0
+    property bool isLeft: false
+    property bool isRight: false
 
     Component.onCompleted: {
-        controller.requestProductList("LIST", "", 0);
+        controller.requestProductList("LIST", "", rootProductList.currentPage);
     }
 
     Connections {
@@ -20,11 +23,18 @@ Item {
         function onProductListReady(list, cmd) {
             if(filterType === "LIST" || cmd === "LIST"){
                 products = list;
+                updatePageFlags(list.length)
             }else if(filterType === "SEARCH" || cmd === "SEARCH"){
                 products = list;
             }
         }
     }
+
+    function updatePageFlags(productListSize) {
+        rootProductList.isLeft = currentPage > 0
+        rootProductList.isRight = productListSize >= 12  // bạn nên định nghĩa `itemsPerPage`
+    }
+
 
     Rectangle {
         id: productList
@@ -271,6 +281,78 @@ Item {
                     }
                 }
             }
+        }
+
+
+        Rectangle{
+            id: pageController
+            anchors.top: productGrid.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.height*0.4
+            height: parent.height*0.05
+            color: "transparent"
+
+            Button{
+                id: back
+                width: parent.height
+                height: parent.height
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                enabled: rootProductList.isLeft
+                background: Rectangle{
+                    anchors.fill: parent
+                    radius: 8
+                    //color: "transparent"
+                    color: Qt.rgba(1, 1, 1, 0.3)
+                }
+                Text {
+                    text: "<"
+                    color: "white"
+                    anchors.centerIn: parent
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        rootProductList.currentPage--
+                        controller.requestProductList("LIST", "", rootProductList.currentPage)
+                    }
+
+                }
+            }
+
+            Button{
+                id: next
+                width: parent.height
+                height: parent.height
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+
+                enabled: rootProductList.isRight
+                background: Rectangle{
+
+                    anchors.fill: parent
+                    radius: 8
+                    //color: "transparent"
+                    color: Qt.rgba(1, 1, 1, 0.3)
+                }
+
+                Text {
+                    text: ">"
+                    color: "white"
+                    anchors.centerIn: parent
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        rootProductList.currentPage++
+                        controller.requestProductList("LIST", "", rootProductList.currentPage)
+                    }
+
+                }
+            }
+
         }
     }
 
