@@ -7,6 +7,7 @@
 #include "databasemanager.h"
 #include "configcommand.h"
 #include "customer.h"
+#include "order.h"
 
 class storeage : public QObject
 {
@@ -86,6 +87,18 @@ public slots:
 signals:
     void customerListReady(QList<QVariantMap> list, cmdContext cmd);
     
+// ****************************************
+
+
+
+
+
+// <<<<<<<<<< FOR ORDER >>>>>>>>>>
+public slots:
+    void handleOrderCommand(cmdContext cmd, const QString& phoneNumber, Order order);
+signals:
+    void orderCommandResult(bool done, cmdContext cmd);
+
 // ****************************************
 
 };

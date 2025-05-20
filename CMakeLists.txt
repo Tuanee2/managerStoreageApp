@@ -55,6 +55,8 @@ qt_add_qml_module(appforHa
         QML_FILES components/CustomerSearchTextField.qml
         SOURCES logic/order.h logic/order.cpp
         QML_FILES components/CustomChart.qml
+        QML_FILES components/ProductListForTransaction.qml
+        QML_FILES components/ProductFormForTransaction.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

@@ -185,3 +185,11 @@ void storeage::handleCustomerListRequest(cmdContext cmd, const QString& keyword,
     emit customerListReady(result, cmd);
 }
 // ****************************************
+
+
+
+
+// <<<<<<<<<< FOR ORDER >>>>>>>>>>
+void storeage::handleOrderCommand(cmdContext cmd, const QString& phoneNumber, Order order){
+
+}

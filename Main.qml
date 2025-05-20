@@ -19,6 +19,8 @@ Window {
     property bool productSearch: false
     property bool cutomerSearch:false
 
+    property var productListOfOrder: []
+
     // Ảnh nền
     Image {
         id: background
