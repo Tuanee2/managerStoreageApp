@@ -1,6 +1,6 @@
 
 
-# App Quản Lý (forHa)
+# App Quản Lý 
 
 Ứng dụng quản lý bán hàng mini được xây dựng bằng **Qt Quick (QML)**, sử dụng giao diện hiện đại với hiệu ứng mờ nền, hỗ trợ tạo đơn hàng, nhập kho, và quản lý thông tin sản phẩm/khách hàng.
 
@@ -69,11 +69,11 @@ make
 
 ## 📧 Tác giả
 
-- Tên: **Tuấn**
-- Email: *(cập nhật nếu cần)*
+- Tên: **Tuanee2**
+- Email: *buiquoctuan18102002@gmail.com*
 
 ---
 
 ## 📜 Giấy phép
 
-MIT License (hoặc tùy chọn khác nếu bạn muốn)
+MIT License 
