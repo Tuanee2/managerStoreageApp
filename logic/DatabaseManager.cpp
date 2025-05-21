@@ -62,6 +62,19 @@ bool DatabaseManager::initialize(){
             return false;
         }
 
+        QString createOrdersTableQuery = 
+            "CREATE TABLE IF NOT EXISTS orders ("
+            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "product_name TEXT NOT NULL,"
+            "data TEXT NOT NULL,"
+            "export_date TEXT NOT NULL,"
+            "notes TEXT NOT NULL"
+            ")";
+
+        if(!query.exec(createOrdersTableQuery)) {
+            qWarning() << "Failed to create orders table:" << query.lastError().text();
+            return false;
+        }
     }
     qDebug() << "Database file is located at:" << QDir::current().absoluteFilePath("database.db");
     return true;

@@ -12,10 +12,17 @@ Item {
     property string selectedCustomerPhoneNumber: ""
     property string filterType: "SREACH"
     property string filterText: "Tìm kiếm"
+    property bool isRight: false
+    property bool isLeft: false
     property int currentPage: 0
 
     Component.onCompleted: {
         controller.requestCustomerList("LIST", "", currentPage);
+    }
+
+    function updatePageFlags(customerListSize) {
+        rootCustomerList.isLeft = currentPage > 0
+        rootCustomerList.isRight = customerListSize >= 12  // bạn nên định nghĩa `itemsPerPage`
     }
 
     Connections {
@@ -26,12 +33,16 @@ Item {
             }else if(filterType === "SEARCH" || cmd === "SEARCH"){
                 customers = list;
             }
+            updatePageFlags(list.length)
         }
     }
 
     Rectangle {
         id: customerList
-        anchors.fill: parent
+        width: parent.width
+        height: parent.height*0.9
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
 
         Rectangle{
@@ -91,24 +102,6 @@ Item {
                         // Gọi hàm tìm kiếm nếu cần
                     }
                 }
-
-                // MenuItem {
-                //     text: "Hết hạn"
-                //     onTriggered: {
-                //         filterType = "EXPIRED"
-                //         filterText = "Hết hạn"
-                //         controller.requestProductList("EXPIRED", "", 0)
-                //     }
-                // }
-
-                // MenuItem {
-                //     text: "Còn hạn"
-                //     onTriggered: {
-                //         filterType = "VALID"
-                //         filterText = "Còn hạn"
-                //         controller.requestProductList("VALID", "", 0)
-                //     }
-                // }
             }
         }
 
@@ -252,6 +245,80 @@ Item {
                 }
             }
         }
+    }
+
+    Rectangle{
+        id: pageController
+        anchors.top: customerList.bottom
+        anchors.topMargin: parent.height*0.025
+        anchors.horizontalCenter: parent.horizontalCenter
+        
+        width: parent.height*0.4
+        height: parent.height*0.05
+        color: "transparent"
+        
+        Button{
+            id: back
+            width: parent.height
+            height: parent.height
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            enabled: rootCustomerList.isLeft
+            background: Rectangle{
+                anchors.fill: parent
+                radius: 8
+                //color: "transparent"
+                color: Qt.rgba(1, 1, 1, 0.3)
+            }
+            Text {
+                text: "<"
+                color: "white"
+                anchors.centerIn: parent
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    rootCustomerList.currentPage--
+                    controller.requestBatchList("LIST", "", rootCustomerList.currentPage)
+                }
+                
+            }
+        }
+
+        Button{
+            id: next
+            width: parent.height
+            height: parent.height
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+
+            enabled: rootCustomerList.isRight
+            background: Rectangle{
+
+                anchors.fill: parent
+                radius: 8
+                //color: "transparent"
+                color: Qt.rgba(1, 1, 1, 0.3)
+            }
+
+            Text {
+                text: ">"
+                color: "white"
+                anchors.centerIn: parent
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    rootCustomerList.currentPage++
+                    controller.requestCustomerList("LIST", "", rootCustomerList.currentPage)
+                    console.log("Received batch list. Size:")
+                }
+
+            }
+        }
+
     }
 
     Dialog{
