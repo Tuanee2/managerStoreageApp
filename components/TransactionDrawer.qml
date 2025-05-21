@@ -56,7 +56,7 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/leave.svg"
+                icon.source: "qrc:/images/Icon/leave.svg"
                 icon.color: "white"
 
             }

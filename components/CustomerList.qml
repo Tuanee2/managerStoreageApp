@@ -55,7 +55,7 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/filter.svg"
+                icon.source: "qrc:/images/Icon/filter.svg"
                 icon.color: "white"
                 onClicked: filterMenu.open()
             }
@@ -174,7 +174,7 @@ Item {
                             radius: 8
                         }
 
-                        icon.source: "qrc:/images/file-circle-info.svg"
+                        icon.source: "qrc:/images/Icon/file-circle-info.svg"
                         icon.color: "white"
 
                         MouseArea{
@@ -205,7 +205,7 @@ Item {
                             radius: 8
                         }
 
-                        icon.source: "qrc:/images/add.svg"
+                        icon.source: "qrc:/images/Icon/add.svg"
                         icon.color: "white"
 
                         MouseArea{
@@ -236,7 +236,7 @@ Item {
                             radius: 8
                         }
 
-                        icon.source: "qrc:/images/cross-circle.svg"
+                        icon.source: "qrc:/images/Icon/cross-circle.svg"
                         icon.color: "white"
                         MouseArea{
                             id: madeleteProductButton

@@ -1,25 +1,21 @@
 <RCC>
     <qresource prefix="/images">
-        <file>warning.png</file>
-        <file>fix.jpg</file>
-        <file>cuida--clipboard-text-outline.svg</file>
-        <file>search.svg</file>
-        <file>cuida--package-outline.svg</file>
-        <file>cuida--chart-column-outline.svg</file>
-        <file>coins.svg</file>
-        <file>home-location-alt.svg</file>
-        <file>add.svg</file>
-        <file>shopping-cart-add.svg</file>
-        <file>settings01.svg</file>
-        <file>users01.svg</file>
-        <file>bell-notification-social-media.svg</file>
-        <file>leave.svg</file>
-        <file>cross-circle.svg</file>
-        <file>minus-circle.svg</file>
-        <file>filter.svg</file>
-        <file>file-circle-info.svg</file>
-        <file>angle-left.svg</file>
-        <file>angle-right.svg</file>
         <file>Icon/user-add.svg</file>
+        <file>Icon/leave.svg</file>
+        <file>Icon/filter.svg</file>
+        <file>Icon/settings01.svg</file>
+        <file>Icon/cuida--package-outline.svg</file>
+        <file>Icon/cuida--chart-column-outline.svg</file>
+        <file>Icon/minus-circle.svg</file>
+        <file>Icon/cross-circle.svg</file>
+        <file>Icon/add.svg</file>
+        <file>Icon/shopping-cart-add.svg</file>
+        <file>Icon/coins.svg</file>
+        <file>Icon/bell-notification-social-media.svg</file>
+        <file>Icon/users01.svg</file>
+        <file>Icon/file-circle-info.svg</file>
+        <file>Icon/search.svg</file>
+        <file>Icon/cuida--clipboard-text-outline.svg</file>
+        <file>Backgrounds/fix.jpg</file>
     </qresource>
 </RCC>

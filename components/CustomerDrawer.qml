@@ -52,7 +52,7 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/cuida--clipboard-text-outline.svg"
+                icon.source: "qrc:/images/Icon/cuida--clipboard-text-outline.svg"
                 icon.color: "white"
 
             }
@@ -107,7 +107,7 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/cuida--package-outline.svg"
+                icon.source: "qrc:/images/Icon/cuida--package-outline.svg"
                 icon.color: "white"
 
             }
@@ -162,7 +162,7 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/leave.svg"
+                icon.source: "qrc:/images/Icon/leave.svg"
                 icon.color: "white"
 
             }

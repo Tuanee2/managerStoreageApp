@@ -48,7 +48,7 @@ Item {
             //     height: parent.height
             //     anchors.left: parent.left
             //     anchors.top: parent.QObject
-            //     icon.source: "qrc:/images/cuida--clipboard-text-outline.svg"
+            //     icon.source: "qrc:/images/Icon/cuida--clipboard-text-outline.svg"
             //     icon.color: "white"
             //     icon.width: icon01.width*0.8
             //     icon.height: icon01.height*0.8
@@ -66,7 +66,7 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/cuida--clipboard-text-outline.svg"
+                icon.source: "qrc:/images/Icon/cuida--clipboard-text-outline.svg"
                 icon.color: "white"
 
             }
@@ -123,7 +123,7 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/cuida--package-outline.svg"
+                icon.source: "qrc:/images/Icon/cuida--package-outline.svg"
                 icon.color: "white"
 
             }
@@ -180,7 +180,7 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/users01.svg"
+                icon.source: "qrc:/images/Icon/users01.svg"
                 icon.color: "white"
 
             }
@@ -237,7 +237,7 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/coins.svg"
+                icon.source: "qrc:/images/Icon/coins.svg"
                 icon.color: "white"
 
             }
@@ -294,7 +294,7 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/cuida--chart-column-outline.svg"
+                icon.source: "qrc:/images/Icon/cuida--chart-column-outline.svg"
                 icon.color: "white"
 
             }
@@ -349,7 +349,7 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/settings01.svg"
+                icon.source: "qrc:/images/Icon/settings01.svg"
                 icon.color: "white"
 
             }
@@ -404,7 +404,7 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/leave.svg"
+                icon.source: "qrc:/images/Icon/leave.svg"
                 icon.color: "white"
 
 

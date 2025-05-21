@@ -27,7 +27,7 @@ Window {
         id: background
         width: parent.width + 40
         height: parent.height + 40
-        source: "qrc:/images/fix.jpg"
+        source: "qrc:/images/Backgrounds/fix.jpg"
         fillMode: Image.PreserveAspectCrop  // Crop đẹp hơn để phủ toàn bộ
         visible: true  // Ẩn để tránh ảnh gốc lộ ra
     }
@@ -144,7 +144,7 @@ Window {
                         color: "transparent"
                     }
 
-                    icon.source: "qrc:/images/search.svg"
+                    icon.source: "qrc:/images/Icon/search.svg"
                     icon.color: "white"
 
                 }
@@ -243,7 +243,7 @@ Window {
                     color: Qt.rgba(1, 1, 1, 0.3)
                 }
 
-                icon.source: "qrc:/images/bell-notification-social-media.svg"
+                icon.source: "qrc:/images/Icon/bell-notification-social-media.svg"
                 icon.color: "white"
             }
         }
