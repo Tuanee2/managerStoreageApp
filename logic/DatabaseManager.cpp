@@ -258,6 +258,27 @@ QList<Batch*> DatabaseManager::getBatchByPage(const QString& productName, int nu
     return list;
 }
 
+double DatabaseManager::getNumOfItemOfAllBatch(const QString& productName){
+    QSqlQuery query;
+    query.prepare("SELECT product_name, quantity "
+                  "FROM product_batches "
+                  "WHERE product_name = :productName ");
+    query.bindValue(":productName", productName);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to fetch batches by page for product:" << productName << "-" << query.lastError().text();
+        return 0.0;
+    }
+
+    int result = 0;
+
+    while (query.next()){
+        result += query.value(1).toInt();
+    }
+
+    return static_cast<double>(result);
+}
+
 // ****************************************
 
 bool DatabaseManager::insertCustomer(const Customer& customer) {

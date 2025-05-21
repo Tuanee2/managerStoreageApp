@@ -31,10 +31,11 @@ public:
     QList<Products*> getAProductByName(const QString& name);
     // ****************************************
 
-    //
+    // ************< FOR BATCHES >**********
     bool addBatch(const QString& productName, const Batch& batch);
     QList<Batch*> getBatchByPage(const QString& productName, int numPage);
-    //
+    double getNumOfItemOfAllBatch(const QString& productName);
+    // ************************************
 
     // *********< FOR CUSTOMERS >**********
     bool insertCustomer(const Customer& customer);

@@ -81,6 +81,7 @@ void storeage::handleProductListRequest(Cmd cmd, const QString& keyword, int num
         item["productName"] = p->getProductName();
         item["productId"] = p->getProductId();
         item["cost"] = p->getCost();
+        item["numOfProduct"] = db->getNumOfItemOfAllBatch(p->getProductName());
         item["description"] = p->getDescription();
         item["isValue"] = p->getIsValue();
         item["totalValue"] = p->totalValue();
@@ -113,6 +114,16 @@ void storeage::handleBatchCommand(cmdContext cmd, const QString& name, Batch bat
     }
 
     emit batchCommandResult(done);
+}
+
+void storeage::handleBatchInfoRequest(cmdContext cmd, const QString& productName){
+    double result = 0;
+    if(cmd.type == type_of_info::NUMOFITEM){
+        result = db->getNumOfItemOfAllBatch(productName);
+    }else if(cmd.type == type_of_info::TOTALPRICE){
+
+    }
+    emit batchInfoResult(result, cmd);
 }
 
 void storeage::handleBatchListRequest(cmdContext cmd, const QString& productName, int numPage){

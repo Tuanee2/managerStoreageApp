@@ -9,7 +9,9 @@ Item {
     property var selectedProduct: null
     property var selectedBatch: null
     property int currentPage: 0
+
     property var products: []
+
 
     Component.onCompleted: {
         controller.requestProductList("LIST", "", productListTransaction.currentPage);
@@ -18,9 +20,7 @@ Item {
     Connections {
         target: controller
         function onProductListReady(list, cmd) {
-            if (cmd === "LIST") {
-                productListTransaction.products = list
-            }
+            productListTransaction.products = list
         }
     }
 
@@ -44,7 +44,7 @@ Item {
                     width: productList.width*0.85/2
                     height: productList.height * 0.1
                     radius: 8
-                    color: Qt.rgba( 1, 1, 1, 0.3)
+                    color: ma4choice.containsMouse ? Qt.rgba( 1, 1, 1, 0.6) : Qt.rgba(1, 1, 1, 0.3)
                     border.color: Qt.rgba( 1, 1, 1, 0.5)
                     border.width: 1
                     Layout.fillWidth: true
@@ -53,7 +53,7 @@ Item {
                         anchors.left: parent.left
                         anchors.verticalCenter: parent.verticalCenter
                         height: parent.height
-                        width: parent.width - 4*parent.height
+                        width: parent.width * 0.3
                         color: "transparent"
                         clip: true
 
@@ -76,36 +76,34 @@ Item {
                         }
                     }
 
-                    Button{
-                        id: addBatchButton
-                        width: parent.height
-                        height: parent.height
-                        anchors.verticalCenter: parent.verticalCenter
+                    Rectangle {
                         anchors.right: parent.right
-                        anchors.rightMargin: 2*parent.height
-
-                        background: Rectangle{
-                            anchors.fill: parent
-                            color: maaddBatchButton.containsMouse ? Qt.rgba(1, 1, 1, 0.3) : "transparent"
-                            radius: 8
+                        anchors.verticalCenter: parent.verticalCenter
+                        height: parent.height
+                        width: parent.width * 0.7
+                        color: "transparent"
+                        Text{
+                            anchors.left: parent.left
+                            text: "số hàng còn trong kho: " + modelData["numOfProduct"]
+                            font.pixelSize: rootWindow.baseFontSize*0.9
+                            color: "white"
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
                         }
+                    }
 
-                        icon.source: "qrc:/images/add.svg"
-                        icon.color: "white"
-
-                        MouseArea{
-                            id: maaddBatchButton
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: {
-                                rootWindow.productListOfOrder.push({
-                                    productName: modelData["productName"]
-                                })
-                                pageLoader.source = "components/CreateTransaction.qml"
-                            }
-
+                    MouseArea {
+                        id: ma4choice
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onClicked: {
+                            rootWindow.productListOfOrder.push({
+                                productName: modelData["productName"]
+                            })
+                            pageLoader.setSource("ProductFormForTransaction.qml", {
+                                productName: modelData["productName"]
+                            })
                         }
-
                     }
                 }
             }

@@ -43,6 +43,12 @@ appcontroller::appcontroller(storeage* store, QObject* parent)
     connect(m_store, &storeage::batchCommandResult,
         this, &appcontroller::onBatchCommandResult, Qt::QueuedConnection);
 
+    connect(this, &appcontroller::batchInfoRequested,
+        m_store, &storeage::handleBatchInfoRequest, Qt::QueuedConnection);
+
+    connect(m_store, &storeage::batchInfoResult,
+        this, &appcontroller::onBatchInfoResult, Qt::QueuedConnection);
+
     connect(this, &appcontroller::batchListRequested,
         m_store, &storeage::handleBatchListRequest, Qt::QueuedConnection);
 
@@ -144,6 +150,16 @@ void appcontroller::requestBatchCommand(const QString& cmd, const QString& name,
 
 void appcontroller::onBatchCommandResult(bool done){
 
+}
+
+void appcontroller::requestBatchInformation(const QString& type, const QString& productName){
+    cmdContext CMD;
+    CMD.cmd = QStringToCmd(type);
+    emit batchInfoRequested(CMD, productName);
+}
+
+void appcontroller::onBatchInfoResult(double result, cmdContext cmd){
+    emit batchInfoResult(result , TypeToQString(cmd.type));
 }
 
 void appcontroller::requestBatchList(const QString& cmd, const QString& productName, int numPage){

@@ -20,6 +20,7 @@ Window {
     property bool cutomerSearch:false
 
     property var productListOfOrder: []
+    property var batchListOfOrder: []
 
     // Ảnh nền
     Image {
@@ -193,6 +194,8 @@ Window {
                     hoverEnabled: true
                     onClicked:{
                         pageLoader.source = "components/CreateTransaction.qml"
+                        drawerLoader.source = "components/TransactionDrawer.qml"
+                        rootWindow.currentNavigation = "Tạo giao dịch"
                     }
                 }
             }

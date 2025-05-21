@@ -40,6 +40,27 @@ QString CmdToQString(Cmd cmd){
     return "CMD_INVALID";
 }
 
+type_of_info QStringToType(const QString& type){
+    if(type == "NUMOFITEM"){
+        return type_of_info::NUMOFITEM;
+    }else if(type == "TOTALPRICE"){
+        return type_of_info::TOTALPRICE;
+    }
+
+    return type_of_info::TYPE_INVALUE;
+
+}
+
+QString TypeToQString(type_of_info type){
+    if(type == type_of_info::NUMOFITEM){
+        return "NUMOFITEM";
+    }else if (type == type_of_info::TOTALPRICE){
+        return "TOTALPRICE";
+    }
+    return "TYPE_INVALUE";
+}
+
+
 Duration QStringToDuration(const QString& duration) {
     if(duration == "ALL"){
         return Duration::ALL;

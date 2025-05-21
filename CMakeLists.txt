@@ -57,6 +57,7 @@ qt_add_qml_module(appforHa
         QML_FILES components/CustomChart.qml
         QML_FILES components/ProductListForTransaction.qml
         QML_FILES components/ProductFormForTransaction.qml
+        QML_FILES components/TransactionDrawer.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

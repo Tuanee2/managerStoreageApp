@@ -68,6 +68,11 @@ signals:
     void batchCommandResult(bool done);
 
 public slots:
+    void handleBatchInfoRequest(cmdContext cmd, const QString& productName);
+signals:
+    void batchInfoResult(double result, cmdContext cmd);
+
+public slots:
     void handleBatchListRequest(cmdContext cmd, const QString& productName, int numPage);
 signals:
     void batchListReady(QList<QVariantMap> list, cmdContext cmd);

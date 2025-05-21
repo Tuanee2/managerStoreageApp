@@ -17,7 +17,6 @@ Item {
     property bool isRight: false
 
     Component.onCompleted: {
-        console.log("Tên sản phẩm được truyền vào:", productName)
         controller.requestProductList("ONE", productName, 0)
         controller.requestBatchList("LIST", productName, productDetail.currentPage)
     }

@@ -86,6 +86,22 @@ public slots:
 
 // ****************************************
 
+// **********< Lấy thông số lô sản phẩm >**********
+public:
+    Q_INVOKABLE void requestBatchInformation(const QString& type, const QString& productName);
+
+signals:
+    // for database thread
+    void batchInfoRequested(cmdContext cmd, const QString& productName);
+    // for UI 
+    void batchInfoResult(double result, const QString& type);
+
+public slots:
+    void onBatchInfoResult(double result, cmdContext cmd);
+
+
+// ****************************************
+
 // *********< Lấy danh sách các lô sản phẩm >*********
 public: 
     Q_INVOKABLE void requestBatchList(const QString& cmd, const QString& productName, int numPage);
