@@ -18,6 +18,19 @@ Cmd QStringToCmd(const QString& cmd);
 QString CmdToQString(Cmd cmd);
 
 typedef enum {
+    NAME,
+    PHONENUMBER,
+    PRICE,
+    IMPORTDATE,
+    EXPORTDATE,
+    EXPIREDDATE,
+    YEAROFBIRTH
+}  type_of_list;
+
+type_of_list QStringToTypeList(const QString& typelist);
+QString typeListToQString(type_of_list typelist);
+
+typedef enum {
     NUMOFITEM,
     TOTALPRICE,
     TYPE_INVALUE
@@ -39,6 +52,7 @@ Duration QStringToDuration(const QString& duration);
 typedef struct {
     Cmd cmd;
     type_of_info type;
+    type_of_list typelist;
     Duration duration;
     QString date;
 }cmdContext;

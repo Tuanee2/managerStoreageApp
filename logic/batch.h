@@ -1,6 +1,7 @@
 #ifndef BATCH_H
 #define BATCH_H
 #include <QDateTime>
+#include <QJsonObject>
 
 class Batch
 {
@@ -20,6 +21,9 @@ public:
 
     QDateTime getExpiryDate() const;
     void setExpiryDate(const QDateTime& time);
+
+    QJsonObject toJson() const;
+    static Batch fromJson(const QJsonObject& obj);
 
 private:
     int quantity = 0;

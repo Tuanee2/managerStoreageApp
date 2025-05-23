@@ -77,6 +77,47 @@ appcontroller::appcontroller(storeage* store, QObject* parent)
 
 }
 
+void appcontroller::requestCommandOrder_UI(const QString& cmd){
+    Cmd CMD = QStringToCmd(cmd);
+    if(CMD == Cmd::ADD){
+        order.clean();
+    }else if(CMD == Cmd::DELETE){
+        order.clean();
+    }
+    emit requestCommandOrderResult_UI(true, cmd);
+}
+
+void appcontroller::addProductToOrder_UI(const QString& productName){
+    Products* product = new Products();
+    product->setProductName(productName);
+    order.getListItem().push_back(product);
+    emit addProductToOrderResult_UI(true);
+}
+
+void appcontroller::addBatchToOrder_UI(const QString& productName, const QString& expiredDate, const QString& importDate, int quantity){
+    Products* product = nullptr;
+    for (Products* p : order.getListItem()) {
+        if (p->getProductName() == productName) {
+            product = p;
+            break;
+        }
+    }
+
+    if (!product) {
+        emit addBatchToOrderResult_UI(false);
+        return;
+    }
+
+    Batch* batch = new Batch();
+    batch->setQuantity(quantity);
+    batch->setExpiryDate(QDateTime::fromString(expiredDate, "dd-MM-yyyy"));
+    batch->setImportDate(QDateTime::fromString(importDate, "dd-MM-yyyy"));
+    product->getBatchList().append(batch);
+
+    emit addBatchToOrderResult_UI(true);
+}
+
+
 // ****< Kiểm tra tên trùng lặp >****
 void appcontroller::checkProductNameConflict(const QString& name){
     emit checkProductNameConflictSignal(name);
@@ -116,11 +157,20 @@ void appcontroller::onProductCommandResult(bool done) {
 
 // ****< Lấy danh sách sản phẩm >****
 void appcontroller::requestProductList(const QString& cmd, const QString& keyword,int numPage) {
-    emit productListRequested(QStringToCmd(cmd), keyword, numPage);
+    cmdContext CMD;
+    CMD.cmd = QStringToCmd(cmd);
+    emit productListRequested(CMD, keyword, numPage);
 }
 
-void appcontroller::onProductListReady(QList<QVariantMap> list, Cmd cmd){
-    emit productListReady(list, CmdToQString(cmd));
+void appcontroller::requestProductList(const QString& cmd, const QString& cmdExtension, const QString& keyword, int numPage){
+    cmdContext CMD;
+    CMD.cmd = QStringToCmd(cmd);
+    CMD.typelist = QStringToTypeList(cmdExtension);
+    emit productListRequested(CMD, keyword, numPage);
+}
+
+void appcontroller::onProductListReady(QList<QVariantMap> list, cmdContext cmd){
+    emit productListReady(list, CmdToQString(cmd.cmd));
 }
 
 // ****************************************
@@ -168,6 +218,13 @@ void appcontroller::requestBatchList(const QString& cmd, const QString& productN
     emit batchListRequested(CMD, productName, numPage);
 }
 
+void appcontroller::requestBatchList(const QString& cmd, const QString& cmdExtension, const QString& productName, int numPage){
+    cmdContext CMD;
+    CMD.cmd = QStringToCmd(cmd);
+    CMD.typelist = QStringToTypeList(cmdExtension);
+    emit batchListRequested(CMD, productName, numPage);
+}
+
 void appcontroller::onBatchListReady(QList<QVariantMap> list, cmdContext cmd){
     
     emit batchListReady(list, CmdToQString(cmd.cmd));
@@ -199,6 +256,13 @@ void appcontroller::onCustomerCommandResult(bool done, cmdContext cmd){
 void appcontroller::requestCustomerList(const QString& cmd, const QString& keyword, int numPage){
     cmdContext CMD;
     CMD.cmd = QStringToCmd(cmd);
+    emit customerListRequested(CMD, keyword, numPage);
+}
+
+void appcontroller::requestCustomerList(const QString& cmd, const QString& cmdExtension, const QString& keyword, int numPage){
+    cmdContext CMD;
+    CMD.cmd = QStringToCmd(cmd);
+    CMD.typelist = QStringToTypeList(cmdExtension);
     emit customerListRequested(CMD, keyword, numPage);
 }
 

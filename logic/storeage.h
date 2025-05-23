@@ -44,10 +44,10 @@ signals:
 // +) Liệt kê
 
 public slots:
-    void handleProductListRequest(Cmd cmd, const QString& keyword, int numPage);
+    void handleProductListRequest(cmdContext cmd, const QString& keyword, int numPage);
 
 signals:
-    void productListReady(QList<QVariantMap> list, Cmd cmd);
+    void productListReady(QList<QVariantMap> list, cmdContext cmd);
 
 // ****************************************
 

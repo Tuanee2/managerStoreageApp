@@ -15,6 +15,28 @@ public:
 
 private:
     storeage* m_store;
+    Order order;
+
+//
+
+public:
+    Q_INVOKABLE void requestCommandOrder_UI(const QString& cmd);
+signals:
+    void requestCommandOrderResult_UI(bool result, const QString& cmd);
+
+public:
+    Q_INVOKABLE void addProductToOrder_UI(const QString& productName);
+signals:
+    void addProductToOrderResult_UI(bool result);
+
+public:
+    Q_INVOKABLE void addBatchToOrder_UI(const QString& productName, const QString& expiredDate, const QString& importDate, int quantity);
+signals:
+    void addBatchToOrderResult_UI(bool result);
+
+
+// ************************************************************************************************************************
+// API giao tiếp đa luồng
 
 // ****< Kiểm tra tên trùng lặp >****
 
@@ -56,15 +78,16 @@ public slots:
 // **********< Lấy danh sách sản phẩm >**********
 public:
     Q_INVOKABLE void requestProductList(const QString& cmd, const QString& keyword, int numPage);
+    Q_INVOKABLE void requestProductList(const QString& cmd, const QString& cmdExtension, const QString& keyword, int numPage);
 
 signals:
     // for database thread
-    void productListRequested(Cmd cmd, const QString& keyword, int numPage);
+    void productListRequested(cmdContext cmd, const QString& keyword, int numPage);
     // for UI
     void productListReady(QList<QVariantMap> list, const QString cmd);
 
 public slots:
-    void onProductListReady(QList<QVariantMap> list, Cmd cmd);
+    void onProductListReady(QList<QVariantMap> list, cmdContext cmd);
 
 // ****************************************
 
@@ -105,6 +128,7 @@ public slots:
 // *********< Lấy danh sách các lô sản phẩm >*********
 public: 
     Q_INVOKABLE void requestBatchList(const QString& cmd, const QString& productName, int numPage);
+    Q_INVOKABLE void requestBatchList(const QString& cmd, const QString& cmdExtension, const QString& productName, int numPage);
 signals:
     // for database thread
     void batchListRequested(cmdContext cmd, const QString& name, int numPage);
@@ -138,6 +162,7 @@ public slots:
 // *********< Lấy danh sách khách hàng >*********
 public:
     Q_INVOKABLE void requestCustomerList(const QString& cmd, const QString& keyword,int numPage);
+    Q_INVOKABLE void requestCustomerList(const QString& cmd, const QString& cmdExtension, const QString& keyword,int numPage);
 
 signals:
     // for database thread

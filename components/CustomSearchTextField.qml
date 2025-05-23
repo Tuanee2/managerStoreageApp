@@ -13,6 +13,7 @@ Rectangle {
     property alias placeholderText: input.placeholderText
     property alias fontSize: input.font.pixelSize
     property string target: ""
+    property string targetExtension: ""
 
     property bool isClick: false 
     property bool isEnable: false
@@ -26,17 +27,26 @@ Rectangle {
     TextField {
         id: input
         anchors.fill:parent
-        font.pixelSize: 16
+        font.pixelSize: parent.height*0.4
+        placeholderTextColor: "white"
         onTextChanged: {
             if (text.length > 0 && root.isClick === false) {
                 // Giả sử controller xử lý gợi ý theo target
                 if(target === "PRODUCT"){
-                    controller.requestProductList("SEARCH", text, 0)
+                    controller.requestProductList("SEARCH", root.targetExtension, text, 0)
         
                 }else if(target === "CUSTOMER"){
-                    controller.requestCustomerList("SEARCH", text, 0)
+                    controller.requestCustomerList("SEARCH", root.targetExtension, text, 0)
                     
+                }else if(target === "BATCH"){
+                    controller.requestBatchList("SEARCH", text, 0)
+
+                }else if(target === "ORDER"){
+
+                }else{
+                    console.log("The target for main search textfield is invalue !!!!!")
                 }
+
             } else {
                 suggestionPopup.close()
                 isClick = false

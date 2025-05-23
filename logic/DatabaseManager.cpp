@@ -131,9 +131,18 @@ bool DatabaseManager::addBatch(const QString& productName, const Batch& batch) {
 // ****< xoá sản phẩm >****
 bool DatabaseManager::deleteProduct(const QString& pro){
     QSqlQuery query;
+
+    // First delete all batches associated with the product
+    query.prepare("DELETE FROM product_batches WHERE product_name = ?");
+    query.addBindValue(pro);
+    if (!query.exec()) {
+        qWarning() << "Failed to delete product batches:" << query.lastError().text();
+        return false;
+    }
+
+    // Then delete the product itself
     query.prepare("DELETE FROM products WHERE product_name = ?");
     query.addBindValue(pro);
-
     if (!query.exec()) {
         qWarning() << "Failed to delete product:" << query.lastError().text();
         return false;
@@ -203,6 +212,41 @@ QList<Products*> DatabaseManager::getProductListByName(const QString& keyword){
     return list;
 }
 
+QList<Products*> DatabaseManager::getProductListByPrice(const QString& keyword){
+    QList<Products*> list;
+    QSqlQuery query;
+    int limit = 6;
+
+    bool ok = false;
+    double price = keyword.toInt(&ok);
+    if (!ok) {
+        qWarning() << "Invalid price keyword:" << keyword;
+        return list;
+    }
+
+    QString sql = QString("SELECT product_id, product_name, cost, is_value, description "
+                          "FROM products WHERE cost = :price LIMIT %1").arg(limit);
+    query.prepare(sql);
+    query.bindValue(":price", price);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to search products by price:" << query.lastError().text();
+        return list;
+    }
+
+    while (query.next()) {
+        Products* p = new Products();
+        p->setProductId(query.value(0).toString());
+        p->setProductName(query.value(1).toString());
+        p->setCost(query.value(2).toDouble());
+        p->setIsValue(query.value(3).toBool());
+        p->setDescription(query.value(4).toString());
+        list.append(p);
+    }
+
+    return list;
+}
+
 QList<Products*> DatabaseManager::getAProductByName(const QString& keyword){
     QList<Products*> list;
     QSqlQuery query;
@@ -243,7 +287,7 @@ QList<Products*> DatabaseManager::getAProductByName(const QString& keyword){
 QList<Batch*> DatabaseManager::getBatchByPage(const QString& productName, int numPage) {
     QList<Batch*> list;
     QSqlQuery query;
-    int limit = 9;
+    int limit = 6;
     int offset = numPage * limit;
 
     query.prepare("SELECT product_name, quantity, cost, import_date, expiry_date "
@@ -470,3 +514,52 @@ QList<Customer*> DatabaseManager::getACustomerByPhoneNumber(const QString& phone
     return list;
 }
 
+QList<Customer*> DatabaseManager::getCustomerByYearOfBirth(const QString& yearOfBirth) {
+    QList<Customer*> list;
+    QSqlQuery query;
+    int limit = 6;
+
+    QString sql = QString("SELECT name, phone_number, gender, year_of_birth FROM customers WHERE year_of_birth LIKE :year_of_birth LIMIT %1").arg(limit);
+    query.prepare(sql);
+    query.bindValue(":year_of_birth", "%" + yearOfBirth + "%");
+
+    if (!query.exec()) {
+        qWarning() << "Failed to fetch customer by year of birth:" << query.lastError().text();
+        return list;
+    }
+
+    while (query.next()) {
+        Customer* c = new Customer();
+        c->setCustomerName(query.value(0).toString());
+        c->setCustomerPhoneNumber(query.value(1).toString());
+        c->setCustomerGender(QStringToGender(query.value(2).toString()));
+        c->setCustomerYearOfBirth(query.value(3).toInt());
+        list.append(c);
+    }
+
+    return list;
+}
+
+
+QList<Customer*> DatabaseManager::getACustomerByYearOfBirth(const QString& yearOfBirth){
+    QList<Customer*> list;
+    QSqlQuery query;
+    query.prepare("SELECT name, phone_number, gender, year_of_birth FROM customers WHERE year_of_birth = :year_of_birth LIMIT 1");
+    query.bindValue(":year_of_birth", yearOfBirth);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to fetch customer by year of birth:" << query.lastError().text();
+        return list;
+    }
+
+    if (query.next()) {
+        Customer* c = new Customer();
+        c->setCustomerName(query.value(0).toString());
+        c->setCustomerPhoneNumber(query.value(1).toString());
+        c->setCustomerGender(QStringToGender(query.value(2).toString()));
+        c->setCustomerYearOfBirth(query.value(3).toInt());
+        list.append(c);
+    }
+
+    return list;
+}

@@ -1,4 +1,5 @@
 #include "products.h"
+#include <QJsonArray>
 
 Products::Products(QObject *parent)
     : QObject{parent}
@@ -105,4 +106,36 @@ void Products::deleteBatchByExpiryDate(const QDateTime& time) {
             batches.removeAt(i);
         }
     }
+}
+
+QJsonObject Products::toJson() const {
+    QJsonObject obj;
+    obj["productName"] = productName;
+    obj["productId"] = productId;
+    obj["cost"] = cost;
+    obj["isValue"] = isValue;
+    obj["description"] = description;
+
+    QJsonArray batchArray;
+    for (const Batch* b : batches) {
+        batchArray.append(b->toJson());
+    }
+    obj["batches"] = batchArray;
+    return obj;
+}
+
+Products* Products::fromJson(const QJsonObject& obj) {
+    Products* p = new Products();
+    p->setProductName(obj["productName"].toString());
+    p->setProductId(obj["productId"].toString());
+    p->setCost(obj["cost"].toDouble());
+    p->setIsValue(obj["isValue"].toBool());
+    p->setDescription(obj["description"].toString());
+
+    QJsonArray batchArray = obj["batches"].toArray();
+    for (const QJsonValue& val : batchArray) {
+        p->addBatch(Batch::fromJson(val.toObject()));
+    }
+
+    return p;
 }

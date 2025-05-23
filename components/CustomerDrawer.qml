@@ -22,7 +22,7 @@ Item {
             verticalAlignment: Text.AlignVCenter
             text : rootWindow.currentNavigation
             font.bold: true
-            font.pixelSize: rootWindow.baseFontSize*1.2
+            font.pixelSize: rootWindow.drawerFontSize*1.2
             color: "white"
         }
     }
@@ -62,7 +62,7 @@ Item {
                 anchors.left: icon01.right
                 text: "Danh sách khách hàng"
                 color: "white"
-                font.pixelSize: rootWindow.baseFontSize
+                font.pixelSize: rootWindow.drawerFontSize*0.9
             }
 
             MouseArea {
@@ -117,7 +117,7 @@ Item {
                 anchors.left: icon02.right
                 text: "Thêm khách hàng mới"
                 color: "white"
-                font.pixelSize: rootWindow.baseFontSize
+                font.pixelSize: rootWindow.drawerFontSize*0.9
             }
 
             MouseArea {
@@ -173,7 +173,7 @@ Item {
                 anchors.left: icon03.right
                 text: "Quay lại"
                 color: "white"
-                font.pixelSize: rootWindow.baseFontSize
+                font.pixelSize: rootWindow.drawerFontSize*0.9
             }
 
             MouseArea {
@@ -196,6 +196,7 @@ Item {
                 onClicked: {
                     drawerLoader.source = "components/MainDrawer.qml"
                     pageLoader.source = "components/Dashboard.qml"
+                    rootWindow.currentNavigation = "Bảng thông tin"
                 }
             }
         }

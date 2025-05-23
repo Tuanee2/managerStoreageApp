@@ -22,7 +22,7 @@ Item {
             verticalAlignment: Text.AlignVCenter
             text : rootWindow.currentNavigation
             font.bold: true
-            font.pixelSize: rootWindow.baseFontSize*1.2
+            font.pixelSize: rootWindow.drawerFontSize*1.2
             color: "white"
         }
     }
@@ -66,7 +66,7 @@ Item {
                 anchors.left: icon04.right
                 text: "Quay lại"
                 color: "white"
-                font.pixelSize: rootWindow.baseFontSize
+                font.pixelSize: rootWindow.drawerFontSize
             }
 
             MouseArea {
@@ -87,13 +87,18 @@ Item {
                 }
 
                 onClicked: {
-                    if(drawerLoader.source === "components/ProductFormForTransaction.qml"){
-                        pageLoader.source = "components/ProductListForTransaction.qml"
-                    }else if(pageLoader.source === "components/ProductListForTransaction.qml"){
+                    if(rootWindow.isTransactionProductSelect){
+                        rootWindow.isTransactionProductSelect = false
                         pageLoader.source = "components/CreateTransaction.qml"
+                    }else if(rootWindow.isTransactionBatchSelect){
+                        rootWindow.isTransactionBatchSelect = false
+                        rootWindow.isTransactionProductSelect = true
+                        pageLoader.source = "components/ProductListForTransaction.qml"
+                    }else{
+                        drawerLoader.source = "components/MainDrawer.qml"
+                        pageLoader.source = "components/Dashboard.qml"
+                        rootWindow.currentNavigation =  "Bảng thông tin"
                     }
-                    drawerLoader.source = "components/MainDrawer.qml"
-                    pageLoader.source = "components/Dashboard.qml"
                 }
             }
         }

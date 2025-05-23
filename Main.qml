@@ -14,7 +14,24 @@ Window {
 
     property string currentNavigation: "Bảng thông tin"
     property alias notification: notificationHost
+
+    // parameter for font size
     property real baseFontSize: Screen.height * 0.022
+    property real drawerFontSize: Math.min(rootWindow.width*0.2, 300)*0.07
+
+    // *******************************************************************
+
+
+    // parameter for main search field
+    property string targetForMainSearch: "PRODUCT"
+    property string targetExtensionForMainSearch: "NAME"
+    property string placeholderForMainSearch: "Nhập tên sản phẩm"
+
+    // *******************************************************************
+
+    property bool isTransactionProductSelect: false
+    property bool isTransactionBatchSelect: false
+
 
     property bool productSearch: false
     property bool cutomerSearch:false
@@ -104,7 +121,7 @@ Window {
             Rectangle {
                 id: content
                 width: parent.width
-                height: parent.height*0.8
+                height: Math.max(parent.height*0.8, parent.height - 120)
                 anchors.bottom: parent.bottom
                 anchors.right: parent.right
                 bottomRightRadius: 30
@@ -126,15 +143,16 @@ Window {
             Rectangle {
                 id: searchBar
                 width: parent.width*0.54
-                height: parent.width*0.05
+                height: Math.min(contentArea.width*0.05, 60)
                 radius: 10
                 color: Qt.rgba(1, 1, 1, 0.1)
                 anchors.top: parent.top
-                anchors.topMargin: parent.height*0.075
+                anchors.topMargin: Math.min(parent.height*0.075, 30)
                 anchors.left: parent.left
                 anchors.leftMargin: parent.width*0.05
 
                 Button {
+                    id: searchIcon
                     anchors.top: parent.top
                     anchors.left: parent.left
                     width: parent.height
@@ -149,28 +167,247 @@ Window {
 
                 }
 
-                CustomerSearchTextField {
+                CustomSearchTextField {
                     id: mainSearch
-                    width: parent.width - parent.height
+                    width: parent.width - 2*parent.height
                     height: parent.height
-                    anchors.right: parent.right
+                    anchors.left: searchIcon.right
                     color: Qt.rgba( 1, 1, 1, 0.2)
-                    placeholderText: "Nhập tên sản phẩm"
+                    placeholderText: rootWindow.placeholderForMainSearch
                     onSuggestionSelected: (text) => {
                         console.log("Đã chọn khách hàng:", text)
                     }
-                    target: "PRODUCT"
+                    target: rootWindow.targetForMainSearch
+                    targetExtension: rootWindow.targetExtensionForMainSearch
+                }
+
+                Rectangle {
+                    id: searchMode
+                    height: parent.height
+                    width: parent.height
+                    anchors.right: parent.right
+                    color: Qt.rgba( 1, 1, 1, 0.2)
+                    topRightRadius: 10
+                    bottomRightRadius: 10
+
+                    Button{
+                        anchors.fill: parent
+
+                        background: Rectangle{
+                            anchors.fill: parent
+                            color: "transparent"
+                        }
+
+                        icon.source: "qrc:/images/Icon/list.svg"
+                        icon.color: "white"
+                        onClicked: mainObjectMenu.open()
+                    }
+
+                    Menu{
+                        id: mainObjectMenu
+                        y: searchMode.height
+                        x: - searchMode.width/2
+                        width: searchMode.width*2
+                        MenuItem {
+                            id: itemProduct
+                            text: "Sản phẩm"
+                            MouseArea {
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onEntered:{
+                                    productSearchMenu.y = mainObjectMenu.y + itemProduct.y
+                                    productSearchMenu.x = mainObjectMenu.x + mainObjectMenu.width
+                                    productSearchMenu.open()
+                                    customerSearchMenu.close()
+                                    batchSearchMenu.close()
+                                    orderSearchMenu.close()
+                                }
+                                onExited: {
+
+                                }
+                            }
+                        }
+                        MenuItem {
+                            id: itemCustomer
+                            text: "Khách hàng"
+                            MouseArea {
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onEntered:{
+                                    customerSearchMenu.y = mainObjectMenu.y + itemCustomer.y
+                                    customerSearchMenu.x = mainObjectMenu.x + mainObjectMenu.width
+                                    customerSearchMenu.open()
+                                    productSearchMenu.close()
+                                    batchSearchMenu.close()
+                                    orderSearchMenu.close()
+                                }
+                                onExited: {
+
+                                }
+                            }
+                        }
+                        MenuItem {
+                            id: itemBatch
+                            text: "Lô sản phẩm"
+                            MouseArea {
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onEntered:{
+                                    batchSearchMenu.y = mainObjectMenu.y + itemBatch.y
+                                    batchSearchMenu.x = mainObjectMenu.x + mainObjectMenu.width
+                                    batchSearchMenu.open()
+                                    customerSearchMenu.close()
+                                    productSearchMenu.close()
+                                    orderSearchMenu.close()
+                                }
+                                onExited: {
+
+                                }
+                            }
+                        }
+                        MenuItem {
+                            id: itemOrder
+                            text: "Đơn hàng"
+                            MouseArea {
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onEntered:{
+                                    orderSearchMenu.y = mainObjectMenu.y + itemOrder.y
+                                    orderSearchMenu.x = mainObjectMenu.x + mainObjectMenu.width
+                                    batchSearchMenu.close()
+                                    customerSearchMenu.close()
+                                    productSearchMenu.close()
+                                    orderSearchMenu.open()
+                                }
+                                onExited: {
+
+                                }
+                            }
+                        }
+                    }
+
+                    Menu {
+                        id: productSearchMenu
+                        width: searchMode.width*3
+                        MenuItem {
+                            text: "Tên sản phẩm"
+                            onTriggered: {
+                                rootWindow.targetForMainSearch = "PRODUCT"
+                                rootWindow.targetExtensionForMainSearch = "NAME"
+                                rootWindow.placeholderForMainSearch = "Nhập tên sản phẩm"
+                                productSearchMenu.close()
+                                mainObjectMenu.close()
+                            }
+                        }
+                        MenuItem {
+                            text: "Giá sản phẩm"
+                            onTriggered: {
+                                rootWindow.targetForMainSearch = "PRODUCT"
+                                rootWindow.targetExtensionForMainSearch = "PRICE"
+                                rootWindow.placeholderForMainSearch = "Nhập giá sản phẩm"
+                                productSearchMenu.close()
+                                mainObjectMenu.close()
+                            }
+                        }
+                    }
+
+                    Menu {
+                        id: customerSearchMenu
+                        width: searchMode.width*3
+                        MenuItem {
+                            text: "Tên khách hàng"
+                            onTriggered: {
+                                rootWindow.targetForMainSearch = "CUSTOMER"
+                                rootWindow.targetExtensionForMainSearch = "NAME"
+                                rootWindow.placeholderForMainSearch = "Nhập tên khách hàng"
+                                customerSearchMenu.close()
+                                mainObjectMenu.close()
+                            }
+                        }
+                        MenuItem {
+                            text: "Số điện thoại"
+                            onTriggered: {
+                                rootWindow.targetForMainSearch = "CUSTOMER"
+                                rootWindow.targetExtensionForMainSearch = "PHONENUMBER"
+                                rootWindow.placeholderForMainSearch = "Nhập số điện thoại"
+                                customerSearchMenu.close()
+                                mainObjectMenu.close()
+                            }
+                        }
+                        MenuItem {
+                            text: "Năm sinh"
+                            onTriggered: {
+                                rootWindow.targetForMainSearch = "CUSTOMER"
+                                rootWindow.targetExtensionForMainSearch = "YEAROFBIRTH"
+                                rootWindow.placeholderForMainSearch = "Nhập năm sinh khách hàng"
+                                customerSearchMenu.close()
+                                mainObjectMenu.close()
+                            }
+                        }
+                    }
+
+
+                    Menu {
+                        id: batchSearchMenu
+                        width: searchMode.width*3
+                        MenuItem {
+                            text: "Ngày nhập kho"
+                            onTriggered: {
+                                rootWindow.targetForMainSearch = "BATCH"
+                                rootWindow.targetExtensionForMainSearch = "IMPORTDATE"
+                                rootWindow.placeholderForMainSearch = "Nhập ngày nhập kho"
+                                batchSearchMenu.close()
+                                mainObjectMenu.close()
+                            }
+                        }
+                        MenuItem {
+                            text: "Ngày hết hạn"
+                            onTriggered: {
+                                rootWindow.targetForMainSearch = "BATCH"
+                                rootWindow.targetExtensionForMainSearch = "EXPIREDDATE"
+                                rootWindow.placeholderForMainSearch = "Nhập ngày hết hạn"
+                                batchSearchMenu.close()
+                                mainObjectMenu.close()
+                            }
+                        }
+
+                    }
+
+                    Menu {
+                        id: orderSearchMenu
+                        width: searchMode.width*3
+                        MenuItem {
+                            text: "Tên người mua"
+                            onTriggered: {
+                                rootWindow.targetForMainSearch = "ORDER"
+                                rootWindow.targetExtensionForMainSearch = "NAME"
+                                rootWindow.placeholderForMainSearch = "Nhập tên người mua đơn hàng"
+                                orderSearchMenu.close()
+                                mainObjectMenu.close()
+                            }
+                        }
+                        MenuItem {
+                            text: "Ngày mua"
+                            onTriggered: {
+                                rootWindow.targetForMainSearch = "ORDER"
+                                rootWindow.targetExtensionForMainSearch = "EXPORTDATE"
+                                rootWindow.placeholderForMainSearch = "Nhập ngày mua đơn hàng"
+                                orderSearchMenu.close()
+                                mainObjectMenu.close()
+                            }
+                        }
+                    }
                 }
             }
 
             Rectangle {
                 id: addNewProduct
-                height: parent.width*0.05
+                height: Math.min(contentArea.width*0.05, 60)
                 width: parent.width*0.14
                 anchors.left: searchBar.right
                 anchors.leftMargin: parent.width*0.01
                 anchors.top: parent.top
-                anchors.topMargin: parent.height*0.075
+                anchors.topMargin: Math.min(parent.height*0.075, 30)
                 radius: 10
                 color: ma4add.containsMouse ? Qt.rgba( 73/255, 145/255, 230/255, 1) : Qt.rgba( 53/255, 125/255, 210/255, 1)
 
@@ -181,7 +418,7 @@ Window {
                     // anchors.topMargin: 8
                     text: "Tạo giao dịch"
                     color: "white"
-                    font.pixelSize: rootWindow.baseFontSize
+                    font.pixelSize: rootWindow.drawerFontSize
                     wrapMode: Text.WordWrap
                     width: parent.width * 0.9  // Cần có để cho phép wrap
                     horizontalAlignment: Text.AlignHCenter
@@ -193,29 +430,28 @@ Window {
                     anchors.fill: parent
                     hoverEnabled: true
                     onClicked:{
-                        pageLoader.source = "components/CreateTransaction.qml"
-                        drawerLoader.source = "components/TransactionDrawer.qml"
-                        rootWindow.currentNavigation = "Tạo giao dịch"
+                        console.log("Gửi yêu cầu tạo giao dịch");
+                        controller.requestCommandOrder_UI("ADD")
                     }
                 }
             }
 
             Rectangle {
                 id: importProduct
-                height: parent.width*0.05
+                height: Math.min(contentArea.width*0.05, 60)
                 width: parent.width*0.14
                 radius: 10
                 anchors.left: addNewProduct.right
                 anchors.leftMargin: parent.width*0.01
                 anchors.top: parent.top
-                anchors.topMargin: parent.height*0.075
+                anchors.topMargin: Math.min(parent.height*0.075, 30)
                 color: ma4im.containsMouse ? Qt.rgba( 73/255, 145/255, 230/255, 1) : Qt.rgba( 53/255, 125/255, 210/255, 1)
 
                 Text {
                     anchors.centerIn: parent
                     text: "Nhập kho"
                     color: "white"
-                    font.pixelSize: rootWindow.baseFontSize
+                    font.pixelSize: rootWindow.drawerFontSize
                 }
 
                 MouseArea {
@@ -231,10 +467,10 @@ Window {
             }
 
             Button {
-                width: parent.width*0.05
-                height: parent.width*0.05
+                width: Math.min(contentArea.width*0.05, 60)
+                height: Math.min(contentArea.width*0.05, 60)
                 anchors.top: parent.top
-                anchors.topMargin: parent.height*0.075
+                anchors.topMargin: Math.min(parent.height*0.075, 30)
                 anchors.right: parent.right
                 anchors.rightMargin: parent.width*0.05
                 background: Rectangle{
@@ -282,4 +518,21 @@ Window {
             Qt.quit()
         }
     }
+
+    Connections {
+        target: controller
+        function onRequestCommandOrderResult_UI(result, cmd){
+            if(cmd === "ADD"){
+                if(result){
+                    pageLoader.source = "components/CreateTransaction.qml"
+                    drawerLoader.source = "components/TransactionDrawer.qml"
+                    rootWindow.currentNavigation = "Tạo giao dịch"
+                }else {
+                    rootWindow.notification.showNotification("⚠️ Tạo giao dịch thất bại, hãy thử lại");
+                }
+            }
+        }
+    }
+
+
 }

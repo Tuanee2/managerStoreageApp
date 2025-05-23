@@ -17,5 +17,6 @@
         <file>Icon/search.svg</file>
         <file>Icon/cuida--clipboard-text-outline.svg</file>
         <file>Backgrounds/fix.jpg</file>
+        <file>Icon/list.svg</file>
     </qresource>
 </RCC>

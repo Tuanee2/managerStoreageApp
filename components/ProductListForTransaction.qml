@@ -53,7 +53,7 @@ Item {
                         anchors.left: parent.left
                         anchors.verticalCenter: parent.verticalCenter
                         height: parent.height
-                        width: parent.width * 0.3
+                        width: parent.width * 0.4
                         color: "transparent"
                         clip: true
 
@@ -80,10 +80,11 @@ Item {
                         anchors.right: parent.right
                         anchors.verticalCenter: parent.verticalCenter
                         height: parent.height
-                        width: parent.width * 0.7
+                        width: parent.width * 0.6
                         color: "transparent"
                         Text{
                             anchors.left: parent.left
+                            anchors.verticalCenter: parent.verticalCenter
                             text: "số hàng còn trong kho: " + modelData["numOfProduct"]
                             font.pixelSize: rootWindow.baseFontSize*0.9
                             color: "white"
@@ -97,6 +98,8 @@ Item {
                         anchors.fill: parent
                         hoverEnabled: true
                         onClicked: {
+                            rootWindow.isTransactionBatchSelect = true
+                            rootWindow.isTransactionProductSelect = false
                             rootWindow.productListOfOrder.push({
                                 productName: modelData["productName"]
                             })

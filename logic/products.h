@@ -37,6 +37,9 @@ public:
     void deleteBatchByImportTime(const QDateTime& time);
     void deleteBatchByExpiryDate(const QDateTime& time);
 
+    QJsonObject toJson() const;
+    static Products* fromJson(const QJsonObject& obj);
+
 private:
     QString productName;
     QString productId;

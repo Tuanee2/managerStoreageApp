@@ -131,7 +131,7 @@ Item {
         id: confirmDialog
         title: "Bạn đồng ý xác nhận thêm khách hàng mới?"
         standardButtons: Dialog.Yes | Dialog.No
-        anchors.centerIn: parent
+        anchors.centerIn: rootWindow
         // Yes = thêm tiếp, No = trở về
         visible: false
         onAccepted: {
@@ -157,7 +157,7 @@ Item {
         id: followupDialog
         title: "Bạn muốn thực hiện thêm khách hàng mới tiếp không?"
         standardButtons: Dialog.Yes | Dialog.No
-        anchors.centerIn: parent
+        anchors.centerIn: rootWindow
         visible: false
         onAccepted: {
             clearFields() // Xoá nội dung textfield để nhập mới

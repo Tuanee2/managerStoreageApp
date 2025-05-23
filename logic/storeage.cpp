@@ -65,13 +65,21 @@ void storeage::handleProductCommand(Products pro, cmdContext cmd) {
 // ****************************************
 
 // ****< Lấy danh sách sản phẩm >****
-void storeage::handleProductListRequest(Cmd cmd, const QString& keyword, int numPage) {
+void storeage::handleProductListRequest(cmdContext cmd, const QString& keyword, int numPage) {
     QList<Products*> fetchedProducts;
-    if(cmd == Cmd::LIST){
+    
+    if(cmd.cmd == Cmd::LIST){
         fetchedProducts = db->getProductsByPage(numPage);
-    }else if(cmd == Cmd::SEARCH){
-        fetchedProducts = db->getProductListByName(keyword);
-    }else if(cmd == Cmd::ONE){
+    }else if(cmd.cmd == Cmd::SEARCH){
+        if(cmd.typelist == type_of_list::NAME){
+            fetchedProducts = db->getProductListByName(keyword);
+        }else if(cmd.typelist == type_of_list::PRICE){
+            
+            fetchedProducts = db->getProductListByPrice(keyword);
+        }
+        qDebug() << "it run here";
+
+    }else if(cmd.cmd == Cmd::ONE){
         fetchedProducts = db->getAProductByName(keyword);
     }
 
@@ -130,6 +138,14 @@ void storeage::handleBatchListRequest(cmdContext cmd, const QString& productName
     QList<Batch*> fetchedBatches;
     if(cmd.cmd == Cmd::LIST){
         fetchedBatches = db->getBatchByPage(productName, numPage);
+    }else if(cmd.cmd == Cmd::SEARCH){
+        if(cmd.typelist == type_of_list::NAME){
+
+        }else if(cmd.typelist == type_of_list::EXPIREDDATE){
+
+        }else if(cmd.typelist == type_of_list::IMPORTDATE){
+
+        }
     }
 
     QList<QVariantMap> result;
@@ -174,10 +190,12 @@ void storeage::handleCustomerListRequest(cmdContext cmd, const QString& keyword,
     if(cmd.cmd == Cmd::LIST){
         fetchedCutomers = db->getCustomersByPage(numPage);
     }else if(cmd.cmd == Cmd::SEARCH){
-        fetchedCutomers = db->getCustomerByPhoneNumber(keyword);
-        if(fetchedCutomers.size() == 0){
-
+        if(cmd.typelist == type_of_list::NAME){
             fetchedCutomers = db->getCustomerByName(keyword);
+        }else if(cmd.typelist == type_of_list::PHONENUMBER){
+            fetchedCutomers = db->getCustomerByPhoneNumber(keyword);
+        }else if(cmd.typelist == type_of_list::YEAROFBIRTH){
+            fetchedCutomers = db->getCustomerByYearOfBirth(keyword);
         }
     }
 

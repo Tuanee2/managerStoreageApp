@@ -23,7 +23,7 @@ Item {
             verticalAlignment: Text.AlignVCenter
             text : rootWindow.currentNavigation
             font.bold: true
-            font.pixelSize: rootWindow.baseFontSize*1.2
+            font.pixelSize: rootWindow.drawerFontSize*1.2
             color: "white"
         }
     }
@@ -76,7 +76,7 @@ Item {
                 anchors.left: icon01.right
                 text: "Bảng thông tin"
                 color: "white"
-                font.pixelSize: rootWindow.baseFontSize
+                font.pixelSize: rootWindow.drawerFontSize
             }
 
             MouseArea {
@@ -133,7 +133,7 @@ Item {
                 anchors.left: icon02.right
                 text: "Sản phẩm"
                 color: "white"
-                font.pixelSize: rootWindow.baseFontSize
+                font.pixelSize: rootWindow.drawerFontSize
             }
 
             MouseArea {
@@ -155,7 +155,7 @@ Item {
 
                 onClicked: {
 
-                    rootWindow.currentNavigation = "Sản phẩm"
+                    rootWindow.currentNavigation = "Danh sách sản phẩm"
                     pageLoader.source = "components/ProductList.qml"
                     drawerLoader.source = "components/ProductDrawer.qml"
                 }
@@ -191,7 +191,7 @@ Item {
                 anchors.left: icon03.right
                 text: "Khách hàng"
                 color: "white"
-                font.pixelSize: rootWindow.baseFontSize
+                font.pixelSize: rootWindow.drawerFontSize
             }
 
             MouseArea {
@@ -212,7 +212,7 @@ Item {
                 }
 
                 onClicked: {
-                    rootWindow.currentNavigation = "Khách hàng"
+                    rootWindow.currentNavigation = "Danh sách khách hàng"
                     pageLoader.source = "components/CustomerList.qml"
                     drawerLoader.source = "components/CustomerDrawer.qml"
                 }
@@ -247,7 +247,7 @@ Item {
                 anchors.left: icon04.right
                 text: "Doanh thu"
                 color: "white"
-                font.pixelSize: rootWindow.baseFontSize
+                font.pixelSize: rootWindow.drawerFontSize
             }
 
             MouseArea {
@@ -304,7 +304,7 @@ Item {
                 anchors.left: icon05.right
                 text: "Lịch sử giao dịch"
                 color: "white"
-                font.pixelSize: rootWindow.baseFontSize
+                font.pixelSize: rootWindow.drawerFontSize
             }
 
             MouseArea {
@@ -359,7 +359,7 @@ Item {
                 anchors.left: icon06.right
                 text: "Cài đặt"
                 color: "white"
-                font.pixelSize: rootWindow.baseFontSize
+                font.pixelSize: rootWindow.drawerFontSize
             }
 
             MouseArea {
@@ -415,7 +415,7 @@ Item {
                 anchors.left: icon07.right
                 text: "Thoát"
                 color: "white"
-                font.pixelSize: rootWindow.baseFontSize
+                font.pixelSize: rootWindow.drawerFontSize
             }
 
             MouseArea {

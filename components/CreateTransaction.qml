@@ -40,7 +40,7 @@ Item {
             width: customerInfo.width*0.6
             height: customerInfo.height/3
             color: "transparent"
-            CustomerSearchTextField {
+            CustomSearchTextField {
                 id: customerSearch
                 width: parent.width
                 height: parent.height
@@ -60,7 +60,7 @@ Item {
             width: customerInfo.width*0.6
             height: customerInfo.height/3
             color: "transparent"
-            CustomerSearchTextField {
+            CustomSearchTextField {
                 id: phoneSearch
                 width: parent.width
                 height: parent.height
@@ -121,17 +121,47 @@ Item {
                     model: rootWindow.productListOfOrder
                     Rectangle {
                         width: customerInfo.width
-                        height: transaction.height*0.2
+                        height: Math.min(transaction.height*0.2, 100)
                         radius: 8
-                        color: "transparent"
+                        color: Qt.rgba(1, 1, 1, 0.6)
                         border.color: "white"
                         border.width: 1
 
                         Text {
                             anchors.centerIn: parent
                             text: "Sản phẩm: " +  modelData.productName
-                            color: "white"
+                            color: "black"
                             font.pixelSize: 16
+                        }
+
+                        Rectangle{
+                            id: deleteProductChoice
+                            width: parent.height
+                            height: parent.height
+                            radius: 8
+                            anchors.right: parent.right
+                            color: "transparent"
+                            Button{
+                                anchors.fill: parent
+                                background: Rectangle {
+                                    anchors.fill: parent
+                                    radius: 8
+                                    color: madeleteProductChoice.containsMouse ? Qt.rgba(200/255, 20/255, 20/255, 0.2) : "transparent"
+                                }
+
+                                icon.source: "qrc:/images/Icon/cross-circle.svg"
+                                icon.color: madeleteProductChoice.containsMouse ? Qt.rgba(250/255, 20/255, 20/255, 0.5) : "white"
+
+                            }
+
+                            MouseArea {
+                                id: madeleteProductChoice
+                                anchors.fill: parent
+                                hoverEnabled: true
+
+                            }
+
+
                         }
                     }
                 }
@@ -164,7 +194,7 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
             onClicked:{
-               rootWindow.productListOfOrder = []
+                deleteOrder.open()
             }
         }
     }
@@ -195,6 +225,7 @@ Item {
             hoverEnabled: true
             onClicked:{
                 pageLoader.source = "components/ProductListForTransaction.qml"
+                rootWindow.isTransactionProductSelect = true
             }
         }
     }
@@ -223,11 +254,42 @@ Item {
             id:mabuttonComfirm
             anchors.fill: parent
             hoverEnabled: true
+            onClicked: {
+                orderComfirm.open()
+            }
         }
     }
 
     Dialog {
         id: orderComfirm
+        title: "Bạn có chắc chắn xác nhận đơn hàng ko?"
+        standardButtons: Dialog.Yes | Dialog.No
+        anchors.centerIn: parent
+        visible: false
+        onAccepted: {
 
+        }
+    }
+
+    Dialog {
+        id: deleteOrder
+        title: "Bạn muốn xoá đơn hàng?"
+        standardButtons: Dialog.Yes | Dialog.No
+        anchors.centerIn: parent
+        visible: false
+        onAccepted: {
+            controller.requestCommandOrder_UI("DELETE")
+        }
+    }
+
+
+    Connections {
+        target: controller
+        function onRequestCommandOrderResult_UI(result, cmd){
+            if(cmd === "DELETE"){
+                rootWindow.productListOfOrder = []
+                rootWindow.notification.showNotification("Xoá đơn hàng thành công")
+            }
+        }
     }
 }

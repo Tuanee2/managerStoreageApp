@@ -1,4 +1,5 @@
 #include "batch.h"
+#include <QJsonObject>
 
 Batch::Batch() {}
 
@@ -42,4 +43,22 @@ QDateTime Batch::getExpiryDate() const {
 
 void Batch::setExpiryDate(const QDateTime& time) {
     expiryDate = time;
+}
+
+QJsonObject Batch::toJson() const {
+    QJsonObject obj;
+    obj["quantity"] = quantity;
+    obj["cost"] = cost;
+    obj["importDate"] = importDate.toString("dd-MM-yyyy");
+    obj["expiryDate"] = expiryDate.toString("dd-MM-yyyy");
+    return obj;
+}
+
+Batch Batch::fromJson(const QJsonObject& obj) {
+    Batch b;
+    b.setQuantity(obj["quantity"].toInt());
+    b.setCost(obj["cost"].toDouble());
+    b.setImportDate(QDate::fromString(obj["importDate"].toString(), "dd-MM-yyyy"));
+    b.setExpiryDate(QDate::fromString(obj["expiryDate"].toString(), "dd-MM-yyyy"));
+    return b;
 }

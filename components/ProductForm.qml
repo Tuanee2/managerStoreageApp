@@ -49,13 +49,90 @@ Item {
         anchors.fill: parent
         color: "transparent"
 
-        Rectangle{
+        Rectangle {
             id: baseInfo
             anchors.top: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
-            width: parent.width*0.9
-            height: parent.height*0.2
+            width: parent.width * 0.9
+            height: parent.height * 0.2
             color: "transparent"
+
+            property bool editEnabled: false
+
+            Row {
+                anchors.fill: parent
+                anchors.margins: 10
+                spacing: 20
+
+                // Left section: Name and Price fields
+                Row {
+                    spacing: 20
+                    width: parent.width * 0.65
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    Column {
+                        spacing: 4
+                        Text {
+                            text: "Tên sản phẩm:"
+                            color: "white"
+                            font.pixelSize: 16
+                        }
+                        TextField {
+                            id: productNameField
+                            width: parent.width * 0.4
+                            enabled: baseInfo.editEnabled
+                            text: productDetail.products.length > 0 ? productDetail.products[0].product_name : ""
+                            onTextChanged: {
+                                if (productDetail.products.length > 0)
+                                    productDetail.products[0].product_name = text
+                            }
+                        }
+                    }
+
+                    Column {
+                        spacing: 4
+                        Text {
+                            text: "Giá:"
+                            color: "white"
+                            font.pixelSize: 16
+                        }
+                        TextField {
+                            id: productPriceField
+                            width: parent.width * 0.3
+                            inputMethodHints: Qt.ImhFormattedNumbersOnly
+                            validator: DoubleValidator { bottom: 0.0 }
+                            enabled: baseInfo.editEnabled
+                            text: productDetail.products.length > 0 ? productDetail.products[0].cost.toString() : ""
+                            onTextChanged: {
+                                if (productDetail.products.length > 0)
+                                    productDetail.products[0].cost = parseFloat(text)
+                            }
+                        }
+                    }
+                }
+
+                // Right section: Lock/Unlock and Confirm buttons
+                Row {
+                    spacing: 10
+                    width: parent.width * 0.3
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+
+                    Button {
+                        text: baseInfo.editEnabled ? "Khóa" : "Mở khóa"
+                        onClicked: baseInfo.editEnabled = !baseInfo.editEnabled
+                    }
+
+                    Button {
+                        text: "Xác nhận"
+                        enabled: baseInfo.editEnabled
+                        onClicked: {
+                            console.log("Xác nhận:", productNameField.text, productPriceField.text)
+                            baseInfo.editEnabled = false
+                        }
+                    }
+                }
+            }
         }
 
         Rectangle{

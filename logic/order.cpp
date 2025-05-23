@@ -1,4 +1,6 @@
 #include "order.h"
+#include <QJsonObject>
+#include <QJsonArray>
 
 Order::Order(QObject *parent)
     : QObject{parent}
@@ -64,4 +66,47 @@ double Order::getTotalPrice() const{
         total += P->totalValue();
     }
     return total;
+}
+
+void Order::clean(){
+    for(Products* p : item){
+        for(Batch* b : p->getBatchList()){
+            delete b;
+        }
+        p->getBatchList().clear();
+        delete p;
+    }
+    item.clear();
+    customerName = "";
+    phoneNumber = "";
+    purchaseTime = QDateTime();
+}
+
+QJsonObject Order::toJson() const {
+    QJsonObject obj;
+    obj["customerName"] = customerName;
+    obj["phoneNumber"] = phoneNumber;
+    obj["purchaseTime"] = purchaseTime.toString("dd-MM-yyyy");
+
+    QJsonArray itemArray;
+    for (const Products* p : item) {
+        itemArray.append(p->toJson());
+    }
+    obj["items"] = itemArray;
+    return obj;
+}
+
+Order* Order::fromJson(const QJsonObject& obj) {
+    Order* o = new Order();
+    o->setCustomerName(obj["customerName"].toString());
+    o->setCustomerPhoneNumber(obj["phoneNumber"].toString());
+    o->setPurchaseTime(QDate::fromString(obj["purchaseTime"].toString(), "dd-MM-yyyy"));
+
+    QJsonArray itemArray = obj["items"].toArray();
+    QList<Products*> list;
+    for (const QJsonValue& val : itemArray) {
+        list.append(Products::fromJson(val.toObject()));
+    }
+    o->setListItem(list);
+    return o;
 }

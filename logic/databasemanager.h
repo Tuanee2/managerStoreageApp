@@ -28,12 +28,14 @@ public:
     // ****< Lấy danh sách sản phẩm >****
     QList<Products*> getProductsByPage(int numPage);
     QList<Products*> getProductListByName(const QString& keyword);
+    QList<Products*> getProductListByPrice(const QString& keyword);
     QList<Products*> getAProductByName(const QString& name);
     // ****************************************
 
     // ************< FOR BATCHES >**********
     bool addBatch(const QString& productName, const Batch& batch);
     QList<Batch*> getBatchByPage(const QString& productName, int numPage);
+
     double getNumOfItemOfAllBatch(const QString& productName);
     // ************************************
 
@@ -45,8 +47,10 @@ public:
     QList<Customer*> getCustomerByName(const QString& name); 
     QList<Customer*> getCustomerByPhoneNumber(const QString& phone);
     QList<Customer*> getCustomersByPage(int numPage);
+    QList<Customer*> getCustomerByYearOfBirth(const QString& yearOfBirth);
     QList<Customer*> getACustomerByName(const QString& name);
     QList<Customer*> getACustomerByPhoneNumber(const QString& phone);
+    QList<Customer*> getACustomerByYearOfBirth(const QString& yearOfBirth);
     // ************************************
 };
 
