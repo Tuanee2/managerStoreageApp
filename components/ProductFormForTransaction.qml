@@ -160,7 +160,7 @@ Item {
                         from: 0
                         to: modelData.quantity
                         stepSize: 10
-                        value: batchlist4trans.selectedQuantities[index]
+                        value: 0
                         editable: true
                         width: parent.width*0.3
                         height: parent.height 
@@ -247,6 +247,24 @@ Item {
                     }
                     
                 }
+            }
+
+            Rectangle{
+                width: parent.width*0.5
+                height: parent.height
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "white"
+                radius: 8
+                Text {
+                    anchors.centerIn: parent
+                    text: batchlist4trans.currentPage
+                    font.pixelSize: parent.height*0.5
+                    color: "black"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
             }
 
             Button{

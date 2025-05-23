@@ -58,7 +58,7 @@ Batch Batch::fromJson(const QJsonObject& obj) {
     Batch b;
     b.setQuantity(obj["quantity"].toInt());
     b.setCost(obj["cost"].toDouble());
-    b.setImportDate(QDate::fromString(obj["importDate"].toString(), "dd-MM-yyyy"));
-    b.setExpiryDate(QDate::fromString(obj["expiryDate"].toString(), "dd-MM-yyyy"));
+    b.setImportDate(QDateTime::fromString(obj["importDate"].toString(), "dd-MM-yyyy"));
+    b.setExpiryDate(QDateTime::fromString(obj["expiryDate"].toString(), "dd-MM-yyyy"));
     return b;
 }

@@ -100,7 +100,7 @@ Order* Order::fromJson(const QJsonObject& obj) {
     Order* o = new Order();
     o->setCustomerName(obj["customerName"].toString());
     o->setCustomerPhoneNumber(obj["phoneNumber"].toString());
-    o->setPurchaseTime(QDate::fromString(obj["purchaseTime"].toString(), "dd-MM-yyyy"));
+    o->setPurchaseTime(QDateTime::fromString(obj["purchaseTime"].toString(), "dd-MM-yyyy"));
 
     QJsonArray itemArray = obj["items"].toArray();
     QList<Products*> list;

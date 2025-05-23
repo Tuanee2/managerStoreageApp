@@ -12,6 +12,9 @@ Item {
 
     property var products: []
 
+    property bool isLeft: false
+    property bool isRight: false
+
 
     Component.onCompleted: {
         controller.requestProductList("LIST", "", productListTransaction.currentPage);
@@ -21,12 +24,21 @@ Item {
         target: controller
         function onProductListReady(list, cmd) {
             productListTransaction.products = list
+            updatePageFlags(list.length)
         }
+    }
+
+    function updatePageFlags(productListSize) {
+        isLeft = currentPage > 0
+        isRight = productListSize >= 12  // bạn nên định nghĩa `itemsPerPage`
     }
 
     Rectangle {
         id: productList
-        anchors.fill: parent
+        width: parent.width
+        height: parent.height * 0.9
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
 
         Grid {
@@ -110,6 +122,95 @@ Item {
                     }
                 }
             }
+        }
+
+        Rectangle{
+            id: pageController
+            anchors.top: productList.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.height*0.4
+            height: parent.height*0.05
+            color: "transparent"
+
+            Button{
+                id: back
+                width: parent.height
+                height: parent.height
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                enabled: productListTransaction.isLeft
+                background: Rectangle{
+                    anchors.fill: parent
+                    radius: 8
+                    //color: "transparent"
+                    color: Qt.rgba(1, 1, 1, 0.3)
+                }
+                Text {
+                    text: "<"
+                    color: "white"
+                    anchors.centerIn: parent
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        productListTransaction.currentPage--
+                        controller.requestProductList("LIST", "", productListTransaction.currentPage);
+                    }
+
+                }
+            }
+
+            Rectangle{
+                width: parent.width*0.5
+                height: parent.height
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "white"
+                radius: 8
+                Text {
+                    anchors.centerIn: parent
+                    text: productListTransaction.currentPage
+                    font.pixelSize: parent.height*0.5
+                    color: "black"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+            }
+
+            Button{
+                id: next
+                width: parent.height
+                height: parent.height
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+
+                enabled: productListTransaction.isRight
+                background: Rectangle{
+
+                    anchors.fill: parent
+                    radius: 8
+                    //color: "transparent"
+                    color: Qt.rgba(1, 1, 1, 0.3)
+                }
+
+                Text {
+                    text: ">"
+                    color: "white"
+                    anchors.centerIn: parent
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        productListTransaction.currentPage++
+                        controller.requestProductList("LIST", "", productListTransaction.currentPage);
+                    }
+
+                }
+            }
+
         }
     }
 

@@ -271,6 +271,24 @@ Item {
                 }
             }
 
+            Rectangle{
+                width: parent.width*0.5
+                height: parent.height
+                anchors.top: parent.top
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "white"
+                radius: 8
+                Text {
+                    anchors.centerIn: parent
+                    text: productDetail.currentPage
+                    font.pixelSize: parent.height*0.5
+                    color: "black"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+            }
+
             Button{
                 id: next
                 width: parent.height
