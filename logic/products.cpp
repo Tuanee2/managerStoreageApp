@@ -88,7 +88,15 @@ void Products::addBatch(const Batch& bat){
     batches.append(new Batch(bat));
 }
 
-QList<Batch*> Products::getBatchList() const{
+int Products::getNumOfItem(){
+    int num = 0;
+    for(Batch* b : batches){
+        num += b->getQuantity();
+    }
+    return num;
+}
+
+QList<Batch*>& Products::getBatchList(){
     return batches;
 }
 
@@ -107,6 +115,8 @@ void Products::deleteBatchByExpiryDate(const QDateTime& time) {
         }
     }
 }
+
+
 
 QJsonObject Products::toJson() const {
     QJsonObject obj;

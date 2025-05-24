@@ -73,7 +73,7 @@ signals:
     void batchInfoResult(double result, cmdContext cmd);
 
 public slots:
-    void handleBatchListRequest(cmdContext cmd, const QString& productName, int numPage);
+    void handleBatchListRequest(cmdContext cmd, const QString& productName, const QString& keyword, int numPage);
 signals:
     void batchListReady(QList<QVariantMap> list, cmdContext cmd);
 
@@ -100,7 +100,7 @@ signals:
 
 // <<<<<<<<<< FOR ORDER >>>>>>>>>>
 public slots:
-    void handleOrderCommand(cmdContext cmd, const QString& phoneNumber, Order order);
+    void handleOrderCommand(cmdContext cmd, const QJsonObject& data);
 signals:
     void orderCommandResult(bool done, cmdContext cmd);
 

@@ -29,7 +29,7 @@ public:
     void setCustomerPhoneNumber(const QString& phoneNumber);
     QDateTime getPurchaseTime() const;
     void setPurchaseTime(const QDateTime& time);
-    QList<Products*> getListItem() const;
+    QList<Products*>& getListItem();
     void setListItem(const QList<Products*>& item);
     static QList<Products*> QStringToItems(const QString& data);
     double getTotalPrice() const;

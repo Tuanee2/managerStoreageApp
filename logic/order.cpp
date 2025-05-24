@@ -48,7 +48,7 @@ void Order::setPurchaseTime(const QDateTime& time){
     this->purchaseTime = time;
 }
 
-QList<Products*> Order::getListItem() const{
+QList<Products*>& Order::getListItem() {
     return item;
 }
 

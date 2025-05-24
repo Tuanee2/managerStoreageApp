@@ -95,12 +95,31 @@ Item {
                         rootWindow.isTransactionProductSelect = true
                         pageLoader.source = "components/ProductListForTransaction.qml"
                     }else{
-                        drawerLoader.source = "components/MainDrawer.qml"
-                        pageLoader.source = "components/Dashboard.qml"
-                        rootWindow.currentNavigation =  "Bảng thông tin"
+                        if(!rootWindow.isSaveTransaction){
+                            comfirmToSaveTransaction.open()
+                        }else {
+                            drawerLoader.source = "components/MainDrawer.qml"
+                            pageLoader.source = "components/Dashboard.qml"
+                            rootWindow.currentNavigation =  "Bảng thông tin"
+                        }
                     }
                 }
             }
+        }
+
+    }
+
+    Dialog{
+        id: comfirmToSaveTransaction
+        title: "Bạn chưa thực hiện xong giao dịch, nếu thoát toàn bộ giao dịch sẽ bị xoá !!!"
+        standardButtons: Dialog.Yes | Dialog.No
+        anchors.centerIn : parent
+        visible: false
+        onAccepted: {
+            drawerLoader.source = "components/MainDrawer.qml"
+            pageLoader.source = "components/Dashboard.qml"
+            rootWindow.currentNavigation =  "Bảng thông tin"
+            controller.requestCommandOrder_UI("DELETE");
         }
 
     }

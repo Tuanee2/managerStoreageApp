@@ -35,6 +35,7 @@ public:
     // ************< FOR BATCHES >**********
     bool addBatch(const QString& productName, const Batch& batch);
     QList<Batch*> getBatchByPage(const QString& productName, int numPage);
+    QList<Batch*> getBatchByExpiredDate(const QString& productName, const QString& expiredDate, int numpage);
 
     double getNumOfItemOfAllBatch(const QString& productName);
     // ************************************

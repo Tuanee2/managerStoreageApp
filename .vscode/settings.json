@@ -26,6 +26,7 @@
         "bitset": "cpp",
         "deque": "cpp",
         "vector": "cpp",
-        "span": "cpp"
+        "span": "cpp",
+        "random": "cpp"
     }
 }

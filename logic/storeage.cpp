@@ -134,7 +134,7 @@ void storeage::handleBatchInfoRequest(cmdContext cmd, const QString& productName
     emit batchInfoResult(result, cmd);
 }
 
-void storeage::handleBatchListRequest(cmdContext cmd, const QString& productName, int numPage){
+void storeage::handleBatchListRequest(cmdContext cmd, const QString& productName, const QString& keyword, int numPage){
     QList<Batch*> fetchedBatches;
     if(cmd.cmd == Cmd::LIST){
         fetchedBatches = db->getBatchByPage(productName, numPage);
@@ -142,6 +142,7 @@ void storeage::handleBatchListRequest(cmdContext cmd, const QString& productName
         if(cmd.typelist == type_of_list::NAME){
 
         }else if(cmd.typelist == type_of_list::EXPIREDDATE){
+            fetchedBatches = db->getBatchByExpiredDate(productName, keyword, -1);
 
         }else if(cmd.typelist == type_of_list::IMPORTDATE){
 
@@ -219,6 +220,12 @@ void storeage::handleCustomerListRequest(cmdContext cmd, const QString& keyword,
 
 
 // <<<<<<<<<< FOR ORDER >>>>>>>>>>
-void storeage::handleOrderCommand(cmdContext cmd, const QString& phoneNumber, Order order){
-
+void storeage::handleOrderCommand(cmdContext cmd, const QJsonObject& data){
+    if(cmd.cmd == Cmd::ADD){
+        Order order;
+        order.fromJson(data);
+        qDebug() << "2";
+    }
+    qDebug() << "3";
+    emit orderCommandResult(true, cmd);
 }

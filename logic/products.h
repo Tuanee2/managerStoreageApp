@@ -33,7 +33,8 @@ public:
     QString getDescription() const;
     void setDescription(const QString &des);
     void addBatch(const Batch& bat);
-    QList<Batch*> getBatchList() const;
+    int getNumOfItem();
+    QList<Batch*>& getBatchList();
     void deleteBatchByImportTime(const QDateTime& time);
     void deleteBatchByExpiryDate(const QDateTime& time);
 

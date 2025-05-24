@@ -61,7 +61,6 @@ make
 
 ## 📌 Ghi chú phát triển
 
-- `productListOfOrder` là mảng lưu các sản phẩm đã chọn trong giao dịch.
 - `pageLoader` dùng để điều hướng giữa các giao diện.
 - `Loader + Component` được sử dụng để truyền biến & signal giữa các trang.
 

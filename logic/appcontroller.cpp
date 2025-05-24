@@ -75,6 +75,19 @@ appcontroller::appcontroller(storeage* store, QObject* parent)
     
     // ****************************************
 
+
+
+
+
+    // <<<<<<<<<< FOR ORDERS >>>>>>>>>>
+    connect(this, &appcontroller::orderCommandRequested,
+        m_store, &storeage::handleOrderCommand, Qt::QueuedConnection);
+
+    connect(m_store, &storeage::orderCommandResult,
+        this, &appcontroller::onOrderCommandResult, Qt::QueuedConnection);
+
+    // ****************************************
+
 }
 
 void appcontroller::requestCommandOrder_UI(const QString& cmd){
@@ -87,34 +100,50 @@ void appcontroller::requestCommandOrder_UI(const QString& cmd){
     emit requestCommandOrderResult_UI(true, cmd);
 }
 
-void appcontroller::addProductToOrder_UI(const QString& productName){
-    Products* product = new Products();
-    product->setProductName(productName);
-    order.getListItem().push_back(product);
-    emit addProductToOrderResult_UI(true);
-}
+void appcontroller::requestCommandBatchToOrder_UI(const QString& cmd, const QString& productName, const QVariantList& batchList){
+    if(cmd == "ADD"){
+        Products* product = nullptr;
+        for (Products* p : order.getListItem()) {
+            if (p->getProductName() == productName) {
+                product = p;
+                break;
+            }
+        }
+        
 
-void appcontroller::addBatchToOrder_UI(const QString& productName, const QString& expiredDate, const QString& importDate, int quantity){
-    Products* product = nullptr;
-    for (Products* p : order.getListItem()) {
-        if (p->getProductName() == productName) {
-            product = p;
-            break;
+        if (!product) {
+            product = new Products();
+            product->setProductName(productName);
+            order.getListItem().append(product);
+        }
+
+        qDebug() << order.getListItem().size();
+
+        for (const QVariant& v : batchList) {
+            QVariantMap b = v.toMap();
+            Batch* batch = new Batch();
+            batch->setQuantity(b["quantity"].toInt());
+            batch->setCost(b["cost"].toDouble());
+            batch->setImportDate(QDateTime::fromString(b["importdate"].toString(), "dd-MM-yyyy"));
+            batch->setExpiryDate(QDateTime::fromString(b["expireddate"].toString(), "dd-MM-yyyy"));
+            product->getBatchList().append(batch);
         }
     }
 
-    if (!product) {
-        emit addBatchToOrderResult_UI(false);
-        return;
+    emit requestCommandBatchToOrderResult_UI(true, cmd);
+}
+
+void appcontroller::orderUpdate_UI(){
+    QList<QVariantMap> list;
+    for(Products* p : order.getListItem()){
+        QVariantMap product;
+        product["productName"] = p->getProductName();
+        product["price"] = p->getCost();
+        product["numOfItem"] = p->getNumOfItem();
+        list.append(product);
     }
 
-    Batch* batch = new Batch();
-    batch->setQuantity(quantity);
-    batch->setExpiryDate(QDateTime::fromString(expiredDate, "dd-MM-yyyy"));
-    batch->setImportDate(QDateTime::fromString(importDate, "dd-MM-yyyy"));
-    product->getBatchList().append(batch);
-
-    emit addBatchToOrderResult_UI(true);
+    emit orderUpdateResult_UI(list);
 }
 
 
@@ -212,17 +241,17 @@ void appcontroller::onBatchInfoResult(double result, cmdContext cmd){
     emit batchInfoResult(result , TypeToQString(cmd.type));
 }
 
-void appcontroller::requestBatchList(const QString& cmd, const QString& productName, int numPage){
+void appcontroller::requestBatchList(const QString& cmd, const QString& productName, const QString& keyword, int numPage){
     cmdContext CMD;
     CMD.cmd = QStringToCmd(cmd);
-    emit batchListRequested(CMD, productName, numPage);
+    emit batchListRequested(CMD, productName, keyword, numPage);
 }
 
-void appcontroller::requestBatchList(const QString& cmd, const QString& cmdExtension, const QString& productName, int numPage){
+void appcontroller::requestBatchList(const QString& cmd, const QString& cmdExtension, const QString& productName, const QString& keyword, int numPage){
     cmdContext CMD;
     CMD.cmd = QStringToCmd(cmd);
     CMD.typelist = QStringToTypeList(cmdExtension);
-    emit batchListRequested(CMD, productName, numPage);
+    emit batchListRequested(CMD, productName, keyword, numPage);
 }
 
 void appcontroller::onBatchListReady(QList<QVariantMap> list, cmdContext cmd){
@@ -277,13 +306,15 @@ void appcontroller::onCustomerListReady(QList<QVariantMap> list, cmdContext cmd)
 
 
 // <<<<<<<<<< FOR ORDERS >>>>>>>>>>
-void appcontroller::requestOrderCommand(const QString& cmd, const QString& phoneNumber, const QString& dateExport, const QString& data){
+void appcontroller::requestOrderCommand(const QString& cmd, const QString& phoneNumber, const QString& dateExport){
     cmdContext CMD;
     CMD.cmd = QStringToCmd(cmd);
-    Order order;
     order.setCustomerPhoneNumber(phoneNumber);
-    order.setListItem(Order::QStringToItems(data));
-    emit orderCommand(CMD, phoneNumber, order);
+    order.setPurchaseTime(QDateTime::fromString(dateExport, "dd-MM-yyyy"));
+    QJsonObject data = order.toJson();
+    order.clean();
+    qDebug() << "1";
+    emit orderCommandRequested(CMD, data);
 }
 
 void appcontroller::onOrderCommandResult(bool done, cmdContext cmd){

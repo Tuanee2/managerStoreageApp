@@ -7,6 +7,7 @@ Item {
     property string productName: ""
 
     property var batches: []
+    property var batchesSelected: []
     property var selectedQuantities: []
 
     property int currentPage: 0
@@ -17,7 +18,9 @@ Item {
     property int total: 0
 
     Component.onCompleted: {
-        controller.requestBatchList("LIST", batchlist4trans.productName, batchlist4trans.currentPage)
+        controller.requestBatchList("LIST", batchlist4trans.productName, "", batchlist4trans.currentPage)
+        rootWindow.isTransactionProductSelect = false
+        rootWindow.isTransactionBatchSelect = true
     }
 
     function updatePageFlags(batchListSize) {
@@ -40,6 +43,19 @@ Item {
                 batchlist4trans.batches = list
                 batchlist4trans.updatePageFlags(list.length)
                 batchlist4trans.selectedQuantities = Array(list.length).fill(0);
+            }
+        }
+    }
+
+    Connections {
+        target: controller 
+        function onRequestCommandBatchToOrderResult_UI(result, cmd){
+            if(cmd === "ADD"){
+                if(result){
+                    rootWindow.isTransactionProductSelect = false
+                    rootWindow.isTransactionBatchSelect = false
+                    pageLoader.source = "components/CreateTransaction.qml"
+                }
             }
         }
     }
@@ -243,7 +259,7 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         batchlist4trans.currentPage--
-                        controller.requestBatchList("LIST", productName, batchlist4trans.currentPage)
+                        controller.requestBatchList("LIST", productName, "", batchlist4trans.currentPage)
                     }
                     
                 }
@@ -293,7 +309,7 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         batchlist4trans.currentPage++
-                        controller.requestBatchList("LIST", productName, batchlist4trans.currentPage)
+                        controller.requestBatchList("LIST", productName, "", batchlist4trans.currentPage)
                         console.log("Received batch list. Size:")
                     }
 
@@ -324,9 +340,23 @@ Item {
         anchors.centerIn: parent
         visible: false
         onAccepted: {
-            rootWindow.isTransactionProductSelect = false
-            rootWindow.isTransactionBatchSelect = false
-            pageLoader.source = "components/CreateTransaction.qml"
+            
+            var batchlist = []
+            for(var i = 0; i < batches.length; i++){
+                var quan = batchlist4trans.selectedQuantities[i]
+                if(quan > 0){
+                    batchlist.push({
+                        "quantity": quan,
+                        "cost": batches[i].cost,
+                        "importdate": batches[i].importdate,
+                        "expireddate": batches[i].expireddate
+                    })
+                    
+                }
+                
+            }
+            controller.requestCommandBatchToOrder_UI("ADD", batchlist4trans.productName, batchlist)
+            
         }
     }
 

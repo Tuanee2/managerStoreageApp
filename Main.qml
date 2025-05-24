@@ -31,12 +31,12 @@ Window {
 
     property bool isTransactionProductSelect: false
     property bool isTransactionBatchSelect: false
+    property bool isSaveTransaction: false
 
 
     property bool productSearch: false
     property bool cutomerSearch:false
 
-    property var productListOfOrder: []
     property var batchListOfOrder: []
 
     // Ảnh nền
@@ -179,6 +179,7 @@ Window {
                     }
                     target: rootWindow.targetForMainSearch
                     targetExtension: rootWindow.targetExtensionForMainSearch
+                    isCreateTransaction: (!rootWindow.isTransactionBatchSelect)&&(!rootWindow.isTransactionProductSelect)
                 }
 
                 Rectangle {
@@ -430,7 +431,6 @@ Window {
                     anchors.fill: parent
                     hoverEnabled: true
                     onClicked:{
-                        console.log("Gửi yêu cầu tạo giao dịch");
                         controller.requestCommandOrder_UI("ADD")
                     }
                 }
@@ -460,8 +460,10 @@ Window {
                     hoverEnabled: true
 
                     onClicked:{
-                        pageLoader.source = "components/ImportBatch.qml"
-                        drawerLoader.source = "components/ProductDrawer.qml"
+                        if(!rootWindow.isTransactionProductSelect && !rootWindow.isTransactionBatchSelect){
+                            pageLoader.source = "components/ImportBatch.qml"
+                            drawerLoader.source = "components/ProductDrawer.qml"
+                        }
                     }
                 }
             }
@@ -522,13 +524,17 @@ Window {
     Connections {
         target: controller
         function onRequestCommandOrderResult_UI(result, cmd){
-            if(cmd === "ADD"){
-                if(result){
-                    pageLoader.source = "components/CreateTransaction.qml"
-                    drawerLoader.source = "components/TransactionDrawer.qml"
-                    rootWindow.currentNavigation = "Tạo giao dịch"
-                }else {
-                    rootWindow.notification.showNotification("⚠️ Tạo giao dịch thất bại, hãy thử lại");
+            if(!rootWindow.isTransactionProductSelect && !rootWindow.isTransactionBatchSelect){
+                if(cmd === "ADD"){
+                    if(result){
+                        pageLoader.source = "components/CreateTransaction.qml"
+                        drawerLoader.source = "components/TransactionDrawer.qml"
+                        rootWindow.currentNavigation = "Tạo giao dịch"
+                        rootWindow.isTransactionProductSelect = false
+                        rootWindow.isTransactionBatchSelect = false
+                    }else {
+                        rootWindow.notification.showNotification("⚠️ Tạo giao dịch thất bại, hãy thử lại");
+                    }
                 }
             }
         }

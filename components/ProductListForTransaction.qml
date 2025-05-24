@@ -112,9 +112,6 @@ Item {
                         onClicked: {
                             rootWindow.isTransactionBatchSelect = true
                             rootWindow.isTransactionProductSelect = false
-                            rootWindow.productListOfOrder.push({
-                                productName: modelData["productName"]
-                            })
                             pageLoader.setSource("ProductFormForTransaction.qml", {
                                 productName: modelData["productName"]
                             })

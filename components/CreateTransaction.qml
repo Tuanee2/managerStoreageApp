@@ -9,8 +9,22 @@ Item {
     property string customerPhoneNumber: ""
     property string dataItems : ""
     property int numOfProduct: 0
+    property var order: []
 
     anchors.fill: parent
+
+    Component.onCompleted: {
+        controller.orderUpdate_UI();
+    }
+
+    Connections {
+        target: controller
+        function onOrderUpdateResult_UI(list){
+            transaction.order = list;
+            rootWindow.isSaveTransaction = !(list.length > 0);
+        }
+    }
+
     Rectangle {
         id: customerInfo
         width: parent.width*0.9
@@ -118,7 +132,8 @@ Item {
                 spacing: 16
                 
                 Repeater {
-                    model: rootWindow.productListOfOrder
+
+                    model : transaction.order
                     Rectangle {
                         width: customerInfo.width
                         height: Math.min(transaction.height*0.2, 100)
@@ -127,12 +142,45 @@ Item {
                         border.color: "white"
                         border.width: 1
 
-                        Text {
-                            anchors.centerIn: parent
-                            text: "Sản phẩm: " +  modelData.productName
-                            color: "black"
-                            font.pixelSize: 16
+                        Rectangle {
+                            width: parent.width*0.3
+                            height: parent.height
+                            anchors.left: parent.left
+                            anchors.leftMargin: parent.width*0.05
+                            anchors.verticalCenter: parent.verticalCenter
+                            color: "transparent"
+
+                            Column {
+                                spacing: 10
+                                anchors.verticalCenter: parent.verticalCenter
+                                
+                                Text {
+                                    
+                                    text: "Sản phẩm: " +  modelData.productName
+                                    color: "black"
+                                    font.pixelSize: 16
+                                }
+
+                                Text {
+                                    
+                                    text: "Số lượng: " +  modelData.numOfItem
+                                    color: "black"
+                                    font.pixelSize:  16
+                                }
+
+                            }
+
                         }
+
+                        Rectangle {
+                            width: parent.width*0.3
+                            height: parent.height
+                            anchors.left: parent.left
+                            anchors.leftMargin: parent.width*0.35
+                            anchors.verticalCenter: parent.verticalCenter
+                            color: "transparent"
+                        }
+
 
                         Rectangle{
                             id: deleteProductChoice
@@ -194,7 +242,11 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
             onClicked:{
-                deleteOrder.open()
+                if(transaction.order.length === 0){
+                    rootWindow.notification.showNotification("Đơn hàng rỗng")
+                }else{
+                    deleteOrder.open()
+                }
             }
         }
     }
@@ -255,7 +307,11 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
             onClicked: {
-                orderComfirm.open()
+                if(transaction.order.length === 0){
+                    rootWindow.notification.showNotification("Đơn hàng rỗng")
+                }else{
+                    orderComfirm.open()
+                }
             }
         }
     }
@@ -267,6 +323,33 @@ Item {
         anchors.centerIn: parent
         visible: false
         onAccepted: {
+            controller.requestOrderCommand("ADD", "0982181002", "24-05-2025");
+        }
+    }
+
+    Dialog {
+        id: continueCreateTransaction
+        title: "Bạn muốn tiếp tục giao dịch?"
+        standardButtons: Dialog.Yes | Dialog.No
+        anchors.centerIn: parent
+        visible: false
+        onAccepted: {
+            controller.orderUpdate_UI();
+        }
+        onRejected:{
+            drawerLoader.source = "components/MainDrawer.qml"
+            pageLoader.source = "components/Dashboard.qml"
+            rootWindow.currentNavigation =  "Bảng thông tin"
+        }
+    }
+
+    Connections {
+        target: controller
+        function onOrderCommandResult(done, cmd){
+            if(cmd === "ADD"){
+                rootWindow.notification.showNotification("Thêm đơn hàng thành công")
+                continueCreateTransaction.open()
+            }
 
         }
     }
@@ -279,6 +362,7 @@ Item {
         visible: false
         onAccepted: {
             controller.requestCommandOrder_UI("DELETE")
+            controller.orderUpdate_UI();
         }
     }
 
@@ -287,7 +371,6 @@ Item {
         target: controller
         function onRequestCommandOrderResult_UI(result, cmd){
             if(cmd === "DELETE"){
-                rootWindow.productListOfOrder = []
                 rootWindow.notification.showNotification("Xoá đơn hàng thành công")
             }
         }

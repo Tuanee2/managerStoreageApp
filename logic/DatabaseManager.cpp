@@ -299,7 +299,47 @@ QList<Batch*> DatabaseManager::getBatchByPage(const QString& productName, int nu
     query.bindValue(":offset", offset);
 
     if (!query.exec()) {
-        qWarning() << "Failed to fetch batches by page for product:" << productName << "-" << query.lastError().text();
+        qWarning() << "Failed to fetch batches by page for batch:" << productName << "-" << query.lastError().text();
+        return list;
+    }
+
+    while (query.next()) {
+        Batch* b = new Batch();
+        b->setQuantity(query.value(1).toInt());
+        b->setCost(query.value(2).toFloat());
+        b->setImportDate(QDateTime::fromString(query.value(3).toString(), "dd-MM-yyyy").date().startOfDay());
+        b->setExpiryDate(QDateTime::fromString(query.value(4).toString(), "dd-MM-yyyy").date().startOfDay());
+        list.append(b);
+    }
+
+    return list;
+}
+
+QList<Batch*> DatabaseManager::getBatchByExpiredDate(const QString& productName, const QString& expiredDate, int numpage){
+    QList<Batch*> list;
+    QSqlQuery query;
+    
+    if(numpage == -1){
+        query.prepare("SELECT product_name, quantity, cost, import_date, expiry_date "
+                    "FROM product_batches "
+                    "WHERE expiry_date = :expiry_date ");
+        query.bindValue(":expiry_date", expiredDate);
+        
+    }else{
+        int limit = 6;
+        int offset = numpage * limit;
+
+        query.prepare("SELECT product_name, quantity, cost, import_date, expiry_date "
+                    "FROM product_batches "
+                    "WHERE expiry_date = :expiry_date "
+                    "LIMIT :limit OFFSET :offset");
+        query.bindValue(":expiry_date", expiredDate);
+        query.bindValue(":limit", limit);
+        query.bindValue(":offset", offset);
+    }
+
+    if (!query.exec()) {
+        qWarning() << "Failed to fetch batches by page for batch:" << productName << "-" << query.lastError().text();
         return list;
     }
 

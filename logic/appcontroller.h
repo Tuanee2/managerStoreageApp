@@ -25,14 +25,14 @@ signals:
     void requestCommandOrderResult_UI(bool result, const QString& cmd);
 
 public:
-    Q_INVOKABLE void addProductToOrder_UI(const QString& productName);
+    Q_INVOKABLE void requestCommandBatchToOrder_UI(const QString& cmd, const QString& productName, const QVariantList& batchList);
 signals:
-    void addProductToOrderResult_UI(bool result);
+    void requestCommandBatchToOrderResult_UI(bool result, const QString& cmd);
 
 public:
-    Q_INVOKABLE void addBatchToOrder_UI(const QString& productName, const QString& expiredDate, const QString& importDate, int quantity);
+    Q_INVOKABLE void orderUpdate_UI();
 signals:
-    void addBatchToOrderResult_UI(bool result);
+    void orderUpdateResult_UI(QList<QVariantMap> list);
 
 
 // ************************************************************************************************************************
@@ -127,11 +127,11 @@ public slots:
 
 // *********< Lấy danh sách các lô sản phẩm >*********
 public: 
-    Q_INVOKABLE void requestBatchList(const QString& cmd, const QString& productName, int numPage);
-    Q_INVOKABLE void requestBatchList(const QString& cmd, const QString& cmdExtension, const QString& productName, int numPage);
+    Q_INVOKABLE void requestBatchList(const QString& cmd, const QString& productName, const QString& keyword, int numPage);
+    Q_INVOKABLE void requestBatchList(const QString& cmd, const QString& cmdExtension, const QString& productName, const QString& keyword, int numPage);
 signals:
     // for database thread
-    void batchListRequested(cmdContext cmd, const QString& name, int numPage);
+    void batchListRequested(cmdContext cmd, const QString& name, const QString& keyword, int numPage);
     // for UI
     void batchListReady(QList<QVariantMap> list, const QString& cmd);
     
@@ -179,11 +179,11 @@ public slots:
 // <<<<<<<<<< FOR ORDERS >>>>>>>>>>
 // **********< thêm / sửa / xoá đơn hàng>**********
 public: 
-    Q_INVOKABLE void requestOrderCommand(const QString& cmd, const QString& phoneNumber, const QString& dateExport, const QString& data);
+    Q_INVOKABLE void requestOrderCommand(const QString& cmd, const QString& phoneNumber, const QString& dateExport);
 
 signals:
     // for database thread
-    void orderCommand(cmdContext cmd, const QString& phoneNumber, Order order);
+    void orderCommandRequested(cmdContext cmd, const QJsonObject& data);
     // for UI
     void orderCommandResult(bool done, const QString& cmd);
 

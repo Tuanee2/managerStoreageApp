@@ -18,7 +18,7 @@ Item {
 
     Component.onCompleted: {
         controller.requestProductList("ONE", productName, 0)
-        controller.requestBatchList("LIST", productName, productDetail.currentPage)
+        controller.requestBatchList("LIST", productName, "", productDetail.currentPage)
     }
 
     function updatePageFlags(batchListSize) {
@@ -265,7 +265,7 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         productDetail.currentPage--
-                        controller.requestBatchList("LIST", productName, productDetail.currentPage)
+                        controller.requestBatchList("LIST", productName, "", productDetail.currentPage)
                     }
                     
                 }
@@ -315,7 +315,7 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         productDetail.currentPage++
-                        controller.requestBatchList("LIST", productName, productDetail.currentPage)
+                        controller.requestBatchList("LIST", productName, "", productDetail.currentPage)
                         console.log("Received batch list. Size:")
                     }
 

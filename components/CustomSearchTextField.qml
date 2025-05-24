@@ -18,6 +18,8 @@ Rectangle {
     property bool isClick: false 
     property bool isEnable: false
 
+    property bool isCreateTransaction: false
+
     signal suggestionSelected(string text)
 
     ListModel {
@@ -96,10 +98,17 @@ Rectangle {
                         root.suggestionSelected(model.name)
                         suggestionPopup.close()
                         if(root.target === "PRODUCT"){
-                            pageLoader.setSource("ProductForm.qml", {
-                                productName: model.name
-                            })
-                            drawerLoader.source = "components/ProductDrawer.qml"
+                            if(!root.isCreateTransaction){
+                                pageLoader.setSource("ProductFormForTransaction.qml", {
+                                    productName: model.name
+                                })
+                                drawerLoader.source = "components/TransactionDrawer.qml"
+                            }else{
+                                pageLoader.setSource("ProductForm.qml", {
+                                    productName: model.name
+                                })
+                                drawerLoader.source = "components/ProductDrawer.qml"
+                            }
                         } else {
 
                         }
