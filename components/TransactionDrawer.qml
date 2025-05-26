@@ -74,18 +74,6 @@ Item {
                 anchors.fill: parent
                 hoverEnabled: true
 
-                onEntered:{
-
-                }
-
-                onExited:{
-
-                }
-
-                onReleased:{
-
-                }
-
                 onClicked: {
                     if(rootWindow.isTransactionProductSelect){
                         rootWindow.isTransactionProductSelect = false

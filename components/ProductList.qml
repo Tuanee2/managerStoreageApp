@@ -133,7 +133,7 @@ Item {
 
                 delegate: Rectangle {
                     width: productList.width*0.85/2
-                    height: productList.height * 0.1
+                    height: productList.height * 0.08
                     radius: 8
                     color: Qt.rgba( 1, 1, 1, 0.3)
                     border.color: Qt.rgba( 1, 1, 1, 0.5)
@@ -177,12 +177,12 @@ Item {
 
                         background: Rectangle{
                             anchors.fill: parent
-                            color: madetailhButton.containsMouse ? Qt.rgba(1, 1, 1, 0.3) : "transparent"
+                            color: madetailhButton.containsMouse ? Qt.rgba(200/255, 180/255, 80/255, 0.4) : "transparent"
                             radius: 8
                         }
 
                         icon.source: "qrc:/images/Icon/file-circle-info.svg"
-                        icon.color: "white"
+                        icon.color: madetailhButton.containsMouse ? Qt.rgba(240/255, 200/255, 100/255, 1) : "white"
 
                         MouseArea{
                             id: madetailhButton

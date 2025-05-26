@@ -6,6 +6,7 @@
 typedef enum{
     ADD,
     DELETE,
+    UPDATE,
     SEARCH,
     LIST,
     ONE,

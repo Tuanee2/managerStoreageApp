@@ -86,6 +86,11 @@ appcontroller::appcontroller(storeage* store, QObject* parent)
     connect(m_store, &storeage::orderCommandResult,
         this, &appcontroller::onOrderCommandResult, Qt::QueuedConnection);
 
+    connect(this, &appcontroller::orderListRequested,
+        m_store, &storeage::handleOrderListRequest, Qt::QueuedConnection);
+
+    connect(m_store, &storeage::orderListReady,
+        this, &appcontroller::onOrderListReady, Qt::QueuedConnection);
     // ****************************************
 
 }
@@ -100,7 +105,7 @@ void appcontroller::requestCommandOrder_UI(const QString& cmd){
     emit requestCommandOrderResult_UI(true, cmd);
 }
 
-void appcontroller::requestCommandBatchToOrder_UI(const QString& cmd, const QString& productName, const QVariantList& batchList){
+void appcontroller::requestCommandBatchToOrder_UI(const QString& cmd, const QString& productName, int costOfProduct, const QVariantList& batchList){
     if(cmd == "ADD"){
         Products* product = nullptr;
         for (Products* p : order.getListItem()) {
@@ -114,6 +119,7 @@ void appcontroller::requestCommandBatchToOrder_UI(const QString& cmd, const QStr
         if (!product) {
             product = new Products();
             product->setProductName(productName);
+            product->setCost(costOfProduct);
             order.getListItem().append(product);
         }
 
@@ -125,7 +131,9 @@ void appcontroller::requestCommandBatchToOrder_UI(const QString& cmd, const QStr
             batch->setQuantity(b["quantity"].toInt());
             batch->setCost(b["cost"].toDouble());
             batch->setImportDate(QDateTime::fromString(b["importdate"].toString(), "dd-MM-yyyy"));
+            qDebug() << QDateTime::fromString(b["importdate"].toString(), "dd-MM-yyyy");
             batch->setExpiryDate(QDateTime::fromString(b["expireddate"].toString(), "dd-MM-yyyy"));
+            qDebug() << QDateTime::fromString(b["expireddate"].toString(), "dd-MM-yyyy");
             product->getBatchList().append(batch);
         }
     }
@@ -313,7 +321,6 @@ void appcontroller::requestOrderCommand(const QString& cmd, const QString& phone
     order.setPurchaseTime(QDateTime::fromString(dateExport, "dd-MM-yyyy"));
     QJsonObject data = order.toJson();
     order.clean();
-    qDebug() << "1";
     emit orderCommandRequested(CMD, data);
 }
 
@@ -321,12 +328,18 @@ void appcontroller::onOrderCommandResult(bool done, cmdContext cmd){
     emit orderCommandResult(done, CmdToQString(cmd.cmd));
 }
 
-void appcontroller::requestOrderList(const QString& cmd, const QString& dateBegin, const QString& dateEnd, int numPage){
+void appcontroller::requestOrderList(const QString& cmd, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage){
+    cmdContext CMD;
+    CMD.cmd = QStringToCmd(cmd);
+    emit orderListRequested(CMD, "", dateBegin, dateEnd, numOfOrder, numPage);
+}
+
+void appcontroller::requestOrderList(const QString& cmd, const QString& keywword, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage){
 
 }
 
 void appcontroller::onOrderListReady(QList<QVariantMap> list, cmdContext cmd){
-
+    emit orderListReady(list, CmdToQString(cmd.cmd));
 }
 
 // ****************************************

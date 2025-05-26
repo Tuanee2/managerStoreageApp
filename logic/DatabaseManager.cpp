@@ -65,9 +65,10 @@ bool DatabaseManager::initialize(){
         QString createOrdersTableQuery = 
             "CREATE TABLE IF NOT EXISTS orders ("
             "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            "product_name TEXT NOT NULL,"
-            "data TEXT NOT NULL,"
+            "customer_name TEXT NOT NULL,"
+            "phone_number TEXT NOT NULL,"
             "export_date TEXT NOT NULL,"
+            "data TEXT NOT NULL,"
             "notes TEXT NOT NULL"
             ")";
 
@@ -128,6 +129,42 @@ bool DatabaseManager::addBatch(const QString& productName, const Batch& batch) {
     return true;
 }
 
+bool DatabaseManager::updateBatch(const QString& productName, const Batch& batch) {
+    int currentQuantity = 0;
+    QSqlQuery selectQuery;
+    selectQuery.prepare("SELECT quantity FROM product_batches WHERE product_name = ? AND import_date = ? AND expiry_date = ?");
+    selectQuery.addBindValue(productName);
+    selectQuery.addBindValue(batch.getImportDate().toString("dd-MM-yyyy"));
+    selectQuery.addBindValue(batch.getExpiryDate().toString("dd-MM-yyyy"));
+
+    if (selectQuery.exec() && selectQuery.next()) {
+        currentQuantity = selectQuery.value(0).toInt();
+    } else {
+        qWarning() << "❌ Không tìm thấy lô hàng để cập nhật.";
+        return false;
+    }
+
+    int newQuantity = currentQuantity - batch.getQuantity();
+    if (newQuantity < 0) {
+        qWarning() << "❌ Số lượng cập nhật âm!";
+        return false;
+    }
+
+    QSqlQuery updateQuery;
+    updateQuery.prepare("UPDATE product_batches SET quantity = ? WHERE product_name = ? AND import_date = ? AND expiry_date = ?");
+    updateQuery.addBindValue(newQuantity);
+    updateQuery.addBindValue(productName);
+    updateQuery.addBindValue(batch.getImportDate().toString("dd-MM-yyyy"));
+    updateQuery.addBindValue(batch.getExpiryDate().toString("dd-MM-yyyy"));
+
+    if (!updateQuery.exec()) {
+        qWarning() << "❌ Lỗi khi cập nhật số lượng lô hàng:" << updateQuery.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
 // ****< xoá sản phẩm >****
 bool DatabaseManager::deleteProduct(const QString& pro){
     QSqlQuery query;
@@ -157,7 +194,7 @@ bool DatabaseManager::deleteProduct(const QString& pro){
 QList<Products*> DatabaseManager::getProductsByPage(int numPage) {
     QList<Products*> list;
     QSqlQuery query;
-    int limit = 12;
+    int limit = 14;
     int offset = numPage * limit;
 
     query.prepare("SELECT product_id, product_name, cost, is_value, description FROM products "
@@ -602,4 +639,151 @@ QList<Customer*> DatabaseManager::getACustomerByYearOfBirth(const QString& yearO
     }
 
     return list;
+}
+
+bool DatabaseManager::insertOrder(Order& order){
+    QSqlQuery query;
+    query.prepare("INSERT INTO orders (customer_name, phone_number, export_date, data, notes) "
+                  "VALUES (?, ?, ?, ?, ?)");
+    query.addBindValue(order.getCustomerName());
+    query.addBindValue(order.getCustomerPhoneNumber());
+    query.addBindValue(order.getPurchaseTime().toString("dd-MM-yyyy"));
+    query.addBindValue(Order::itemToQString(order.getListItem()));
+    query.addBindValue("Ghi chú"); // hoặc order.getNote() nếu có
+
+    if (!query.exec()) {
+        qWarning() << "❌ Lỗi khi thêm đơn hàng:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+bool DatabaseManager::deleteOrder(const QString& customerName, const QString& phoneNumber, const QDateTime& purchaseTime){
+    QSqlQuery query;
+    QString sql = "DELETE FROM orders WHERE 1=1";
+    if(!customerName.isEmpty()){
+        sql += " AND customer_name = :customerName";
+    }
+    if(!phoneNumber.isEmpty()){
+        sql += " AND phone_number = :phoneNumber";
+    }
+    if(!purchaseTime.isValid()){
+        sql += " AND export_date = :purchaseTime";
+    }
+
+    query.prepare(sql);
+
+    if(!customerName.isEmpty()){
+        query.bindValue(":customerName", customerName);
+    }
+    if(!phoneNumber.isEmpty()){
+        query.bindValue(":phoneNumber", phoneNumber);
+    }
+    if(!purchaseTime.isValid()){
+         query.bindValue(":purchaseTime", purchaseTime.toString("dd-MM-yyyy"));
+    }
+
+    if (!query.exec()) {
+        qWarning() << "❌ Lỗi khi xoá đơn hàng:" << query.lastError().text();
+        return false;
+    }
+    return query.numRowsAffected() > 0;
+}
+
+QList<Order*> DatabaseManager::getOrder(const QString& customerName, const QString& phoneNumber, const QDateTime& purchaseTime, int numOfOrder, int numpage){
+    QList<Order*> list;
+    QSqlQuery query;
+    QString sql = "SELECT customer_name, phone_number, export_date, data, notes FROM orders WHERE 1=1";
+
+    if (!customerName.isEmpty()) {
+        sql += " AND customer_name = :customer_name";
+    }
+    if (!phoneNumber.isEmpty()) {
+        sql += " AND phone_number = :phone_number";
+    }
+    if (purchaseTime.isValid()) {
+        sql += " AND export_date = :export_date";
+    }
+
+    sql += " LIMIT :limit OFFSET :offset";
+
+    query.prepare(sql);
+
+    if (!customerName.isEmpty()) {
+        query.bindValue(":customer_name", customerName);
+    }
+    if (!phoneNumber.isEmpty()) {
+        query.bindValue(":phone_number", phoneNumber);
+    }
+    if (purchaseTime.isValid()) {
+        query.bindValue(":export_date", purchaseTime.toString("dd-MM-yyyy"));
+    }
+
+    query.bindValue(":limit", numOfOrder);
+    query.bindValue(":offset", numpage * numOfOrder);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to fetch order:" << query.lastError().text();
+        return list;
+    }
+
+    while (query.next()) {
+        Order* o = new Order();
+        o->setCustomerName(query.value(0).toString());
+        o->setCustomerPhoneNumber(query.value(1).toString());
+        o->setPurchaseTime(QDateTime::fromString(query.value(2).toString(), "dd-MM-yyyy"));
+        o->QStringToItems(query.value(3).toString());
+        list.append(o);
+    }
+
+    return list;
+}
+
+QList<Order*> DatabaseManager::getOrderByPage(cmdContext cmd, const QString& keywword, int numOfOrder,int numpage){
+    QList<Order*> list;
+    QSqlQuery query;
+    QString sql;
+    if(!keywword.isEmpty()){
+        if(cmd.typelist == type_of_list::NAME){
+
+        }else if(cmd.typelist == type_of_list::PHONENUMBER){
+
+        }
+    }else{
+        sql = "SELECT customer_name, phone_number, export_date, data, notes FROM orders "
+              "LIMIT :limit OFFSET :offset";
+    }
+
+    query.prepare(sql);
+
+    if(!keywword.isEmpty()){
+        if(cmd.typelist == type_of_list::NAME){
+
+        }else if(cmd.typelist == type_of_list::PHONENUMBER){
+
+        }
+    }else{
+        query.bindValue(":limit", numOfOrder);
+        query.bindValue(":offset", numpage * numOfOrder);
+    }
+
+    if(!query.exec()){
+        qWarning() << "Failed to fetch orders by page for order";
+        return list;
+    }
+
+    while(query.next()){
+        Order* order = new Order();
+        order->setCustomerName(query.value(0).toString());
+        order->setCustomerPhoneNumber(query.value(1).toString());
+        order->setPurchaseTime(QDateTime::fromString(query.value(2).toString(), "dd-MM-yyyy"));
+        order->setListItem(Order::QStringToItems(query.value(3).toString()));
+        list.append(order);
+    }
+
+    return list;
+}
+
+QList<Order*> DatabaseManager::getOrderByPeriod(const QString& customerName, const QString& phoneNumber, int numOfOrder,int numpage){
+
 }

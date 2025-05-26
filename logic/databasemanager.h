@@ -9,6 +9,8 @@
 #include <QFile>
 #include "products.h"
 #include "customer.h"
+#include "order.h"
+#include "configcommand.h"
 
 class DatabaseManager : public QObject
 {
@@ -34,6 +36,7 @@ public:
 
     // ************< FOR BATCHES >**********
     bool addBatch(const QString& productName, const Batch& batch);
+    bool updateBatch(const QString& productName, const Batch& batch);
     QList<Batch*> getBatchByPage(const QString& productName, int numPage);
     QList<Batch*> getBatchByExpiredDate(const QString& productName, const QString& expiredDate, int numpage);
 
@@ -52,6 +55,14 @@ public:
     QList<Customer*> getACustomerByName(const QString& name);
     QList<Customer*> getACustomerByPhoneNumber(const QString& phone);
     QList<Customer*> getACustomerByYearOfBirth(const QString& yearOfBirth);
+    // ************************************
+
+    // **********< FOR ORDERS >**********
+    bool insertOrder(Order& order);
+    bool deleteOrder(const QString& customerName, const QString& phoneNumber, const QDateTime& purchaseTime);
+    QList<Order*> getOrder(const QString& customerName, const QString& phoneNumber, const QDateTime& purchaseTime, int numOfOrder, int numpag);
+    QList<Order*> getOrderByPage(cmdContext cmd, const QString& keywword, int numOfOrder,int numpage);
+    QList<Order*> getOrderByPeriod(const QString& customerName, const QString& phoneNumber, int numOfOrder,int numpage);
     // ************************************
 };
 

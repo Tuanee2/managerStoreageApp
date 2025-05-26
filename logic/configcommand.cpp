@@ -5,6 +5,8 @@ Cmd QStringToCmd(const QString& cmd){
         return Cmd::ADD;
     }else if(cmd == "DELETE"){
         return Cmd::DELETE;
+    }else if(cmd == "UPDATE"){
+        return Cmd::UPDATE;
     }else if(cmd == "SEARCH"){
         return Cmd::SEARCH;
     }else if(cmd == "LIST"){
@@ -25,6 +27,8 @@ QString CmdToQString(Cmd cmd){
         return "ADD";
     }else if(cmd == Cmd::DELETE){
         return "DELETE";
+    }else if(cmd == Cmd::UPDATE){
+        return "UPDATE";
     }else if(cmd == Cmd::SEARCH){
         return "SEARCH";
     }else if(cmd == Cmd::LIST){

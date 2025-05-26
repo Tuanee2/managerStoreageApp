@@ -15,6 +15,8 @@ Item {
     property int itemsPerPage: 6
     property bool isLeft: false
     property bool isRight: false
+    property string updateName: ""
+    property int updatecost: 0
 
     Component.onCompleted: {
         controller.requestProductList("ONE", productName, 0)
@@ -31,6 +33,8 @@ Item {
         function onProductListReady(list, cmd) {
             if(cmd === "ONE"){
                 productDetail.products = list
+                productDetail.updateName = list[0].productName
+                productDetail.updatecost = list[0].cost
             }
         }
     }
@@ -59,76 +63,140 @@ Item {
 
             property bool editEnabled: false
 
-            Row {
-                anchors.fill: parent
-                anchors.margins: 10
-                spacing: 20
+            Rectangle{
+                width: parent.width*0.3
+                height: parent.height*0.4
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.topMargin: parent.height*0.05
+                radius: 10
+                color: "white"
 
-                // Left section: Name and Price fields
-                Row {
-                    spacing: 20
-                    width: parent.width * 0.65
+                Text {
+                    width: parent.width*0.3
+                    height: parent.height
+                    anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
-
-                    Column {
-                        spacing: 4
-                        Text {
-                            text: "Tên sản phẩm:"
-                            color: "white"
-                            font.pixelSize: 16
-                        }
-                        TextField {
-                            id: productNameField
-                            width: parent.width * 0.4
-                            enabled: baseInfo.editEnabled
-                            text: productDetail.products.length > 0 ? productDetail.products[0].product_name : ""
-                            onTextChanged: {
-                                if (productDetail.products.length > 0)
-                                    productDetail.products[0].product_name = text
-                            }
-                        }
-                    }
-
-                    Column {
-                        spacing: 4
-                        Text {
-                            text: "Giá:"
-                            color: "white"
-                            font.pixelSize: 16
-                        }
-                        TextField {
-                            id: productPriceField
-                            width: parent.width * 0.3
-                            inputMethodHints: Qt.ImhFormattedNumbersOnly
-                            validator: DoubleValidator { bottom: 0.0 }
-                            enabled: baseInfo.editEnabled
-                            text: productDetail.products.length > 0 ? productDetail.products[0].cost.toString() : ""
-                            onTextChanged: {
-                                if (productDetail.products.length > 0)
-                                    productDetail.products[0].cost = parseFloat(text)
-                            }
-                        }
-                    }
+                    color: "black"
+                    text: "Tên :"
+                    font.pixelSize: parent.height*0.4
                 }
 
-                // Right section: Lock/Unlock and Confirm buttons
-                Row {
-                    spacing: 10
-                    width: parent.width * 0.3
-                    anchors.verticalCenter: parent.verticalCenter
+                TextField {
+                    id: nameField
+                    width: parent.width*0.7
+                    height: parent.height
                     anchors.right: parent.right
+                    text: productDetail.updateName
+                    readOnly: !baseInfo.editEnabled
+                    color: "black"
+                    font.pixelSize: parent.height*0.4
+                }
 
-                    Button {
-                        text: baseInfo.editEnabled ? "Khóa" : "Mở khóa"
-                        onClicked: baseInfo.editEnabled = !baseInfo.editEnabled
+            }
+
+            Rectangle{
+                width: parent.width*0.3
+                height: parent.height*0.4
+                anchors.left: parent.left
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: parent.height*0.05
+                radius: 10
+                color: "white"
+
+                Text {
+                    width: parent.width*0.3
+                    height: parent.height
+                    anchors.left: parent.left
+                    anchors.verticalCenter: parent.verticalCenter
+                    color: "black"
+                    text: "Giá :"
+                    font.pixelSize: parent.height*0.4
+                }
+
+                TextField {
+                    id: costField
+                    width: parent.width*0.7
+                    height: parent.height
+                    anchors.right: parent.right
+                    text: productDetail.updatecost
+                    readOnly: !baseInfo.editEnabled
+                    color: "black"
+                    font.pixelSize: parent.height*0.4
+                }
+
+            }
+
+            Rectangle{
+
+            }
+
+            // 
+            Rectangle{
+                id: lockUpdateInfo
+                width: parent.width*0.15
+                height:parent.height*0.4
+                anchors.right: parent.right
+                anchors.top : parent.top
+                anchors.topMargin: parent.height*0.05
+                radius: 8
+                color: baseInfo.editEnabled ? 
+                    (malockUpdateInfo.containsMouse ? Qt.rgba( 73/255, 145/255, 230/255, 1) : Qt.rgba( 53/255, 125/255, 210/255, 1) ) : 
+                    (malockUpdateInfo.containsMouse ? Qt.rgba(1, 1, 1, 0.5) : Qt.rgba(1, 1, 1, 0.2))
+
+                Text {
+                    anchors.centerIn: parent
+                    text: baseInfo.editEnabled ? "Khoá" : "Mở khoá"
+                    color: "white" 
+                    font.pixelSize: parent.height*0.4
+
+                }
+
+                MouseArea{
+                    id:malockUpdateInfo
+                    anchors.fill: parent
+                    hoverEnabled: true
+
+                    onClicked: {
+                        productDetail.updateName = productDetail.products[0].productName
+                        productDetail.updatecost = productDetail.products[0].cost
+                        nameField.text = productDetail.products[0].productName
+                        costField.text = productDetail.products[0].cost
+                        baseInfo.editEnabled = !baseInfo.editEnabled
                     }
+                }
+            }
 
-                    Button {
-                        text: "Xác nhận"
-                        enabled: baseInfo.editEnabled
-                        onClicked: {
-                            console.log("Xác nhận:", productNameField.text, productPriceField.text)
-                            baseInfo.editEnabled = false
+            Rectangle{
+                id: updateInfo
+                width: parent.width*0.15
+                height:parent.height*0.4
+                anchors.right: parent.right
+                anchors.bottom : parent.bottom
+                anchors.bottomMargin: parent.height*0.05
+                radius: 8
+                color: baseInfo.editEnabled ? 
+                    (maupdateInfo.containsMouse ? Qt.rgba( 73/255, 145/255, 230/255, 1) : Qt.rgba( 53/255, 125/255, 210/255, 1) ) : 
+                    Qt.rgba(1, 1, 1, 0.2)
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "Cập nhật"
+                    color: baseInfo.editEnabled ? "white" : "black"
+                    font.pixelSize: parent.height*0.4
+
+                }
+
+                MouseArea{
+                    id:maupdateInfo
+                    anchors.fill: parent
+                    hoverEnabled: true
+
+                    onClicked: {
+                        if(baseInfo.editEnabled){
+                            baseInfo.editEnabled = !baseInfo.editEnabled
+                        }else{
+                             rootWindow.notification.showNotification("⚠️ Nhấn mở khoá để cập nhật !!!");
                         }
                     }
                 }

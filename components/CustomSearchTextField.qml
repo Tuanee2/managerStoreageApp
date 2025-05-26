@@ -103,13 +103,14 @@ Rectangle {
                                     productName: model.name
                                 })
                                 drawerLoader.source = "components/TransactionDrawer.qml"
-                            }else{
+                            }else {
                                 pageLoader.setSource("ProductForm.qml", {
                                     productName: model.name
                                 })
                                 drawerLoader.source = "components/ProductDrawer.qml"
                             }
-                        } else {
+                        } else if (root.target === "PRODUCT" && root.targetExtension === "PHONENUMBER"){
+                            root.suggestionSelected(model.name, model.phone_number);
 
                         }
 

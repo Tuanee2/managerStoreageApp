@@ -221,11 +221,41 @@ void storeage::handleCustomerListRequest(cmdContext cmd, const QString& keyword,
 
 // <<<<<<<<<< FOR ORDER >>>>>>>>>>
 void storeage::handleOrderCommand(cmdContext cmd, const QJsonObject& data){
+    Order* order = Order::fromJson(data);
     if(cmd.cmd == Cmd::ADD){
-        Order order;
-        order.fromJson(data);
-        qDebug() << "2";
+        for(Products* p : order->getListItem()){
+            for(Batch* b : p->getBatchList()){
+                db->updateBatch(p->getProductName(), *b);
+            }
+        }
+        db->insertOrder(*order); 
+
+    }else if(cmd.cmd == Cmd::DELETE){
+        db->deleteOrder(order->getCustomerName(), order->getCustomerPhoneNumber(), order->getPurchaseTime());
+
     }
-    qDebug() << "3";
+    delete order;
     emit orderCommandResult(true, cmd);
+}
+
+
+
+void storeage::handleOrderListRequest(cmdContext cmd, const QString& keyword, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage){
+    QList<Order*> fetchedOrders;
+    fetchedOrders = db->getOrderByPage(cmd, keyword, numOfOrder, numPage);
+
+    QList<QVariantMap> result;
+
+    for(Order* order : fetchedOrders){
+        QVariantMap item;
+        item["customer_name"] = order->getCustomerName();
+        item["phone_number"] = order->getCustomerPhoneNumber();
+        item["purchase_time"] = order->getPurchaseTime();
+        item["data"] = Order::itemToQString(order->getListItem());
+        result.append(item);
+        delete order;
+    }
+
+    emit orderListReady(result, cmd);
+
 }

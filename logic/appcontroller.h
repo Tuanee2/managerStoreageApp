@@ -25,7 +25,7 @@ signals:
     void requestCommandOrderResult_UI(bool result, const QString& cmd);
 
 public:
-    Q_INVOKABLE void requestCommandBatchToOrder_UI(const QString& cmd, const QString& productName, const QVariantList& batchList);
+    Q_INVOKABLE void requestCommandBatchToOrder_UI(const QString& cmd, const QString& productName, int costOfProduct,const QVariantList& batchList);
 signals:
     void requestCommandBatchToOrderResult_UI(bool result, const QString& cmd);
 
@@ -194,11 +194,12 @@ public slots:
 
 // *********< Lấy danh sách đơn hàng >*********
 public:
-    Q_INVOKABLE void requestOrderList(const QString& cmd, const QString& dateBegin, const QString& dateEnd, int numPage);
+    Q_INVOKABLE void requestOrderList(const QString& cmd, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage);
+    Q_INVOKABLE void requestOrderList(const QString& cmd, const QString& keywword, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage);
 
 signals:
     // for database thread
-    void orderListRequested(cmdContext cmd, const QString& dateBegin, const QString& dateEnd, int numPage);
+    void orderListRequested(cmdContext cmd, const QString& keyword, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage);
     // for UI
     void orderListReady(QList<QVariantMap> list, const QString& cmd);
 

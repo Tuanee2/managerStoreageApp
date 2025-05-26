@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QJsonObject>
 #include "products.h"
+#include <QJsonDocument>
 
 class Order : public QObject
 {
@@ -32,6 +33,7 @@ public:
     QList<Products*>& getListItem();
     void setListItem(const QList<Products*>& item);
     static QList<Products*> QStringToItems(const QString& data);
+    static QString itemToQString(const QList<Products*>& item);
     double getTotalPrice() const;
     void clean();
 

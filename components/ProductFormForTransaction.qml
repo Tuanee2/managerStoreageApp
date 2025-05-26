@@ -5,6 +5,7 @@ import QtQuick.Controls.Material
 Item {
     id: batchlist4trans
     property string productName: ""
+    property int costOfProduct: 0
 
     property var batches: []
     property var batchesSelected: []
@@ -348,14 +349,14 @@ Item {
                     batchlist.push({
                         "quantity": quan,
                         "cost": batches[i].cost,
-                        "importdate": batches[i].importdate,
-                        "expireddate": batches[i].expireddate
+                        "importdate": Qt.formatDate(new Date(batches[i].importdate), "dd-MM-yyyy"),
+                        "expireddate": Qt.formatDate(new Date(batches[i].expireddate), "dd-MM-yyyy")
                     })
                     
                 }
                 
             }
-            controller.requestCommandBatchToOrder_UI("ADD", batchlist4trans.productName, batchlist)
+            controller.requestCommandBatchToOrder_UI("ADD", batchlist4trans.productName, batchlist4trans.costOfProduct, batchlist)
             
         }
     }

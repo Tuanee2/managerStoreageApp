@@ -326,6 +326,7 @@ Item {
 
                 onClicked: {
                     rootWindow.currentNavigation = "Lịch sử giao dịch"
+                    pageLoader.source = "components/TransactionHistory.qml"
 
                 }
             }

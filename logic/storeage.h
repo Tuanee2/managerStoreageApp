@@ -104,6 +104,10 @@ public slots:
 signals:
     void orderCommandResult(bool done, cmdContext cmd);
 
+public slots:
+    void handleOrderListRequest(cmdContext cmd, const QString& keyword, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage);
+signals:
+    void orderListReady(QList<QVariantMap> list, cmdContext cmd);
 // ****************************************
 
 };

@@ -113,7 +113,8 @@ Item {
                             rootWindow.isTransactionBatchSelect = true
                             rootWindow.isTransactionProductSelect = false
                             pageLoader.setSource("ProductFormForTransaction.qml", {
-                                productName: modelData["productName"]
+                                productName: modelData["productName"],
+                                costOfProduct: modelData["cost"]
                             })
                         }
                     }

@@ -33,11 +33,17 @@ Window {
     property bool isTransactionBatchSelect: false
     property bool isSaveTransaction: false
 
+    // param for notification
+    property int numOfNotification: 0
+    property int numOfDateToExpired: 30
+
 
     property bool productSearch: false
     property bool cutomerSearch:false
 
     property var batchListOfOrder: []
+
+
 
     // Ảnh nền
     Image {
@@ -120,6 +126,7 @@ Window {
 
             Rectangle {
                 id: content
+                //focus: true
                 width: parent.width
                 height: Math.max(parent.height*0.8, parent.height - 120)
                 anchors.bottom: parent.bottom
@@ -468,21 +475,53 @@ Window {
                 }
             }
 
-            Button {
+            Rectangle{
+
                 width: Math.min(contentArea.width*0.05, 60)
                 height: Math.min(contentArea.width*0.05, 60)
                 anchors.top: parent.top
                 anchors.topMargin: Math.min(parent.height*0.075, 30)
                 anchors.right: parent.right
                 anchors.rightMargin: parent.width*0.05
-                background: Rectangle{
+                color: "transparent"
+
+                Button {
                     anchors.fill: parent
-                    radius: 10
-                    color: Qt.rgba(1, 1, 1, 0.3)
+                    background: Rectangle{
+                        anchors.fill: parent
+                        radius: 10
+                        color: Qt.rgba(1, 1, 1, 0.3)
+                    }
+
+                    icon.source: "qrc:/images/Icon/bell-notification-social-media.svg"
+                    icon.color: "white"
                 }
 
-                icon.source: "qrc:/images/Icon/bell-notification-social-media.svg"
-                icon.color: "white"
+                Rectangle{
+                    visible: rootWindow.numOfNotification > 0
+                    width: parent.height*0.5
+                    height: parent.height*0.5
+                    radius: parent.height*0.25
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    color: "red"
+
+                    Text{
+                        anchors.centerIn: parent
+                        text: rootWindow.numOfNotification
+                        color: "white"
+                    }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        pageLoader.source = "components/Notification.qml"
+
+                    }
+                }
+
+
             }
         }
     }

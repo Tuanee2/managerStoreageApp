@@ -208,8 +208,11 @@ Item {
                             onClicked: {
                                 pageLoader.setSource("CreateTransaction.qml", {
                                     customerName: modelData["name"],
-                                    customerPhoneNumber: modelData["phone_number"]
+                                    customerPhoneNumber: modelData["phone_number"],
+                                    customerYearOfBirth: modelData["year_of_birth"]
                                 })
+                                drawerLoader.source = "components/TransactionDrawer.qml"
+                                rootWindow.currentNavigation = "Tạo giao dịch"
 
                             }
 

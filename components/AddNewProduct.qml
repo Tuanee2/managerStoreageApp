@@ -66,22 +66,6 @@ Item {
                 color: "white"
             }
 
-            // TextField {
-            //     id: datetextfield
-            //     placeholderText: "Hạn sử dụng sản phẩm (định dạng DD-MM-YYYY)(BẮT BUỘC)"
-            //     font.pixelSize: 24
-            //     placeholderTextColor: Qt.rgba( 1, 1, 1, 0.8)
-            //     verticalAlignment: Text.AlignVCenter
-
-            //     background: Rectangle {
-            //         radius: 10
-            //         color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
-            //     }
-            //     width: addNewProduct.width*0.6
-            //     height: addNewProduct.height*0.1
-            //     color: "white"
-            // }
-
             TextField {
                 id: destextfield
                 placeholderText: "Mô tả hoặc ghi chú sản phẩm (KHÔNG BẮT BUỘC)"

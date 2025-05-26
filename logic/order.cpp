@@ -48,7 +48,7 @@ void Order::setPurchaseTime(const QDateTime& time){
     this->purchaseTime = time;
 }
 
-QList<Products*>& Order::getListItem() {
+QList<Products*>& Order::getListItem(){
     return item;
 }
 
@@ -57,7 +57,26 @@ void Order::setListItem(const QList<Products*>& item){
 }
 
 QList<Products*> Order::QStringToItems(const QString& data){
+    QList<Products*> list;
+    QJsonDocument doc = QJsonDocument::fromJson(data.toUtf8());
+    if (!doc.isArray()) return list;
 
+    QJsonArray array = doc.array();
+    for (const QJsonValue& val : array) {
+        if (val.isObject()) {
+            list.append(Products::fromJson(val.toObject()));
+        }
+    }
+    return list;
+}
+
+QString Order::itemToQString(const QList<Products*>& item){
+    QJsonArray array;
+    for (const Products* p : item) {
+        array.append(p->toJson());
+    }
+    QJsonDocument doc(array);
+    return QString::fromUtf8(doc.toJson(QJsonDocument::Compact));
 }
 
 double Order::getTotalPrice() const{

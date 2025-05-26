@@ -7,9 +7,13 @@ Item {
     id: transaction
     property string customerName: ""
     property string customerPhoneNumber: ""
+    property string customerYearOfBirth: ""
     property string dataItems : ""
     property int numOfProduct: 0
+    property int numOfItem: 0
+    property int totalPrice: 0
     property var order: []
+
 
     anchors.fill: parent
 
@@ -22,13 +26,31 @@ Item {
         function onOrderUpdateResult_UI(list){
             transaction.order = list;
             rootWindow.isSaveTransaction = !(list.length > 0);
+            transaction.numOfItem = 0
+            for(var i = 0; i< list.length; i++){
+                transaction.numOfItem += list[i].numOfItem
+                transaction.totalPrice += list[i].numOfItem * list[i].price
+            }
+
         }
+    }
+
+    function formatMoney(n) {
+        let str = n.toString();
+        let result = "";
+        while (str.length > 3) {
+            result = "," + str.slice(-3) + result;
+            str = str.slice(0, -3);
+        }
+        result = str + result;
+        return result;
     }
 
     Rectangle {
         id: customerInfo
-        width: parent.width*0.9
-        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width*0.425
+        anchors.left: parent.left
+        anchors.leftMargin: parent.width*0.05
         height: parent.height*0.2
         radius: 8
         color: Qt.rgba(1, 1, 1, 0.3)
@@ -51,7 +73,7 @@ Item {
             anchors.top: customerInfo.top
             anchors.topMargin: customerInfo.height/3
             anchors.left: customerInfo.left
-            width: customerInfo.width*0.6
+            width: customerInfo.width
             height: customerInfo.height/3
             color: "transparent"
             CustomSearchTextField {
@@ -60,18 +82,20 @@ Item {
                 height: parent.height
                 color: Qt.rgba( 1, 1, 1, 0.2)
                 placeholderText: "Nhập tên khách hàng"
-                onSuggestionSelected: (text) => {
-                    console.log("Đã chọn khách hàng:", text)
+                text: transaction.customerName
+                onSuggestionSelected: (name, phone) => {
+                    transaction.customerPhoneNumber = phone
                 }
                 //target: "PRODUCT"
                 target: "CUSTOMER"
+                targetExtension: "PHONENUMBER"
             }
         }
 
         Rectangle {
             anchors.bottom: customerInfo.bottom
             anchors.left: customerInfo.left
-            width: customerInfo.width*0.6
+            width: customerInfo.width*0.5
             height: customerInfo.height/3
             color: "transparent"
             CustomSearchTextField {
@@ -80,6 +104,27 @@ Item {
                 height: parent.height
                 color: Qt.rgba( 1, 1, 1, 0.2)
                 placeholderText: "Nhập số điện khách hàng"
+                text: transaction.customerPhoneNumber
+                onSuggestionSelected: (text) => {
+                    console.log("Đã chọn khách hàng:", text)
+                }
+                target: "CUSTOMER"
+            }
+        }
+
+        Rectangle {
+            anchors.bottom: customerInfo.bottom
+            anchors.right: customerInfo.right
+            width: customerInfo.width*0.5
+            height: customerInfo.height/3
+            color: "transparent"
+            CustomSearchTextField {
+                id: yearSearch
+                width: parent.width
+                height: parent.height
+                color: Qt.rgba( 1, 1, 1, 0.2)
+                placeholderText: "Nhập năm sinh"
+                text: transaction.customerYearOfBirth
                 onSuggestionSelected: (text) => {
                     console.log("Đã chọn khách hàng:", text)
                 }
@@ -91,27 +136,92 @@ Item {
 
     Rectangle{
         id: titleofProductInfo
-        width: parent.width*0.4
-        height: parent.height*0.08
-        anchors.top: customerInfo.bottom
-        anchors.topMargin: parent.height*0.01
-        anchors.horizontalCenter: parent.horizontalCenter
-        radius: 10
-        color: Qt.rgba(1, 1, 1, 0.5)
+        width: parent.width*0.425
+        height: parent.height*0.2
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.rightMargin: parent.width*0.05
+        radius: 8
+        color: Qt.rgba(1, 1, 1, 0.3)
+        border.width: 2
+        border.color: Qt.rgba(0, 0, 0, 1)
+        clip: true
+
         Text {
-            anchors.centerIn: parent
-            text: "Thông tin sản phẩm"
-            font.pixelSize: 22
-            color: "white"
+            text: "THÔNG TIN ĐƠN HÀNG"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            width: parent.width
+            height: parent.height / 3
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            font.pixelSize: 20
+            color: "white"
+        }
+
+        Rectangle {
+            id: numOfTypeProduct
+            width:parent.width*0.5
+            height: parent.height/3
+            anchors.left:parent.left
+            anchors.top: parent.top
+            anchors.topMargin: parent.height/3
+            radius: 8
+            Text {
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                text: "Số loại sản phẩm: " + transaction.order.length
+                verticalAlignment: Text.AlignVCenter
+            }
+
+        }
+        Rectangle {
+            id: numOfItem
+            width:parent.width*0.5
+            height: parent.height/3
+            anchors.left:parent.left
+            anchors.bottom: parent.bottom
+            radius: 8
+            Text {
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                text: "Số sản phẩm: " + transaction.numOfItem
+                verticalAlignment: Text.AlignVCenter
+            }
+        }
+        Rectangle{
+            id: totalPrice
+            width:parent.width*0.5
+            height: parent.height/3
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.topMargin: parent.height/3
+            radius: 8
+            Text {
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                text: "Tổng số tiền: " + transaction.formatMoney(transaction.totalPrice) + " VND"
+                verticalAlignment: Text.AlignVCenter
+            }
+        }
+        Rectangle {
+            id: purchaseTime
+            width:parent.width*0.5
+            height: parent.height/3
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            TextField {
+                anchors.fill: parent
+                id: purchaseTimeTextField
+                text: Qt.formatDate(new Date(), "dd-MM-yyyy")
+            }
         }
     }
 
     Rectangle {
         id: productInformation
         width: parent.width*0.9
-        height: parent.height*0.6
+        height: parent.height*0.7
         anchors.top: titleofProductInfo.bottom
         anchors.topMargin: parent.height*0.01
         anchors.horizontalCenter: parent.horizontalCenter
@@ -135,7 +245,7 @@ Item {
 
                     model : transaction.order
                     Rectangle {
-                        width: customerInfo.width
+                        width: productInformation.width
                         height: Math.min(transaction.height*0.2, 100)
                         radius: 8
                         color: Qt.rgba(1, 1, 1, 0.6)
@@ -323,7 +433,7 @@ Item {
         anchors.centerIn: parent
         visible: false
         onAccepted: {
-            controller.requestOrderCommand("ADD", "0982181002", "24-05-2025");
+            controller.requestOrderCommand("ADD", "", purchaseTimeTextField.text);
         }
     }
 
