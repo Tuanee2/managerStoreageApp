@@ -209,6 +209,7 @@ Item {
             let expiredDate = expireddatetextfield.text.trim();
 
             controller.requestBatchCommand("ADD", name, num, cost, importDate, expiredDate);
+            controller.requestBatchInformation("", "EXPIREDDATE", "AMONTH", "")
             followupDialog.open()
         }
         onRejected: {

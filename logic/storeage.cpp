@@ -131,18 +131,50 @@ void storeage::handleBatchInfoRequest(cmdContext cmd, const QString& productName
     }else if(cmd.type == type_of_info::TOTALPRICE){
 
     }
+
+    if(cmd.typelist == type_of_list::EXPIREDDATE){
+        if(cmd.duration == Duration::AMONTH){
+            QDateTime expiredDate(QDate::currentDate().addMonths(1).startOfDay());
+            result = db->getNumOfALLBatchExpired(expiredDate);
+        }
+    }
     emit batchInfoResult(result, cmd);
 }
 
-void storeage::handleBatchListRequest(cmdContext cmd, const QString& productName, const QString& keyword, int numPage){
+void storeage::handleBatchListRequest(cmdContext cmd, const QString& productName, const QString& keyword, int numOfBatch, int numPage){
     QList<Batch*> fetchedBatches;
+    QDateTime targetDate;
     if(cmd.cmd == Cmd::LIST){
-        fetchedBatches = db->getBatchByPage(productName, numPage);
+        if(cmd.typelist == type_of_list::TYPELIST_INVALID){
+            fetchedBatches = db->getBatchByPage(productName, numPage);
+        }else if(cmd.typelist == type_of_list::EXPIREDDATE){
+            if(cmd.duration == Duration::AWEEK){
+                fetchedBatches = db->getBatchByExpiredDate(productName, QDateTime(QDate::currentDate().addDays(7).startOfDay()), numOfBatch, numPage);
+                targetDate = QDateTime(QDate::currentDate().addDays(7).startOfDay());
+            }else if(cmd.duration == Duration::AMONTH){
+                fetchedBatches = db->getBatchByExpiredDate(productName, QDateTime(QDate::currentDate().addMonths(1).startOfDay()), numOfBatch, numPage);
+                targetDate = QDateTime(QDate::currentDate().addMonths(1).startOfDay());
+            }else if(cmd.duration == Duration::CUSTOM){
+
+                fetchedBatches = db->getBatchByExpiredDate(productName, QDateTime(QDate::currentDate().addDays(keyword.toInt()).startOfDay()), numOfBatch, numPage);
+                targetDate = QDateTime(QDate::currentDate().addDays(keyword.toInt()).startOfDay());
+            }
+        }
+
     }else if(cmd.cmd == Cmd::SEARCH){
         if(cmd.typelist == type_of_list::NAME){
 
         }else if(cmd.typelist == type_of_list::EXPIREDDATE){
-            fetchedBatches = db->getBatchByExpiredDate(productName, keyword, -1);
+            if(cmd.duration == Duration::AWEEK){
+                fetchedBatches = db->getBatchByExpiredDate(productName, QDateTime(QDate::currentDate().addDays(7).startOfDay()), numOfBatch, numPage);
+                targetDate = QDateTime(QDate::currentDate().addDays(7).startOfDay());
+            }else if(cmd.duration == Duration::AMONTH){
+                fetchedBatches = db->getBatchByExpiredDate(productName, QDateTime(QDate::currentDate().addMonths(1).startOfDay()), numOfBatch, numPage);
+                targetDate = QDateTime(QDate::currentDate().addMonths(1).startOfDay());
+            }else if(cmd.duration == Duration::CUSTOM){
+                fetchedBatches = db->getBatchByExpiredDate(productName, QDateTime(QDate::currentDate().addDays(keyword.toInt()).startOfDay()), numOfBatch, numPage);
+                targetDate = QDateTime(QDate::currentDate().addDays(keyword.toInt()).startOfDay());
+            }
 
         }else if(cmd.typelist == type_of_list::IMPORTDATE){
 
@@ -152,16 +184,24 @@ void storeage::handleBatchListRequest(cmdContext cmd, const QString& productName
     QList<QVariantMap> result;
     for(Batch* b : fetchedBatches){
         QVariantMap item;
+        item["productName"] = b->getProductName();
         item["quantity"] = b->getQuantity();
         item["cost"] = b->getCost();
-        item["importdate"] = b->getImportDate();
-        item["expireddate"] = b->getExpiryDate();
+        if(cmd.typelist == type_of_list::EXPIREDDATE){
+            int daysLeft = QDate::currentDate().daysTo(b->getExpiryDate().date());
+            if(daysLeft <=0){
+                daysLeft = -1;
+            }
+            item["days_left"] = daysLeft;
+        }
+        item["importdate"] = b->getImportDate().toString("yyyy-MM-dd");
+        item["expireddate"] = b->getExpiryDate().toString("yyyy-MM-dd");
         result.append(item);
         delete b;
     }
+    //arrangeForDayLeft(result);
     emit batchListReady(result, cmd);
 }
-
 // ****************************************
 
 
@@ -258,4 +298,19 @@ void storeage::handleOrderListRequest(cmdContext cmd, const QString& keyword, co
 
     emit orderListReady(result, cmd);
 
+}
+
+
+
+
+void storeage::arrangeForDayLeft(QList<QVariantMap>& list){
+    for (int i = 0; i < list.size(); ++i) {
+        for (int j = 0; j < list.size() - i - 1; ++j) {
+            int day1 = list[j]["days_left"].toInt();
+            int day2 = list[j + 1]["days_left"].toInt();
+            if (day1 > day2) {
+                qSwap(list[j], list[j + 1]);
+            }
+        }
+    }
 }

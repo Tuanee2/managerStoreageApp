@@ -60,7 +60,7 @@ type_of_list QStringToTypeList(const QString& typelist){
     } else if (typelist == "YEAROFBIRTH") {
         return type_of_list::YEAROFBIRTH;
     }
-    return type_of_list::NAME; // default fallback
+    return type_of_list::TYPELIST_INVALID; // default fallback
 }
 
 QString typeListToQString(type_of_list typelist){
@@ -80,7 +80,7 @@ QString typeListToQString(type_of_list typelist){
     case type_of_list::YEAROFBIRTH:
         return "YEAROFBIRTH";
     }
-    return "UNKNOWN";
+    return "TYPELIST_INVALID";
 }
 
 type_of_info QStringToType(const QString& type){

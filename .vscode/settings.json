@@ -27,6 +27,10 @@
         "deque": "cpp",
         "vector": "cpp",
         "span": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "__node_handle": "cpp",
+        "optional": "cpp",
+        "format": "cpp",
+        "system_error": "cpp"
     }
 }

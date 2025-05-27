@@ -118,8 +118,8 @@ bool DatabaseManager::addBatch(const QString& productName, const Batch& batch) {
     query.addBindValue(productName);
     query.addBindValue(batch.getQuantity());
     query.addBindValue(batch.getCost());
-    query.addBindValue(batch.getImportDate().toString("dd-MM-yyyy"));
-    query.addBindValue(batch.getExpiryDate().toString("dd-MM-yyyy"));
+    query.addBindValue(batch.getImportDate().toString("yyyy-MM-dd"));
+    query.addBindValue(batch.getExpiryDate().toString("yyyy-MM-dd"));
 
     if (!query.exec()) {
         qWarning() << "❌ Lỗi khi thêm lô hàng:" << query.lastError().text();
@@ -134,8 +134,8 @@ bool DatabaseManager::updateBatch(const QString& productName, const Batch& batch
     QSqlQuery selectQuery;
     selectQuery.prepare("SELECT quantity FROM product_batches WHERE product_name = ? AND import_date = ? AND expiry_date = ?");
     selectQuery.addBindValue(productName);
-    selectQuery.addBindValue(batch.getImportDate().toString("dd-MM-yyyy"));
-    selectQuery.addBindValue(batch.getExpiryDate().toString("dd-MM-yyyy"));
+    selectQuery.addBindValue(batch.getImportDate().toString("yyyy-MM-dd"));
+    selectQuery.addBindValue(batch.getExpiryDate().toString("yyyy-MM-dd"));
 
     if (selectQuery.exec() && selectQuery.next()) {
         currentQuantity = selectQuery.value(0).toInt();
@@ -144,18 +144,20 @@ bool DatabaseManager::updateBatch(const QString& productName, const Batch& batch
         return false;
     }
 
+    QSqlQuery updateQuery;
     int newQuantity = currentQuantity - batch.getQuantity();
     if (newQuantity < 0) {
         qWarning() << "❌ Số lượng cập nhật âm!";
         return false;
+    } else if(newQuantity == 0){
+        updateQuery.prepare("DELETE FROM product_batches WHERE product_name = ? AND import_date = ? AND expiry_date = ?");
+    }else{
+        updateQuery.prepare("UPDATE product_batches SET quantity = ? WHERE product_name = ? AND import_date = ? AND expiry_date = ?");
+        updateQuery.addBindValue(newQuantity);
     }
-
-    QSqlQuery updateQuery;
-    updateQuery.prepare("UPDATE product_batches SET quantity = ? WHERE product_name = ? AND import_date = ? AND expiry_date = ?");
-    updateQuery.addBindValue(newQuantity);
     updateQuery.addBindValue(productName);
-    updateQuery.addBindValue(batch.getImportDate().toString("dd-MM-yyyy"));
-    updateQuery.addBindValue(batch.getExpiryDate().toString("dd-MM-yyyy"));
+    updateQuery.addBindValue(batch.getImportDate().toString("yyyy-MM-dd"));
+    updateQuery.addBindValue(batch.getExpiryDate().toString("yyyy-MM-dd"));
 
     if (!updateQuery.exec()) {
         qWarning() << "❌ Lỗi khi cập nhật số lượng lô hàng:" << updateQuery.lastError().text();
@@ -342,38 +344,40 @@ QList<Batch*> DatabaseManager::getBatchByPage(const QString& productName, int nu
 
     while (query.next()) {
         Batch* b = new Batch();
+        b->setProductName(query.value(0).toString());
         b->setQuantity(query.value(1).toInt());
         b->setCost(query.value(2).toFloat());
-        b->setImportDate(QDateTime::fromString(query.value(3).toString(), "dd-MM-yyyy").date().startOfDay());
-        b->setExpiryDate(QDateTime::fromString(query.value(4).toString(), "dd-MM-yyyy").date().startOfDay());
+        b->setImportDate(QDateTime::fromString(query.value(3).toString(), "yyyy-MM-dd").date().startOfDay());
+        b->setExpiryDate(QDateTime::fromString(query.value(4).toString(), "yyyy-MM-dd").date().startOfDay());
         list.append(b);
     }
 
     return list;
 }
 
-QList<Batch*> DatabaseManager::getBatchByExpiredDate(const QString& productName, const QString& expiredDate, int numpage){
+QList<Batch*> DatabaseManager::getBatchByExpiredDate(const QString& productName, const QDateTime& expiredDate, int numOfBatch, int numpage){
     QList<Batch*> list;
     QSqlQuery query;
     
-    if(numpage == -1){
+    if(productName.isEmpty()){
         query.prepare("SELECT product_name, quantity, cost, import_date, expiry_date "
                     "FROM product_batches "
-                    "WHERE expiry_date = :expiry_date ");
-        query.bindValue(":expiry_date", expiredDate);
+                    "WHERE expiry_date <= :expiry_date "
+                    "LIMIT :limit OFFSET :offset");
         
     }else{
-        int limit = 6;
-        int offset = numpage * limit;
-
         query.prepare("SELECT product_name, quantity, cost, import_date, expiry_date "
                     "FROM product_batches "
-                    "WHERE expiry_date = :expiry_date "
+                    "WHERE expiry_date <= :expiry_date "
+                    "AND product_name = :product_name "
                     "LIMIT :limit OFFSET :offset");
-        query.bindValue(":expiry_date", expiredDate);
-        query.bindValue(":limit", limit);
-        query.bindValue(":offset", offset);
+        query.bindValue(":product_name", productName);
+
+       
     }
+    query.bindValue(":expiry_date", expiredDate.toString("yyyy-MM-dd"));
+    query.bindValue(":limit", numOfBatch);
+    query.bindValue(":offset", numpage * numOfBatch);
 
     if (!query.exec()) {
         qWarning() << "Failed to fetch batches by page for batch:" << productName << "-" << query.lastError().text();
@@ -382,10 +386,11 @@ QList<Batch*> DatabaseManager::getBatchByExpiredDate(const QString& productName,
 
     while (query.next()) {
         Batch* b = new Batch();
+        b->setProductName(query.value(0).toString());
         b->setQuantity(query.value(1).toInt());
         b->setCost(query.value(2).toFloat());
-        b->setImportDate(QDateTime::fromString(query.value(3).toString(), "dd-MM-yyyy").date().startOfDay());
-        b->setExpiryDate(QDateTime::fromString(query.value(4).toString(), "dd-MM-yyyy").date().startOfDay());
+        b->setImportDate(QDateTime::fromString(query.value(3).toString(), "yyyy-MM-dd").date().startOfDay());
+        b->setExpiryDate(QDateTime::fromString(query.value(4).toString(), "yyyy-MM-dd").date().startOfDay());
         list.append(b);
     }
 
@@ -411,6 +416,24 @@ double DatabaseManager::getNumOfItemOfAllBatch(const QString& productName){
     }
 
     return static_cast<double>(result);
+}
+
+double DatabaseManager::getNumOfALLBatchExpired(const QDateTime& time){
+    QSqlQuery query;
+    qDebug() << time.toString("dd-MM-yyyy");
+    query.prepare("SELECT COUNT(*) FROM product_batches WHERE expiry_date <= :targetDate");
+    query.bindValue(":targetDate", time.toString("yyyy-MM-dd"));
+
+    if (!query.exec()) {
+        qWarning() << "❌ Lỗi khi đếm số lô hết hạn:" << query.lastError().text();
+        return 0.0;
+    }
+
+    if (query.next()) {
+        return query.value(0).toDouble();
+    }
+
+    return 0.0;
 }
 
 // ****************************************
@@ -647,7 +670,7 @@ bool DatabaseManager::insertOrder(Order& order){
                   "VALUES (?, ?, ?, ?, ?)");
     query.addBindValue(order.getCustomerName());
     query.addBindValue(order.getCustomerPhoneNumber());
-    query.addBindValue(order.getPurchaseTime().toString("dd-MM-yyyy"));
+    query.addBindValue(order.getPurchaseTime().toString("yyyy-MM-dd"));
     query.addBindValue(Order::itemToQString(order.getListItem()));
     query.addBindValue("Ghi chú"); // hoặc order.getNote() nếu có
 
@@ -680,7 +703,7 @@ bool DatabaseManager::deleteOrder(const QString& customerName, const QString& ph
         query.bindValue(":phoneNumber", phoneNumber);
     }
     if(!purchaseTime.isValid()){
-         query.bindValue(":purchaseTime", purchaseTime.toString("dd-MM-yyyy"));
+         query.bindValue(":purchaseTime", purchaseTime.toString("yyyy-MM-dd"));
     }
 
     if (!query.exec()) {
@@ -716,7 +739,7 @@ QList<Order*> DatabaseManager::getOrder(const QString& customerName, const QStri
         query.bindValue(":phone_number", phoneNumber);
     }
     if (purchaseTime.isValid()) {
-        query.bindValue(":export_date", purchaseTime.toString("dd-MM-yyyy"));
+        query.bindValue(":export_date", purchaseTime.toString("yyyy-MM-dd"));
     }
 
     query.bindValue(":limit", numOfOrder);
@@ -731,7 +754,7 @@ QList<Order*> DatabaseManager::getOrder(const QString& customerName, const QStri
         Order* o = new Order();
         o->setCustomerName(query.value(0).toString());
         o->setCustomerPhoneNumber(query.value(1).toString());
-        o->setPurchaseTime(QDateTime::fromString(query.value(2).toString(), "dd-MM-yyyy"));
+        o->setPurchaseTime(QDateTime::fromString(query.value(2).toString(), "yyyy-MM-dd"));
         o->QStringToItems(query.value(3).toString());
         list.append(o);
     }
@@ -776,7 +799,7 @@ QList<Order*> DatabaseManager::getOrderByPage(cmdContext cmd, const QString& key
         Order* order = new Order();
         order->setCustomerName(query.value(0).toString());
         order->setCustomerPhoneNumber(query.value(1).toString());
-        order->setPurchaseTime(QDateTime::fromString(query.value(2).toString(), "dd-MM-yyyy"));
+        order->setPurchaseTime(QDateTime::fromString(query.value(2).toString(), "yyyy-MM-dd"));
         order->setListItem(Order::QStringToItems(query.value(3).toString()));
         list.append(order);
     }

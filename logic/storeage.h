@@ -73,7 +73,7 @@ signals:
     void batchInfoResult(double result, cmdContext cmd);
 
 public slots:
-    void handleBatchListRequest(cmdContext cmd, const QString& productName, const QString& keyword, int numPage);
+    void handleBatchListRequest(cmdContext cmd, const QString& productName, const QString& keyword, int numOfBatch, int numPage);
 signals:
     void batchListReady(QList<QVariantMap> list, cmdContext cmd);
 
@@ -110,7 +110,16 @@ signals:
     void orderListReady(QList<QVariantMap> list, cmdContext cmd);
 // ****************************************
 
+
+
+
+
+// <<<<<<<<<< FOR ARRANGE >>>>>>>>>>
+public:
+    void arrangeForDayLeft(QList<QVariantMap>& list); 
+
 };
+
 
 
 

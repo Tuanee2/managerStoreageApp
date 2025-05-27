@@ -43,7 +43,16 @@ Window {
 
     property var batchListOfOrder: []
 
+    Component.onCompleted: {
+        controller.requestBatchInformation("", "EXPIREDDATE", "AMONTH", "")
+    }
 
+    Connections {
+        target: controller
+        function onBatchInfoResult(result, type){
+            rootWindow.numOfNotification = result
+        }
+    }
 
     // Ảnh nền
     Image {
@@ -508,7 +517,7 @@ Window {
 
                     Text{
                         anchors.centerIn: parent
-                        text: rootWindow.numOfNotification
+                        text: (rootWindow.numOfNotification > 99) ? "99+" : rootWindow.numOfNotification
                         color: "white"
                     }
                 }

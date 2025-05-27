@@ -239,9 +239,11 @@ void appcontroller::onBatchCommandResult(bool done){
 
 }
 
-void appcontroller::requestBatchInformation(const QString& type, const QString& productName){
+void appcontroller::requestBatchInformation(const QString& type, const QString& typelist, const QString& duration, const QString& productName){
     cmdContext CMD;
-    CMD.cmd = QStringToCmd(type);
+    CMD.type = QStringToType(type);
+    CMD.typelist = QStringToTypeList(typelist);
+    CMD.duration = QStringToDuration(duration);
     emit batchInfoRequested(CMD, productName);
 }
 
@@ -249,17 +251,14 @@ void appcontroller::onBatchInfoResult(double result, cmdContext cmd){
     emit batchInfoResult(result , TypeToQString(cmd.type));
 }
 
-void appcontroller::requestBatchList(const QString& cmd, const QString& productName, const QString& keyword, int numPage){
-    cmdContext CMD;
-    CMD.cmd = QStringToCmd(cmd);
-    emit batchListRequested(CMD, productName, keyword, numPage);
-}
-
-void appcontroller::requestBatchList(const QString& cmd, const QString& cmdExtension, const QString& productName, const QString& keyword, int numPage){
+void appcontroller::requestBatchList(const QString& cmd, const QString& cmdExtension, const QString& productName, const QString& keyword, int numOfBatch, int numPage){
     cmdContext CMD;
     CMD.cmd = QStringToCmd(cmd);
     CMD.typelist = QStringToTypeList(cmdExtension);
-    emit batchListRequested(CMD, productName, keyword, numPage);
+    if(CMD.typelist == type_of_list::EXPIREDDATE){
+        CMD.duration = QStringToDuration(keyword);
+    }
+    emit batchListRequested(CMD, productName, keyword, numOfBatch, numPage);
 }
 
 void appcontroller::onBatchListReady(QList<QVariantMap> list, cmdContext cmd){

@@ -25,7 +25,8 @@ typedef enum {
     IMPORTDATE,
     EXPORTDATE,
     EXPIREDDATE,
-    YEAROFBIRTH
+    YEAROFBIRTH,
+    TYPELIST_INVALID
 }  type_of_list;
 
 type_of_list QStringToTypeList(const QString& typelist);

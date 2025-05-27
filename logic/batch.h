@@ -7,8 +7,11 @@ class Batch
 {
 public:
     Batch();
-    Batch(int quantity, const QDateTime& importDate, const QDateTime& expiryDate);
+    Batch(const QString& productName, int quantity, const QDateTime& importDate, const QDateTime& expiryDate);
     Batch(const Batch& other);
+
+    QString getProductName() const;
+    void setProductName(const QString& productName);
 
     int getQuantity() const;
     void setQuantity(int num);
@@ -26,6 +29,7 @@ public:
     static Batch fromJson(const QJsonObject& obj);
 
 private:
+    QString productName;
     int quantity = 0;
     double cost = 0;
     QDateTime importDate;

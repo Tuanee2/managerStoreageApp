@@ -111,7 +111,7 @@ public slots:
 
 // **********< Lấy thông số lô sản phẩm >**********
 public:
-    Q_INVOKABLE void requestBatchInformation(const QString& type, const QString& productName);
+    Q_INVOKABLE void requestBatchInformation(const QString& type, const QString& typelist, const QString& duration, const QString& productName);
 
 signals:
     // for database thread
@@ -127,11 +127,11 @@ public slots:
 
 // *********< Lấy danh sách các lô sản phẩm >*********
 public: 
-    Q_INVOKABLE void requestBatchList(const QString& cmd, const QString& productName, const QString& keyword, int numPage);
-    Q_INVOKABLE void requestBatchList(const QString& cmd, const QString& cmdExtension, const QString& productName, const QString& keyword, int numPage);
+    Q_INVOKABLE void requestBatchList(const QString& cmd, const QString& cmdExtension, const QString& productName, const QString& keyword, int numOfBatch, int numPage);
+
 signals:
     // for database thread
-    void batchListRequested(cmdContext cmd, const QString& name, const QString& keyword, int numPage);
+    void batchListRequested(cmdContext cmd, const QString& productName, const QString& keyword, int numOfBatch, int numPage);
     // for UI
     void batchListReady(QList<QVariantMap> list, const QString& cmd);
     

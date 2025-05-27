@@ -3,14 +3,23 @@
 
 Batch::Batch() {}
 
-Batch::Batch(int quantity, const QDateTime& importDate, const QDateTime& expiryDate)
-    : quantity(quantity), importDate(importDate), expiryDate(expiryDate) {}
+Batch::Batch(const QString& productName, int quantity, const QDateTime& importDate, const QDateTime& expiryDate)
+    : productName(productName), quantity(quantity), importDate(importDate), expiryDate(expiryDate) {}
 
 Batch::Batch(const Batch& other){
+    this->productName = other.productName;
     this->quantity = other.quantity;
     this->cost = other.cost;
     this->importDate = other.importDate;
     this->expiryDate = other.expiryDate;
+}
+
+QString Batch::getProductName() const{
+    return productName;
+}
+
+void Batch::setProductName(const QString& productName){
+    this->productName = productName;
 }
 
 int Batch::getQuantity() const {
