@@ -146,7 +146,7 @@ public slots:
 // <<<<<<<<<< FOR CUSTOMERS >>>>>>>>>>
 // **********< thêm / sửa / xoá khách hàng>**********
 public:
-    Q_INVOKABLE void requestCustomerCommand(const QString& cmd, const QString& name, int yearOfBirth, const QString& gender, const QString& phoneNumber);
+    Q_INVOKABLE void requestCustomerCommand(const QString& cmd, Customer& customer);
 
 signals:
     // for database thread

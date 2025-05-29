@@ -29,6 +29,14 @@ Window {
 
     // *******************************************************************
 
+
+    // parameter for transaction 
+    property string customerName: ""
+    property string customerPhoneNumber: ""
+    property string customerYearOfBirth: ""
+
+    // *******************************************************************
+
     property bool isTransactionProductSelect: false
     property bool isTransactionBatchSelect: false
     property bool isSaveTransaction: false
@@ -190,8 +198,8 @@ Window {
                     anchors.left: searchIcon.right
                     color: Qt.rgba( 1, 1, 1, 0.2)
                     placeholderText: rootWindow.placeholderForMainSearch
-                    onSuggestionSelected: (text) => {
-                        console.log("Đã chọn khách hàng:", text)
+                    onSuggestionSelected: (data) => {
+
                     }
                     target: rootWindow.targetForMainSearch
                     targetExtension: rootWindow.targetExtensionForMainSearch
@@ -447,6 +455,9 @@ Window {
                     anchors.fill: parent
                     hoverEnabled: true
                     onClicked:{
+                        rootWindow.customerName = ""
+                        rootWindow.customerPhoneNumber = ""
+                        rootWindow.customerYearOfBirth = ""
                         controller.requestCommandOrder_UI("ADD")
                     }
                 }

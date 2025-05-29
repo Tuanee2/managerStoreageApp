@@ -53,9 +53,9 @@ public:
     QList<Customer*> getCustomerByPhoneNumber(const QString& phone);
     QList<Customer*> getCustomersByPage(int numPage);
     QList<Customer*> getCustomerByYearOfBirth(const QString& yearOfBirth);
-    QList<Customer*> getACustomerByName(const QString& name);
-    QList<Customer*> getACustomerByPhoneNumber(const QString& phone);
-    QList<Customer*> getACustomerByYearOfBirth(const QString& yearOfBirth);
+    Customer* getACustomerByName(const QString& name);
+    Customer* getACustomerByPhoneNumber(const QString& phone);
+    Customer* getACustomerByYearOfBirth(const QString& yearOfBirth);
     // ************************************
 
     // **********< FOR ORDERS >**********

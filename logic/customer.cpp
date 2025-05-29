@@ -1,12 +1,12 @@
 #include "customer.h"
 
-Gender QStringToGender(const QString& gender){
+Gender Customer::QStringToGender(const QString& gender){
     if(gender == "MALE") return Gender::MALE;
     if(gender == "FEMALE") return Gender::FEMALE;
     return Gender::UNKNOW;
 }
 
-QString GenderToQString(Gender gender){
+QString Customer::GenderToQString(Gender gender){
     if(gender == Gender::MALE) return "MALE";
     if(gender == Gender::FEMALE) return "FEMALE";
     return "UNKNOW";

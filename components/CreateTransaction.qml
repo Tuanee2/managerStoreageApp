@@ -5,9 +5,9 @@ import QtQuick.Effects
 
 Item {
     id: transaction
-    property string customerName: ""
-    property string customerPhoneNumber: ""
-    property string customerYearOfBirth: ""
+    // property string customerName: ""
+    // property string customerPhoneNumber: ""
+    // property string customerYearOfBirth: ""
     property string dataItems : ""
     property int numOfProduct: 0
     property int numOfItem: 0
@@ -82,13 +82,14 @@ Item {
                 height: parent.height
                 color: Qt.rgba( 1, 1, 1, 0.2)
                 placeholderText: "Nhập tên khách hàng"
-                text: transaction.customerName
-                onSuggestionSelected: (name, phone) => {
-                    transaction.customerPhoneNumber = phone
+                text: rootWindow.customerName
+                onSuggestionSelected: (data) => {
+                    rootWindow.customerName = data.name
+                    rootWindow.customerPhoneNumber = data.phoneNumber
+                    rootWindow.customerYearOfBirth = data.yearOfBirth 
                 }
-                //target: "PRODUCT"
                 target: "CUSTOMER"
-                targetExtension: "PHONENUMBER"
+                targetExtension: "NAME"
             }
         }
 
@@ -104,11 +105,14 @@ Item {
                 height: parent.height
                 color: Qt.rgba( 1, 1, 1, 0.2)
                 placeholderText: "Nhập số điện khách hàng"
-                text: transaction.customerPhoneNumber
-                onSuggestionSelected: (text) => {
-                    console.log("Đã chọn khách hàng:", text)
+                text: rootWindow.customerPhoneNumber
+                onSuggestionSelected: (data) => {
+                    rootWindow.customerName = data.name
+                    rootWindow.customerPhoneNumber = data.phoneNumber
+                    rootWindow.customerYearOfBirth = data.yearOfBirth
                 }
                 target: "CUSTOMER"
+                targetExtension: "PHONENUMBER"
             }
         }
 
@@ -124,11 +128,14 @@ Item {
                 height: parent.height
                 color: Qt.rgba( 1, 1, 1, 0.2)
                 placeholderText: "Nhập năm sinh"
-                text: transaction.customerYearOfBirth
-                onSuggestionSelected: (text) => {
-                    console.log("Đã chọn khách hàng:", text)
+                text: rootWindow.customerYearOfBirth
+                onSuggestionSelected: (data) => {
+                    rootWindow.customerName = data.name
+                    rootWindow.customerPhoneNumber = data.phoneNumber
+                    rootWindow.customerYearOfBirth = data.yearOfBirth
                 }
                 target: "CUSTOMER"
+                targetExtension: "YEAROFBIRTH"
             }
         }
 
@@ -433,7 +440,8 @@ Item {
         anchors.centerIn: parent
         visible: false
         onAccepted: {
-            controller.requestOrderCommand("ADD", "", purchaseTimeTextField.text);
+            console.log(phoneSearch.text)
+            controller.requestOrderCommand("ADD", phoneSearch.text, purchaseTimeTextField.text);
         }
     }
 

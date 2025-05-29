@@ -136,6 +136,11 @@ Item {
         visible: false
         onAccepted: {
             // code gọi api thêm vào database
+            let customer = new Customer()
+            customer.customerName = nametextfield.text.trim();
+            customer.customerPhoneNumber = phonenumbertextfield.text.trim();
+            customer.customerYearOfBirth = parseInt(agetextfield.text);
+            customer.customerGender = genderComboBox.currentIndex
             let name = nametextfield.text.trim();
             let yearofbirth = parseInt(agetextfield.text);
             let phoneNumber = phonenumbertextfield.text.trim();

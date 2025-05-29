@@ -83,10 +83,11 @@ Item {
                 color: "white" 
                 Text {
                     anchors.fill: parent
-                    text: "Số lượng:" + batchlist4trans.total
+                    text: "Số lượng: " + batchlist4trans.total
                     color: "black"
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: parent.height*0.4
                 }
             }
 
@@ -183,6 +184,7 @@ Item {
                         height: parent.height 
                         anchors.left: parent.left
                         anchors.top: parent.top
+                        font.pixelSize: parent.height*0.4
 
                         onValueChanged: {
                             batchlist4trans.selectedQuantities[index] = value;
@@ -198,6 +200,8 @@ Item {
                         height: parent.height
                         color: "transparent"
                         Text {
+                            anchors.left: parent.left
+                            anchors.leftMargin: parent.width*0.1
                             anchors.verticalCenter: parent.verticalCenter
                             text: "Số lượng: " + modelData.quantity
                             color: "white"

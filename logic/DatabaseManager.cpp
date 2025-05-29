@@ -542,27 +542,26 @@ QList<Customer*> DatabaseManager::getCustomerByName(const QString& name) {
     return list;
 }
 
-QList<Customer*> DatabaseManager::getACustomerByName(const QString& name) {
-    QList<Customer*> list;
+Customer* DatabaseManager::getACustomerByName(const QString& name) {
+    Customer* c = new Customer();
     QSqlQuery query;
     query.prepare("SELECT name, phone_number, gender, year_of_birth FROM customers WHERE name = :name LIMIT 1");
     query.bindValue(":name", name);
 
     if (!query.exec()) {
         qWarning() << "Failed to fetch customer by name:" << query.lastError().text();
-        return list;
+        return c;
     }
 
     if (query.next()) {
-        Customer* c = new Customer();
+       
         c->setCustomerName(query.value(0).toString());
         c->setCustomerPhoneNumber(query.value(1).toString());
         c->setCustomerGender(QStringToGender(query.value(2).toString()));
         c->setCustomerYearOfBirth(query.value(3).toInt());
-        list.append(c);
     }
 
-    return list;
+    return c;
 }
 
 QList<Customer*> DatabaseManager::getCustomerByPhoneNumber(const QString& phone) {
@@ -591,27 +590,25 @@ QList<Customer*> DatabaseManager::getCustomerByPhoneNumber(const QString& phone)
     return list;
 }
 
-QList<Customer*> DatabaseManager::getACustomerByPhoneNumber(const QString& phone) {
-    QList<Customer*> list;
+Customer* DatabaseManager::getACustomerByPhoneNumber(const QString& phone) {
+    Customer* c = new Customer();
     QSqlQuery query;
     query.prepare("SELECT name, phone_number, gender, year_of_birth FROM customers WHERE phone_number = :phone LIMIT 1");
     query.bindValue(":phone", phone);
 
     if (!query.exec()) {
         qWarning() << "Failed to fetch customer by phone:" << query.lastError().text();
-        return list;
+        return c;
     }
 
     if (query.next()) {
-        Customer* c = new Customer();
         c->setCustomerName(query.value(0).toString());
         c->setCustomerPhoneNumber(query.value(1).toString());
         c->setCustomerGender(QStringToGender(query.value(2).toString()));
         c->setCustomerYearOfBirth(query.value(3).toInt());
-        list.append(c);
     }
 
-    return list;
+    return c;
 }
 
 QList<Customer*> DatabaseManager::getCustomerByYearOfBirth(const QString& yearOfBirth) {
@@ -628,6 +625,7 @@ QList<Customer*> DatabaseManager::getCustomerByYearOfBirth(const QString& yearOf
         return list;
     }
 
+    
     while (query.next()) {
         Customer* c = new Customer();
         c->setCustomerName(query.value(0).toString());
@@ -641,27 +639,25 @@ QList<Customer*> DatabaseManager::getCustomerByYearOfBirth(const QString& yearOf
 }
 
 
-QList<Customer*> DatabaseManager::getACustomerByYearOfBirth(const QString& yearOfBirth){
-    QList<Customer*> list;
+Customer* DatabaseManager::getACustomerByYearOfBirth(const QString& yearOfBirth){
+    Customer* c = new Customer();
     QSqlQuery query;
     query.prepare("SELECT name, phone_number, gender, year_of_birth FROM customers WHERE year_of_birth = :year_of_birth LIMIT 1");
     query.bindValue(":year_of_birth", yearOfBirth);
 
     if (!query.exec()) {
         qWarning() << "Failed to fetch customer by year of birth:" << query.lastError().text();
-        return list;
+        return c;
     }
 
     if (query.next()) {
-        Customer* c = new Customer();
         c->setCustomerName(query.value(0).toString());
         c->setCustomerPhoneNumber(query.value(1).toString());
         c->setCustomerGender(QStringToGender(query.value(2).toString()));
         c->setCustomerYearOfBirth(query.value(3).toInt());
-        list.append(c);
     }
 
-    return list;
+    return c;
 }
 
 bool DatabaseManager::insertOrder(Order& order){

@@ -131,9 +131,7 @@ void appcontroller::requestCommandBatchToOrder_UI(const QString& cmd, const QStr
             batch->setQuantity(b["quantity"].toInt());
             batch->setCost(b["cost"].toDouble());
             batch->setImportDate(QDateTime::fromString(b["importdate"].toString(), "dd-MM-yyyy"));
-            qDebug() << QDateTime::fromString(b["importdate"].toString(), "dd-MM-yyyy");
             batch->setExpiryDate(QDateTime::fromString(b["expireddate"].toString(), "dd-MM-yyyy"));
-            qDebug() << QDateTime::fromString(b["expireddate"].toString(), "dd-MM-yyyy");
             product->getBatchList().append(batch);
         }
     }
@@ -273,16 +271,11 @@ void appcontroller::onBatchListReady(QList<QVariantMap> list, cmdContext cmd){
 
 // <<<<<<<<<< FOR CUSTOMERS >>>>>>>>>>
 
-void appcontroller::requestCustomerCommand(const QString& cmd, const QString& name, int yearOfBirth, const QString& gender, const QString& phoneNumber){
+void appcontroller::requestCustomerCommand(const QString& cmd, Customer* customer){
     cmdContext CMD;
     CMD.cmd = QStringToCmd(cmd);
-    Customer customer;
-    customer.setCustomerName(name);
-    customer.setCustomerYearOfBirth(yearOfBirth);
-    customer.setCustomerGender(QStringToGender(gender));
-    customer.setCustomerPhoneNumber(phoneNumber);
-
-    emit customerCommand(CMD, customer);
+    Customer data(*customer);
+    emit customerCommand(CMD, data);
 }
 
 void appcontroller::onCustomerCommandResult(bool done, cmdContext cmd){
@@ -316,6 +309,7 @@ void appcontroller::onCustomerListReady(QList<QVariantMap> list, cmdContext cmd)
 void appcontroller::requestOrderCommand(const QString& cmd, const QString& phoneNumber, const QString& dateExport){
     cmdContext CMD;
     CMD.cmd = QStringToCmd(cmd);
+    qDebug() << phoneNumber;
     order.setCustomerPhoneNumber(phoneNumber);
     order.setPurchaseTime(QDateTime::fromString(dateExport, "dd-MM-yyyy"));
     QJsonObject data = order.toJson();

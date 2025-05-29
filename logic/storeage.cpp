@@ -262,6 +262,10 @@ void storeage::handleCustomerListRequest(cmdContext cmd, const QString& keyword,
 // <<<<<<<<<< FOR ORDER >>>>>>>>>>
 void storeage::handleOrderCommand(cmdContext cmd, const QJsonObject& data){
     Order* order = Order::fromJson(data);
+    qDebug() << order->getCustomerPhoneNumber();
+    Customer* customer = db->getACustomerByPhoneNumber(order->getCustomerPhoneNumber());
+    qDebug() << customer->getCustomerName();
+    order->setCustomerName(customer->getCustomerName());
     if(cmd.cmd == Cmd::ADD){
         for(Products* p : order->getListItem()){
             for(Batch* b : p->getBatchList()){
@@ -274,6 +278,7 @@ void storeage::handleOrderCommand(cmdContext cmd, const QJsonObject& data){
         db->deleteOrder(order->getCustomerName(), order->getCustomerPhoneNumber(), order->getPurchaseTime());
 
     }
+    delete customer;
     delete order;
     emit orderCommandResult(true, cmd);
 }
