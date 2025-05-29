@@ -20,7 +20,7 @@ Rectangle {
 
     property bool isCreateTransaction: false
 
-    signal suggestionSelected(string text)
+    signal suggestionSelected(var data)
 
     ListModel {
         id: suggestionModel
@@ -32,12 +32,14 @@ Rectangle {
         font.pixelSize: parent.height*0.4
         placeholderTextColor: "white"
         onTextChanged: {
-            if (text.length > 0 && root.isClick === false) {
+            console.log(root.isClick)
+            if (text.length > 0 && root.isClick === false && input.focus) {
                 // Giả sử controller xử lý gợi ý theo target
                 if(target === "PRODUCT"){
                     controller.requestProductList("SEARCH", root.targetExtension, text, 0)
         
                 }else if(target === "CUSTOMER"){
+                    console.log("customer")
                     controller.requestCustomerList("SEARCH", root.targetExtension, text, 0)
                     
                 }else if(target === "BATCH"){
@@ -94,8 +96,6 @@ Rectangle {
                     anchors.fill: parent
                     onClicked: {
                         root.isClick = true;
-                        input.text = model.name
-                        root.suggestionSelected(model.name)
                         suggestionPopup.close()
                         if(root.target === "PRODUCT"){
                             if(!root.isCreateTransaction){
@@ -104,14 +104,39 @@ Rectangle {
                                 })
                                 drawerLoader.source = "components/TransactionDrawer.qml"
                             }else {
+                                if(root.taretExtension === "NAME"){
+                                    input.text = model.productName
+                                }else if(root.targetExtension === "PRICE"){
+                                    input.text = model.cost
+                                }
                                 pageLoader.setSource("ProductForm.qml", {
                                     productName: model.name
                                 })
                                 drawerLoader.source = "components/ProductDrawer.qml"
                             }
-                        } else if (root.target === "PRODUCT" && root.targetExtension === "PHONENUMBER"){
-                            root.suggestionSelected(model.name, model.phone_number);
 
+                        } else if (root.target === "CUSTOMER"){
+                            if(!root.isCreateTransaction){
+                                if(root.targetExtension === "NAME"){
+                                    root.suggestionSelected({name: model.name, phoneNumber: model.phone, yearOfBirth: model.year})
+                                }else if(root.targetExtension === "PHONENUMBER"){
+                                    root.suggestionSelected({name: model.name, phoneNumber: model.phone, yearOfBirth: model.year})
+                                    input.text = model.phone
+                                }else if(root.targetExtension === "YEAROFBIRTH"){
+                                    root.suggestionSelected({name: model.name, phoneNumber: model.phone, yearOfBirth: model.year})
+                                    input.text = model.year
+                                }
+                            }
+                        } else if (root.target === "BATCH"){
+                            if(root.isCreateTransaction){
+
+                            }else{
+                            }
+                        } else if (root.target === "ORDER"){
+                            if(root.isCreateTransaction){
+
+                            }else{
+                            }
                         }
 
                     }
