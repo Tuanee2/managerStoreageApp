@@ -1,0 +1,52 @@
+[
+    {
+        "moduleFiles": [
+            {
+                "entries": [
+                    {
+                        "codegenSuccessfull": false,
+                        "column": 12,
+                        "durationMicroseconds": 1696,
+                        "errorMessage": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: QVariant -> QColor stored as QVariant",
+                        "functionName": "color",
+                        "line": 9
+                    },
+                    {
+                        "codegenSuccessfull": true,
+                        "column": 31,
+                        "durationMicroseconds": 579,
+                        "errorMessage": "",
+                        "functionName": "horizontalCenter",
+                        "line": 11
+                    },
+                    {
+                        "codegenSuccessfull": true,
+                        "column": 27,
+                        "durationMicroseconds": 66,
+                        "errorMessage": "",
+                        "functionName": "centerIn",
+                        "line": 17
+                    },
+                    {
+                        "codegenSuccessfull": false,
+                        "column": 22,
+                        "durationMicroseconds": 68,
+                        "errorMessage": "Cannot find name opacity",
+                        "functionName": "onTriggered",
+                        "line": 31
+                    },
+                    {
+                        "codegenSuccessfull": true,
+                        "column": 28,
+                        "durationMicroseconds": 229,
+                        "errorMessage": "",
+                        "functionName": "onCompleted",
+                        "line": 37
+                    }
+                ],
+                "filepath": "/Users/tuan/Documents/developer/for/components/Toast.qml"
+            }
+        ],
+        "moduleId": "forHa(appforHa)"
+    }
+]

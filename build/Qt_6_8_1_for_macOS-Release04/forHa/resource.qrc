@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>Icon/user-add.svg</file>
+        <file>Icon/leave.svg</file>
+        <file>Icon/filter.svg</file>
+        <file>Icon/settings01.svg</file>
+        <file>Icon/cuida--package-outline.svg</file>
+        <file>Icon/cuida--chart-column-outline.svg</file>
+        <file>Icon/minus-circle.svg</file>
+        <file>Icon/cross-circle.svg</file>
+        <file>Icon/add.svg</file>
+        <file>Icon/shopping-cart-add.svg</file>
+        <file>Icon/coins.svg</file>
+        <file>Icon/bell-notification-social-media.svg</file>
+        <file>Icon/users01.svg</file>
+        <file>Icon/file-circle-info.svg</file>
+        <file>Icon/search.svg</file>
+        <file>Icon/cuida--clipboard-text-outline.svg</file>
+        <file>Backgrounds/fix.jpg</file>
+        <file>Icon/list.svg</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,187 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Release-fe8ca4cfffa9bf37df73.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "forHa",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "all_aotstats::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_aotstats-Release-9f48ee606abb4dda015b.json",
+					"name" : "all_aotstats",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint-Release-dca6821ef3c97df31d1c.json",
+					"name" : "all_qmllint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint_json::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint_json-Release-07540178220292f96e46.json",
+					"name" : "all_qmllint_json",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint_module::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint_module-Release-bdc5bec3fb3cadeb3ca6.json",
+					"name" : "all_qmllint_module",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmltyperegistrations::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmltyperegistrations-Release-9f30b69e8ade9a3a98dc.json",
+					"name" : "all_qmltyperegistrations",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appforHa::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appforHa-Release-11cba897e20f5b6e741f.json",
+					"name" : "appforHa",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appforHa_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appforHa_autogen-Release-46341b6e336e95d2d0bc.json",
+					"name" : "appforHa_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appforHa_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appforHa_autogen_timestamp_deps-Release-c5894501960f4f5e9eea.json",
+					"name" : "appforHa_autogen_timestamp_deps",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appforHa_qmlimportscan::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appforHa_qmlimportscan-Release-6a7074dedb6789fcc952.json",
+					"name" : "appforHa_qmlimportscan",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appforHa_qmllint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appforHa_qmllint-Release-9c5bd308bfe34afb31bc.json",
+					"name" : "appforHa_qmllint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appforHa_qmllint_json::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appforHa_qmllint_json-Release-4c94911f0edf55afaa0f.json",
+					"name" : "appforHa_qmllint_json",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appforHa_qmllint_module::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appforHa_qmllint_module-Release-79cfdda4065c9b2e5149.json",
+					"name" : "appforHa_qmllint_module",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appforHa_qmltyperegistration::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appforHa_qmltyperegistration-Release-349b0ba1cbc74c6d55dc.json",
+					"name" : "appforHa_qmltyperegistration",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appforHa_tooling::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appforHa_tooling-Release-8c2531aaa34585a37055.json",
+					"name" : "appforHa_tooling",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "module_appforHa_aotstats_target::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-module_appforHa_aotstats_target-Release-88d787fb681faa1655e6.json",
+					"name" : "module_appforHa_aotstats_target",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/tuan/Documents/developer/for/build/Qt_6_8_1_for_macOS-Release04",
+		"source" : "/Users/tuan/Documents/developer/for"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

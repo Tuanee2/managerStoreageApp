@@ -1,0 +1,31 @@
+<RCC>
+  <qresource prefix="/qt/qml/forHa/">
+    <file alias="Main.qml">/Users/tuan/Documents/developer/for/Main.qml</file>
+    <file alias="components/Dashboard.qml">/Users/tuan/Documents/developer/for/components/Dashboard.qml</file>
+    <file alias="components/ProductForm.qml">/Users/tuan/Documents/developer/for/components/ProductForm.qml</file>
+    <file alias="components/ProductList.qml">/Users/tuan/Documents/developer/for/components/ProductList.qml</file>
+    <file alias="components/HeaderBar.qml">/Users/tuan/Documents/developer/for/components/HeaderBar.qml</file>
+    <file alias="components/Sales.qml">/Users/tuan/Documents/developer/for/components/Sales.qml</file>
+    <file alias="components/Setting.qml">/Users/tuan/Documents/developer/for/components/Setting.qml</file>
+    <file alias="components/AddNewProduct.qml">/Users/tuan/Documents/developer/for/components/AddNewProduct.qml</file>
+    <file alias="components/Toast.qml">/Users/tuan/Documents/developer/for/components/Toast.qml</file>
+    <file alias="components/ImportBatch.qml">/Users/tuan/Documents/developer/for/components/ImportBatch.qml</file>
+    <file alias="components/MainDrawer.qml">/Users/tuan/Documents/developer/for/components/MainDrawer.qml</file>
+    <file alias="components/ProductDrawer.qml">/Users/tuan/Documents/developer/for/components/ProductDrawer.qml</file>
+    <file alias="components/SuggestionBox.qml">/Users/tuan/Documents/developer/for/components/SuggestionBox.qml</file>
+    <file alias="components/CustomerDrawer.qml">/Users/tuan/Documents/developer/for/components/CustomerDrawer.qml</file>
+    <file alias="components/AddNewCustomer.qml">/Users/tuan/Documents/developer/for/components/AddNewCustomer.qml</file>
+    <file alias="components/CustomerList.qml">/Users/tuan/Documents/developer/for/components/CustomerList.qml</file>
+    <file alias="components/CreateTransaction.qml">/Users/tuan/Documents/developer/for/components/CreateTransaction.qml</file>
+    <file alias="components/CustomSearchTextField.qml">/Users/tuan/Documents/developer/for/components/CustomSearchTextField.qml</file>
+    <file alias="components/CustomChart.qml">/Users/tuan/Documents/developer/for/components/CustomChart.qml</file>
+    <file alias="components/ProductListForTransaction.qml">/Users/tuan/Documents/developer/for/components/ProductListForTransaction.qml</file>
+    <file alias="components/ProductFormForTransaction.qml">/Users/tuan/Documents/developer/for/components/ProductFormForTransaction.qml</file>
+    <file alias="components/TransactionDrawer.qml">/Users/tuan/Documents/developer/for/components/TransactionDrawer.qml</file>
+    <file alias="components/Notification.qml">/Users/tuan/Documents/developer/for/components/Notification.qml</file>
+    <file alias="components/TransactionHistory.qml">/Users/tuan/Documents/developer/for/components/TransactionHistory.qml</file>
+    <file alias="components/OrderForm.qml">/Users/tuan/Documents/developer/for/components/OrderForm.qml</file>
+    <file alias="resource.qrc">/Users/tuan/Documents/developer/for/resource.qrc</file>
+  </qresource>
+</RCC>
+

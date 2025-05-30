@@ -1,0 +1,29 @@
+module forHa
+typeinfo appforHa.qmltypes
+prefer :/qt/qml/forHa/
+Main 1.0 Main.qml
+Dashboard 1.0 components/Dashboard.qml
+ProductForm 1.0 components/ProductForm.qml
+ProductList 1.0 components/ProductList.qml
+HeaderBar 1.0 components/HeaderBar.qml
+Sales 1.0 components/Sales.qml
+Setting 1.0 components/Setting.qml
+AddNewProduct 1.0 components/AddNewProduct.qml
+Toast 1.0 components/Toast.qml
+ImportBatch 1.0 components/ImportBatch.qml
+MainDrawer 1.0 components/MainDrawer.qml
+ProductDrawer 1.0 components/ProductDrawer.qml
+SuggestionBox 1.0 components/SuggestionBox.qml
+CustomerDrawer 1.0 components/CustomerDrawer.qml
+AddNewCustomer 1.0 components/AddNewCustomer.qml
+CustomerList 1.0 components/CustomerList.qml
+CreateTransaction 1.0 components/CreateTransaction.qml
+CustomSearchTextField 1.0 components/CustomSearchTextField.qml
+CustomChart 1.0 components/CustomChart.qml
+ProductListForTransaction 1.0 components/ProductListForTransaction.qml
+ProductFormForTransaction 1.0 components/ProductFormForTransaction.qml
+TransactionDrawer 1.0 components/TransactionDrawer.qml
+Notification 1.0 components/Notification.qml
+TransactionHistory 1.0 components/TransactionHistory.qml
+OrderForm 1.0 components/OrderForm.qml
+

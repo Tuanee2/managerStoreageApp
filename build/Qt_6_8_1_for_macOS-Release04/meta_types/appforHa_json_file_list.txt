@@ -1,0 +1,6 @@
+/Users/tuan/Documents/developer/for/build/Qt_6_8_1_for_macOS-Release04/appforHa_autogen/include/../V5QSWVS6RF/moc_appcontroller.cpp.json
+/Users/tuan/Documents/developer/for/build/Qt_6_8_1_for_macOS-Release04/appforHa_autogen/include/../V5QSWVS6RF/moc_customer.cpp.json
+/Users/tuan/Documents/developer/for/build/Qt_6_8_1_for_macOS-Release04/appforHa_autogen/include/../V5QSWVS6RF/moc_databasemanager.cpp.json
+/Users/tuan/Documents/developer/for/build/Qt_6_8_1_for_macOS-Release04/appforHa_autogen/include/../V5QSWVS6RF/moc_order.cpp.json
+/Users/tuan/Documents/developer/for/build/Qt_6_8_1_for_macOS-Release04/appforHa_autogen/include/../V5QSWVS6RF/moc_products.cpp.json
+/Users/tuan/Documents/developer/for/build/Qt_6_8_1_for_macOS-Release04/appforHa_autogen/include/../V5QSWVS6RF/moc_storeage.cpp.json

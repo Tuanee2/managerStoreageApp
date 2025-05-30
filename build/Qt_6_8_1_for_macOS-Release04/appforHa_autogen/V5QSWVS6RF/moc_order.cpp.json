@@ -1,0 +1,18 @@
+{
+    "classes": [
+        {
+            "className": "Order",
+            "lineNumber": 11,
+            "object": true,
+            "qualifiedClassName": "Order",
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "order.h",
+    "outputRevision": 68
+}

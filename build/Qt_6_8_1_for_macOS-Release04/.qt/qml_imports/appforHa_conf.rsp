@@ -1,0 +1,14 @@
+-rootPath
+/Users/tuan/Documents/developer/for
+-cmake-output
+-output-file
+/Users/tuan/Documents/developer/for/build/Qt_6_8_1_for_macOS-Release04/.qt/qml_imports/appforHa_conf.cmake
+-importPath
+/Users/tuan/Documents/developer/for/build/Qt_6_8_1_for_macOS-Release04/forHa
+-importPath
+/Users/tuan/Documents/developer/for/build/Qt_6_8_1_for_macOS-Release04
+-importPath
+/Users/tuan/Qt/6.8.1/macos/qml
+-qrcFiles
+/Users/tuan/Documents/developer/for/build/Qt_6_8_1_for_macOS-Release04/.qt/rcc/qmake_forHa.qrc
+/Users/tuan/Documents/developer/for/build/Qt_6_8_1_for_macOS-Release04/.qt/rcc/appforHa_raw_qml_0.qrc

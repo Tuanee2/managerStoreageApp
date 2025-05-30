@@ -1,0 +1,428 @@
+{
+    "classes": [
+        {
+            "className": "storeage",
+            "lineNumber": 12,
+            "methods": [
+                {
+                    "access": "public",
+                    "index": 25,
+                    "name": "initialize",
+                    "returnType": "void"
+                }
+            ],
+            "object": true,
+            "qualifiedClassName": "storeage",
+            "signals": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "exists",
+                            "type": "bool"
+                        }
+                    ],
+                    "index": 0,
+                    "name": "productNameCheckResult",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "done",
+                            "type": "bool"
+                        }
+                    ],
+                    "index": 1,
+                    "name": "productCommandResult",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "list",
+                            "type": "QList<QVariantMap>"
+                        },
+                        {
+                            "name": "cmd",
+                            "type": "cmdContext"
+                        }
+                    ],
+                    "index": 2,
+                    "name": "productListReady",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "newCount",
+                            "type": "int"
+                        }
+                    ],
+                    "index": 3,
+                    "name": "productCountChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "product",
+                            "type": "Products"
+                        }
+                    ],
+                    "index": 4,
+                    "name": "requestInsertProduct",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "done",
+                            "type": "bool"
+                        }
+                    ],
+                    "index": 5,
+                    "name": "batchCommandResult",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "result",
+                            "type": "double"
+                        },
+                        {
+                            "name": "cmd",
+                            "type": "cmdContext"
+                        }
+                    ],
+                    "index": 6,
+                    "name": "batchInfoResult",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "list",
+                            "type": "QList<QVariantMap>"
+                        },
+                        {
+                            "name": "cmd",
+                            "type": "cmdContext"
+                        }
+                    ],
+                    "index": 7,
+                    "name": "batchListReady",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "done",
+                            "type": "bool"
+                        },
+                        {
+                            "name": "cmd",
+                            "type": "cmdContext"
+                        }
+                    ],
+                    "index": 8,
+                    "name": "customerCommandResult",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "list",
+                            "type": "QList<QVariantMap>"
+                        },
+                        {
+                            "name": "cmd",
+                            "type": "cmdContext"
+                        }
+                    ],
+                    "index": 9,
+                    "name": "customerListReady",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "done",
+                            "type": "bool"
+                        },
+                        {
+                            "name": "cmd",
+                            "type": "cmdContext"
+                        }
+                    ],
+                    "index": 10,
+                    "name": "orderCommandResult",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "list",
+                            "type": "QList<QVariantMap>"
+                        },
+                        {
+                            "name": "cmd",
+                            "type": "cmdContext"
+                        }
+                    ],
+                    "index": 11,
+                    "name": "orderListReady",
+                    "returnType": "void"
+                }
+            ],
+            "slots": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "name",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 12,
+                    "name": "handleCheckProductName",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "pro",
+                            "type": "Products"
+                        },
+                        {
+                            "name": "cmd",
+                            "type": "cmdContext"
+                        }
+                    ],
+                    "index": 13,
+                    "name": "handleProductCommand",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "cmd",
+                            "type": "cmdContext"
+                        },
+                        {
+                            "name": "keyword",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "numPage",
+                            "type": "int"
+                        }
+                    ],
+                    "index": 14,
+                    "name": "handleProductListRequest",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "id",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 15,
+                    "name": "sreachProduct",
+                    "returnType": "Products*"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "name",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 16,
+                    "name": "sreachProductByName",
+                    "returnType": "Products*"
+                },
+                {
+                    "access": "public",
+                    "index": 17,
+                    "name": "totalProductTypes",
+                    "returnType": "int"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "cmd",
+                            "type": "cmdContext"
+                        },
+                        {
+                            "name": "name",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "batch",
+                            "type": "Batch"
+                        }
+                    ],
+                    "index": 18,
+                    "name": "handleBatchCommand",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "cmd",
+                            "type": "cmdContext"
+                        },
+                        {
+                            "name": "productName",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 19,
+                    "name": "handleBatchInfoRequest",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "cmd",
+                            "type": "cmdContext"
+                        },
+                        {
+                            "name": "productName",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "keyword",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "numOfBatch",
+                            "type": "int"
+                        },
+                        {
+                            "name": "numPage",
+                            "type": "int"
+                        }
+                    ],
+                    "index": 20,
+                    "name": "handleBatchListRequest",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "cmd",
+                            "type": "cmdContext"
+                        },
+                        {
+                            "name": "customer",
+                            "type": "Customer"
+                        }
+                    ],
+                    "index": 21,
+                    "name": "handleCustomerCommand",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "cmd",
+                            "type": "cmdContext"
+                        },
+                        {
+                            "name": "keyword",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "numPage",
+                            "type": "int"
+                        }
+                    ],
+                    "index": 22,
+                    "name": "handleCustomerListRequest",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "cmd",
+                            "type": "cmdContext"
+                        },
+                        {
+                            "name": "data",
+                            "type": "QJsonObject"
+                        }
+                    ],
+                    "index": 23,
+                    "name": "handleOrderCommand",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "cmd",
+                            "type": "cmdContext"
+                        },
+                        {
+                            "name": "keyword",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "dateBegin",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "dateEnd",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "numOfOrder",
+                            "type": "int"
+                        },
+                        {
+                            "name": "numPage",
+                            "type": "int"
+                        }
+                    ],
+                    "index": 24,
+                    "name": "handleOrderListRequest",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "storeage.h",
+    "outputRevision": 68
+}

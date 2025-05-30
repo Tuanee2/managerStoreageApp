@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/qt/qml/forHa">
+    <file alias="qmldir">/Users/tuan/Documents/developer/for/build/Qt_6_8_1_for_macOS-Release04/forHa/qmldir</file>
+  </qresource>
+</RCC>
+
