@@ -1,0 +1,8 @@
+<Package>
+    <DisplayName>AppforHa</DisplayName>
+    <Description>Cài đặt ứng dụng AppforHa</Description>
+    <Version>1.0.1</Version>
+    <ReleaseDate>2025-05-31</ReleaseDate>
+    <Default>true</Default>
+    <Essential>true</Essential>
+</Package>

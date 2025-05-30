@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QThread>
 #include <QQmlContext>
+#include <QDir>
 #include "logic/storeage.h"
 #include "logic/databasemanager.h"
 #include "logic/appcontroller.h"
@@ -9,6 +10,7 @@
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
+    QDir::setCurrent(QCoreApplication::applicationDirPath());
 
     QThread* dbThread = new QThread;
     storeage* store = new storeage();

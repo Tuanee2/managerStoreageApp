@@ -1,0 +1,14 @@
+<Installer>
+    <Name>AppforHa</Name>
+    <Version>1.0.1</Version>
+    <Title>AppforHa Installer</Title>
+    <Publisher>Tuanee2</Publisher>
+    <StartMenuDir>AppforHa</StartMenuDir>
+    <TargetDir>@HomeDir@/AppforHa</TargetDir>
+
+    <RemoteRepositories>
+        <Repository>
+            <Url>https://tuanee2.github.io/managerStoreageApp</Url>
+        </Repository>
+    </RemoteRepositories>
+</Installer>
