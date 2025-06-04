@@ -206,11 +206,10 @@ Item {
                             anchors.fill: parent
                             hoverEnabled: true
                             onClicked: {
-                                pageLoader.setSource("CreateTransaction.qml", {
-                                    customerName: modelData["name"],
-                                    customerPhoneNumber: modelData["phone_number"],
-                                    customerYearOfBirth: modelData["year_of_birth"]
-                                })
+                                rootWindow.customerName =  modelData["name"]
+                                rootWindow.customerPhoneNumber = modelData["phone_number"]
+                                rootWindow.customerYearOfBirth = modelData["year_of_birth"]
+                                pageLoader.source = "components/CreateTransaction.qml"
                                 drawerLoader.source = "components/TransactionDrawer.qml"
                                 rootWindow.currentNavigation = "Tạo giao dịch"
 

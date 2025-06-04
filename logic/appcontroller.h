@@ -75,6 +75,11 @@ public slots:
 
 // **********************************************
 
+// **********< Lấy số liệu sản phẩm >**********
+
+
+// **********************************************
+
 // **********< Lấy danh sách sản phẩm >**********
 public:
     Q_INVOKABLE void requestProductList(const QString& cmd, const QString& keyword, int numPage);

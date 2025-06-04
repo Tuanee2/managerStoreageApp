@@ -36,7 +36,7 @@ Item {
 
             TextField {
                 id: phonenumbertextfield
-                placeholderText: "Số điện thoại (KHÔNG BẮT BUỘC)"
+                placeholderText: "Số điện thoại (BẮT BUỘC)"
                 font.pixelSize: 24
                 placeholderTextColor: Qt.rgba( 1, 1, 1, 0.8)
                 verticalAlignment: Text.AlignVCenter
@@ -114,6 +114,11 @@ Item {
 
                         if (name === "") {
                             rootWindow.notification.showNotification("⚠️ Tên khách hàng bắt buộc")
+                            return;
+                        }
+
+                        if (phoneNumber === "") {
+                            rootWindow.notification.showNotification("⚠️ Số điện thoại khách hàng bắt buộc")
                             return;
                         }
 

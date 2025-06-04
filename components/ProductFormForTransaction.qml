@@ -9,7 +9,7 @@ Item {
 
     property var batches: []
     property var batchesSelected: []
-    property var selectedQuantities: []
+    property var selectedQuantitiesMap: ({})
 
     property int currentPage: 0
     property int itemsPerPage: 6
@@ -31,8 +31,8 @@ Item {
 
     function updateTotal() {
         var sum = 0;
-        for (var i = 0; i < selectedQuantities.length; ++i) {
-            sum += selectedQuantities[i];
+        for (var key in selectedQuantitiesMap) {
+            sum += selectedQuantitiesMap[key];
         }
         total = sum;
     }
@@ -43,7 +43,6 @@ Item {
             if(cmd === "LIST"){
                 batchlist4trans.batches = list
                 batchlist4trans.updatePageFlags(list.length)
-                batchlist4trans.selectedQuantities = Array(list.length).fill(0);
             }
         }
     }
@@ -177,15 +176,19 @@ Item {
                         from: 0
                         to: modelData.quantity
                         stepSize: 10
-                        value: 0
+                        value: selectedQuantitiesMap[modelData.importdate + "_" + modelData.expireddate] !== undefined
+                               ? selectedQuantitiesMap[modelData.importdate + "_" + modelData.expireddate]
+                               : 0
                         editable: true
                         width: parent.width*0.3
                         height: parent.height 
                         anchors.left: parent.left
                         anchors.top: parent.top
+                        font.pixelSize: parent.height*0.3
 
                         onValueChanged: {
-                            batchlist4trans.selectedQuantities[index] = value;
+                            const key = modelData.importdate + "_" + modelData.expireddate;
+                            batchlist4trans.selectedQuantitiesMap[key] = value;
                             batchlist4trans.updateTotal();
                         }
                     }
@@ -327,9 +330,7 @@ Item {
         anchors.centerIn: parent
         visible: false
         onAccepted: {
-            for (var i = 0; i < selectedQuantities.length; ++i) {
-                selectedQuantities[i] = 0;
-            }
+            selectedQuantitiesMap = {};
             batchlist4trans.updateTotal();
         }
     }
@@ -343,18 +344,31 @@ Item {
         onAccepted: {
             
             var batchlist = []
-            for(var i = 0; i < batches.length; i++){
-                var quan = batchlist4trans.selectedQuantities[i]
-                if(quan > 0){
+            for (var key in selectedQuantitiesMap) {
+                var quan = selectedQuantitiesMap[key];
+                if (quan > 0) {
+                    // Tách lại importdate và expireddate từ key
+                    var parts = key.split("_");
+                    var importdate = parts[0];
+                    var expireddate = parts[1];
+
+                    // Tìm batch tương ứng để lấy cost
+                    var cost = 0;
+                    for (var j = 0; j < batches.length; j++) {
+                        var b = batches[j];
+                        if (b.importdate === importdate && b.expireddate === expireddate) {
+                            cost = b.cost;
+                            break;
+                        }
+                    }
+
                     batchlist.push({
                         "quantity": quan,
-                        "cost": batches[i].cost,
-                        "importdate": Qt.formatDate(new Date(batches[i].importdate), "dd-MM-yyyy"),
-                        "expireddate": Qt.formatDate(new Date(batches[i].expireddate), "dd-MM-yyyy")
+                        "cost": cost,
+                        "importdate": Qt.formatDate(new Date(importdate), "dd-MM-yyyy"),
+                        "expireddate": Qt.formatDate(new Date(expireddate), "dd-MM-yyyy")
                     })
-                    
                 }
-                
             }
             controller.requestCommandBatchToOrder_UI("ADD", batchlist4trans.productName, batchlist4trans.costOfProduct, batchlist)
             

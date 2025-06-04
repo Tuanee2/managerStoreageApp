@@ -9,6 +9,7 @@
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setApplicationVersion("1.0.2");
     QGuiApplication app(argc, argv);
     QDir::setCurrent(QCoreApplication::applicationDirPath());
 

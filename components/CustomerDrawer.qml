@@ -83,7 +83,7 @@ Item {
                 }
 
                 onClicked: {
-                    rootWindow.currentNavigation = "Danh sách khác hàng"
+                    rootWindow.currentNavigation = "Danh sách khách hàng"
                     pageLoader.source = "components/CustomerList.qml"
                 }
             }

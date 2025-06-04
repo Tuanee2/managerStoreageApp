@@ -16,6 +16,8 @@ Item {
     property string command: "LIST"
     property string dateBegin: ""
     property string dateEnd: ""
+    property bool orderExist: true
+    property string typeofquery: "ALL"
 
 
     Component.onCompleted: {
@@ -28,6 +30,7 @@ Item {
             if(cmd === "LIST"){
                 orders = list;
                 updatePageFlags(list.length)
+                orderExist = (list.length > 0)
             }
         }
     }
@@ -48,7 +51,120 @@ Item {
             width: parent.width*0.96
             height: parent.height*0.2
             radius: 10
-            color: "white"
+            color: Qt.rgba(0, 0, 0, 0.5)
+
+            Rectangle{
+                id: typeQuerry
+                width: parent.width*0.08
+                height: parent.height*0.5
+                anchors.left: parent.left
+                anchors.leftMargin: parent.width*0.01
+                anchors.verticalCenter: parent.verticalCenter
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        menuTypeQuerry.open()
+                    }
+
+                }
+
+                Menu {
+                    id: menuTypeQuerry
+                    y: typeQuerry.height
+
+                    MenuItem {
+                        text: "Tất cả"
+                    }
+                    MenuItem {
+                        text: "Người mua"
+                    }
+                    MenuItem {
+                        text: "Loại sản phẩm"
+                    }
+
+                }
+
+            }
+
+            TextField {
+                id: daybegin
+                width: parent.width*0.28
+                height:parent.height*0.485
+                anchors.top: parent.top
+                anchors.topMargin: parent.height*0.01
+                anchors.right: parent.right
+                anchors.rightMargin: parent.width*0.21
+
+            }
+
+            TextField {
+                id: dayfinish
+                width: parent.width*0.28
+                height:parent.height*0.485
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: parent.height*0.01
+                anchors.right: parent.right
+                anchors.rightMargin: parent.width*0.21
+
+            }
+
+            Rectangle {
+                id: queryButton
+                width: parent.width*0.18
+                height:parent.height*0.94
+                radius:10
+                anchors.right: parent.right
+                anchors.rightMargin: parent.width*0.01
+                anchors.verticalCenter: parent.verticalCenter
+
+                Text{
+                    anchors.centerIn: parent
+                    text: "Truy vấn"
+                    font.pixelSize: parent.height*0.3
+                }
+
+                MouseArea {
+                    anchors.fill:parent
+
+                    onClicked: {
+                        let daybegintext = daybegin.text.trim();
+                        let dayfinishtext = dayfinish.text.trim();
+
+                        if (daybegintext === "") {
+                            rootWindow.notification.showNotification("⚠️ Ngày bắt đầu không xác định")
+                            return;
+                        }
+
+                        if (!/\d{2}-\d{2}-\d{4}/.test(daybegintext)) {
+                            rootWindow.notification.showNotification("⚠️ Ngày không đúng định dạng dd-MM-yyyy")
+                            return;
+                        }
+
+                        if (dayfinishtext === "") {
+                            rootWindow.notification.showNotification("⚠️ Ngày kết thúc không xác định")
+                            return;
+                        }
+
+                        if (!/\d{2}-\d{2}-\d{4}/.test(dayfinishtext)) {
+                            rootWindow.notification.showNotification("⚠️ Ngày không đúng định dạng dd-MM-yyyy")
+                            return;
+                        }
+
+                        let partsbegin = daybegintext.split("-");
+                        let partsfinish = dayfinishtext.split("-");
+                        let datebegin = new Date(partsbegin[2], partsbegin[1] - 1, partsbegin[0]);
+                        let datefinish = new Date(partsfinish[2], partsfinish[1] - 1, partsfinish[0]);
+
+                        if (datebegin > datefinish) {
+                            rootWindow.notification.showNotification("⚠️ ngày bắt đầu phải trước ngày kết thúc")
+                            return;
+                        }
+
+                        controller.requestOrderList(rootTransactionHistory.command, rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
+                    }
+                }
+            }
         }
 
         Rectangle{
@@ -60,9 +176,18 @@ Item {
             height: parent.height*0.7
             color: "transparent"
 
+            Text {
+                visible: !rootTransactionHistory.orderExist
+                anchors.centerIn: parent
+                text: "Không tồn tại đơn hàng nào"
+                font.pixelSize: parent.height*0.15
+                color: "white"
+            }
+
             Column{
                 id: orderList
                 anchors.fill: parent
+                visible: rootTransactionHistory.orderExist
                 spacing: transactionList.height*0.01
                 Repeater {
                     model: rootTransactionHistory.orders
@@ -94,7 +219,7 @@ Item {
                             height: parent.height
                             width: parent.width*0.2
                             radius: 10
-                            visible: modelData.customer_name === ""
+                            visible: !(modelData.customer_name === "")
                             color: "transparent"
 
                             Text{

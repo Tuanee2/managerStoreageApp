@@ -1,3 +1,5 @@
+#include <QStandardPaths>
+#include <QFileInfo>
 #include "databasemanager.h"
 #include <QDir>
 
@@ -6,7 +8,8 @@ DatabaseManager::DatabaseManager(QObject *parent)
 {}
 
 bool DatabaseManager::initialize(){
-    QString dbPath = "database.db";
+    QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/database.db";
+    QDir().mkpath(QFileInfo(dbPath).absolutePath());  // tạo thư mục nếu chưa tồn tại
     bool isFirstTime = !QFile::exists(dbPath);
 
     db = QSqlDatabase::addDatabase("QSQLITE");
@@ -77,7 +80,7 @@ bool DatabaseManager::initialize(){
             return false;
         }
     }
-    qDebug() << "Database file is located at:" << QDir::current().absoluteFilePath("database.db");
+    qDebug() << "Database file is located at:" << dbPath;
     return true;
 }
 
@@ -665,10 +668,22 @@ QList<Customer*> DatabaseManager::getACustomerByYearOfBirth(const QString& yearO
 }
 
 bool DatabaseManager::insertOrder(Order& order){
+    QString name;
+    QSqlQuery queryforname;
+    queryforname.prepare("SELECT name FROM customers WHERE phone_number = :phone_number LIMIT 1");
+    queryforname.bindValue(":phone_number", order.getCustomerPhoneNumber());
+    if (!queryforname.exec()) {
+        qWarning() << "❌ Lỗi khi lấy tên khách hàng :" << queryforname.lastError().text();
+        return false;
+    }
+    if(queryforname.next()){
+        name = queryforname.value(0).toString();
+    }
+
     QSqlQuery query;
     query.prepare("INSERT INTO orders (customer_name, phone_number, export_date, data, notes) "
                   "VALUES (?, ?, ?, ?, ?)");
-    query.addBindValue(order.getCustomerName());
+    query.addBindValue(name);
     query.addBindValue(order.getCustomerPhoneNumber());
     query.addBindValue(order.getPurchaseTime().toString("yyyy-MM-dd"));
     query.addBindValue(Order::itemToQString(order.getListItem()));

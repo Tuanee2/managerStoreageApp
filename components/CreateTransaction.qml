@@ -440,7 +440,6 @@ Item {
         anchors.centerIn: parent
         visible: false
         onAccepted: {
-            console.log(phoneSearch.text)
             controller.requestOrderCommand("ADD", phoneSearch.text, purchaseTimeTextField.text);
         }
     }

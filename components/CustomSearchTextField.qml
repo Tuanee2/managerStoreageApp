@@ -32,7 +32,7 @@ Rectangle {
         font.pixelSize: parent.height*0.4
         placeholderTextColor: "white"
         onTextChanged: {
-            console.log(root.isClick)
+            //console.log(root.isClick)
             if (text.length > 0 && root.isClick === false && input.focus) {
                 // Giả sử controller xử lý gợi ý theo target
                 if(target === "PRODUCT"){

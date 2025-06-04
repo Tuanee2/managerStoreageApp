@@ -123,17 +123,13 @@ void appcontroller::requestCommandBatchToOrder_UI(const QString& cmd, const QStr
             order.getListItem().append(product);
         }
 
-        qDebug() << order.getListItem().size();
-
         for (const QVariant& v : batchList) {
             QVariantMap b = v.toMap();
             Batch* batch = new Batch();
             batch->setQuantity(b["quantity"].toInt());
             batch->setCost(b["cost"].toDouble());
             batch->setImportDate(QDateTime::fromString(b["importdate"].toString(), "dd-MM-yyyy"));
-            qDebug() << QDateTime::fromString(b["importdate"].toString(), "dd-MM-yyyy");
             batch->setExpiryDate(QDateTime::fromString(b["expireddate"].toString(), "dd-MM-yyyy"));
-            qDebug() << QDateTime::fromString(b["expireddate"].toString(), "dd-MM-yyyy");
             product->getBatchList().append(batch);
         }
     }
