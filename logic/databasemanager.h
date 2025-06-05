@@ -62,7 +62,7 @@ public:
     bool insertOrder(Order& order);
     bool deleteOrder(const QString& customerName, const QString& phoneNumber, const QDateTime& purchaseTime);
     QList<Order*> getOrder(const QString& customerName, const QString& phoneNumber, const QDateTime& purchaseTime, int numOfOrder, int numpag);
-    QList<Order*> getOrderByPage(cmdContext cmd, const QString& keywword, int numOfOrder,int numpage);
+    QList<Order*> getOrderByPage(cmdContext cmd, const QString& keyword, int numOfOrder,int numpage);
     QList<Order*> getOrderByPeriod(const QString& customerName, const QString& phoneNumber, int numOfOrder,int numpage);
     // ************************************
 };

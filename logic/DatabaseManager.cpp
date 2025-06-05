@@ -777,15 +777,17 @@ QList<Order*> DatabaseManager::getOrder(const QString& customerName, const QStri
     return list;
 }
 
-QList<Order*> DatabaseManager::getOrderByPage(cmdContext cmd, const QString& keywword, int numOfOrder,int numpage){
+QList<Order*> DatabaseManager::getOrderByPage(cmdContext cmd, const QString& keyword, int numOfOrder,int numpage){
     QList<Order*> list;
     QSqlQuery query;
     QString sql;
-    if(!keywword.isEmpty()){
+    if(!keyword.isEmpty()){
         if(cmd.typelist == type_of_list::NAME){
 
         }else if(cmd.typelist == type_of_list::PHONENUMBER){
-
+            sql = "SELECT customer_name, phone_number, export_date, data, notes FROM orders "
+              "WHERE phone_number = :phone_number "
+              "LIMIT :limit OFFSET :offset";
         }
     }else{
         sql = "SELECT customer_name, phone_number, export_date, data, notes FROM orders "
@@ -794,16 +796,16 @@ QList<Order*> DatabaseManager::getOrderByPage(cmdContext cmd, const QString& key
 
     query.prepare(sql);
 
-    if(!keywword.isEmpty()){
+    if(!keyword.isEmpty()){
         if(cmd.typelist == type_of_list::NAME){
 
         }else if(cmd.typelist == type_of_list::PHONENUMBER){
-
+            query.bindValue(":phone_number", keyword);
         }
-    }else{
-        query.bindValue(":limit", numOfOrder);
-        query.bindValue(":offset", numpage * numOfOrder);
     }
+    query.bindValue(":limit", numOfOrder);
+    query.bindValue(":offset", numpage * numOfOrder);
+    
 
     if(!query.exec()){
         qWarning() << "Failed to fetch orders by page for order";

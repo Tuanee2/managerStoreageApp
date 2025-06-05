@@ -22,7 +22,8 @@ Item {
 
     Component.onCompleted: {
         let cmdData = {
-            cmd: rootTransactionHistory.command
+            cmd: rootTransactionHistory.command,
+            typelist: ""
         }
         controller.requestOrderList(cmdData, "", rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
     }
@@ -164,7 +165,8 @@ Item {
                             return;
                         }
                         let cmdData = {
-                            cmd: rootTransactionHistory.command
+                            cmd: rootTransactionHistory.command,
+                            typelist: ""
                         }
 
                         controller.requestOrderList(cmdData, "", rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
@@ -346,7 +348,8 @@ Item {
                     onClicked: {
                         rootTransactionHistory.currentPage--
                         let cmdData = {
-                            cmd: rootTransactionHistory.command
+                            cmd: rootTransactionHistory.command,
+                            typelist: ""
                         }
                         controller.requestOrderList(cmdData, "", rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
                     }
@@ -399,7 +402,8 @@ Item {
                     onClicked: {
                         rootTransactionHistory.currentPage++
                         let cmdData = {
-                            cmd: rootTransactionHistory.command
+                            cmd: rootTransactionHistory.command,
+                            typelist: ""
                         }
                         controller.requestOrderList(cmdData, "", rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
                     }

@@ -184,8 +184,8 @@ Item {
                             anchors.fill: parent
                             hoverEnabled: true
                             onClicked: {
-                                pageLoader.setSource("ProductForm.qml", {
-                                    productName: modelData["productName"]
+                                pageLoader.setSource("CustomerForm.qml", {
+                                    customerPhoneNumber: modelData["phone_number"]
                                 })
                             }
 

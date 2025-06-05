@@ -292,6 +292,7 @@ void storeage::handleOrderListRequest(cmdContext cmd, const QString& keyword, co
         item["phone_number"] = order->getCustomerPhoneNumber();
         item["purchase_time"] = order->getPurchaseTime();
         item["data"] = Order::itemToQString(order->getListItem());
+        item["total_price"] = order->getTotalPrice();
         result.append(item);
         delete order;
     }

@@ -196,7 +196,22 @@ public slots:
 
 // ****************************************
 
-// *********< Lấy danh sách đơn hàng >*********
+// **********< Lấy thông số đơn hàng >**********
+public: 
+    Q_INVOKABLE void requestOrderParam(QVariantMap cmdData, const QString& keyword, const QString& dateBegin, const QString& dateEnd);
+
+signals:
+    // for database thread
+    void orderParamRequested(cmdContext cmd, const QString& keyword, const QString& dateBegin, const QString& dateEnd);
+    // for UI
+    void orderParamResult(double param, const QString& cmd);
+
+public slots:
+    void onOrderParamResult(double param, cmdContext cmd);
+
+// ****************************************
+
+// **********< Lấy danh sách đơn hàng >**********
 public:
     Q_INVOKABLE void requestOrderList(QVariantMap cmdData, const QString& keywword, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage);
 

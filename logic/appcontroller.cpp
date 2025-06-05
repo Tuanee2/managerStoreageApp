@@ -308,9 +308,20 @@ void appcontroller::onOrderCommandResult(bool done, cmdContext cmd){
     emit orderCommandResult(done, CmdToQString(cmd.cmd));
 }
 
+void appcontroller::requestOrderParam(QVariantMap cmdData, const QString& keyword, const QString& dateBegin, const QString& dateEnd){
+    cmdContext CMD;
+    CMD.cmd = QStringToCmd(cmdData.value("cmd").toString());
+    emit orderParamRequested(CMD, keyword, dateBegin, dateEnd);
+}
+
+void appcontroller::onOrderParamResult(double param, cmdContext cmd){
+    emit orderParamResult(param, CmdToQString(cmd.cmd));
+}
+
 void appcontroller::requestOrderList(QVariantMap cmdData, const QString& keyword, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage){
     cmdContext CMD;
     CMD.cmd = QStringToCmd(cmdData.value("cmd").toString());
+    CMD.typelist = QStringToTypeList(cmdData.value("typelist").toString());
     emit orderListRequested(CMD, keyword, dateBegin, dateEnd, numOfOrder, numPage);
 }
 
