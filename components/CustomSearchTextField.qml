@@ -14,6 +14,7 @@ Rectangle {
     property alias fontSize: input.font.pixelSize
     property string target: ""
     property string targetExtension: ""
+    property int itemsPerPage: 6
 
     property bool isClick: false 
     property bool isEnable: false
@@ -36,14 +37,26 @@ Rectangle {
             if (text.length > 0 && root.isClick === false && input.focus) {
                 // Giả sử controller xử lý gợi ý theo target
                 if(target === "PRODUCT"){
-                    controller.requestProductList("SEARCH", root.targetExtension, text, 0)
+                    let cmdData = {
+                        cmd: "SEARCH",
+                        typelist: root.targetExtension
+                    }
+                    controller.requestProductList(cmdData, text, 0)
         
                 }else if(target === "CUSTOMER"){
-                    console.log("customer")
-                    controller.requestCustomerList("SEARCH", root.targetExtension, text, 0)
+                    let cmdData = {
+                        cmd: "SEARCH",
+                        typelist: root.targetExtension
+                    }
+                    controller.requestCustomerList(cmdData, "", 6, 0)
                     
                 }else if(target === "BATCH"){
-                    controller.requestBatchList("SEARCH", text, 0)
+                    let cmdData = {
+                        cmd: "SEARCH",
+                        typelist: "",
+                        duration: ""
+                    }
+                    controller.requestBatchList(cmdData, text, "", root.itemsPerPage, 0)
 
                 }else if(target === "ORDER"){
 

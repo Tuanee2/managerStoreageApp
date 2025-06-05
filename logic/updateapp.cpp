@@ -17,7 +17,6 @@ void UpdateApp::checkForUpdate() {
     QUrl url("https://tuanee2.github.io/managerStoreageApp/Updates.xml");
     QNetworkRequest request(url);
     QNetworkReply *reply = manager->get(request);
-
     connect(reply, &QNetworkReply::finished, this, [=]() {
         if (reply->error() != QNetworkReply::NoError) {
             emit updateError(reply->errorString());
@@ -53,27 +52,31 @@ void UpdateApp::checkForUpdate() {
 
         if (latestVersion > currentVersion && !downloadFileName.isEmpty()) {
             QUrl downloadUrl("https://tuanee2.github.io/managerStoreageApp/" + downloadFileName);
-            emit updateAvailable(latestVersion, downloadUrl);
+            dlurl = downloadUrl;
+            qDebug() << latestVersion;
+            emit updateAvailable(latestVersion);
+            qDebug() << "✅ update available.";
         } else {
             qDebug() << "✅ No update available.";
         }
     });
 }
 
-void UpdateApp::downloadUpdate(const QUrl &url) {
-    QNetworkRequest request(url);
+void UpdateApp::downloadUpdate() {
+    QNetworkRequest request(dlurl);
     QNetworkReply *reply = manager->get(request);
 
     QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)
-                           + "/update_installer.7z";
+                           + "/appforHa.app.7z";
     QFile *file = new QFile(downloadPath);
 
     if (!file->open(QIODevice::WriteOnly)) {
+        qDebug() << " Cannot open file for writing";
         emit updateError("❌ Cannot open file for writing");
         delete file;
         return;
     }
-
+    qDebug() << " Im here";
     connect(reply, &QNetworkReply::readyRead, this, [=]() {
         file->write(reply->readAll());
     });

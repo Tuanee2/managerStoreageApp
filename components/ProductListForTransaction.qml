@@ -17,7 +17,11 @@ Item {
 
 
     Component.onCompleted: {
-        controller.requestProductList("LIST", "", productListTransaction.currentPage);
+        let cmdData = {
+            cmd: "LIST",
+            typelist: ""
+        }
+        controller.requestProductList(cmdData, "", productListTransaction.currentPage);
     }
 
     Connections {
@@ -153,7 +157,11 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         productListTransaction.currentPage--
-                        controller.requestProductList("LIST", "", productListTransaction.currentPage);
+                        let cmdData = {
+                            cmd: "LIST",
+                            typelist: ""
+                        }
+                        controller.requestProductList(cmdData, "", productListTransaction.currentPage);
                     }
 
                 }
@@ -203,7 +211,11 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         productListTransaction.currentPage++
-                        controller.requestProductList("LIST", "", productListTransaction.currentPage);
+                        let cmdData = {
+                            cmd: "LIST",
+                            typelist: ""
+                        }
+                        controller.requestProductList(cmdData, "", productListTransaction.currentPage);
                     }
 
                 }

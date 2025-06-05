@@ -15,7 +15,11 @@ Item {
     property bool isRight: false
 
     Component.onCompleted: {
-        controller.requestProductList("LIST", "", rootProductList.currentPage);
+        let cmdData = {
+            cmd: "LIST",
+            typelist: ""
+        }
+        controller.requestProductList(cmdData, "", rootProductList.currentPage);
     }
 
     Connections {
@@ -86,7 +90,11 @@ Item {
                     onTriggered: {
                         filterType = "LIST"
                         filterText = "Tất cả"
-                        controller.requestProductList("LIST", "", 0)
+                        let cmdData = {
+                            cmd: "LIST",
+                            typelist: ""
+                        }
+                        controller.requestProductList(cmdData, "", 0)
                     }
                 }
 
@@ -104,7 +112,11 @@ Item {
                     onTriggered: {
                         filterType = "EXPIRED"
                         filterText = "Hết hạn"
-                        controller.requestProductList("EXPIRED", "", 0)
+                        let cmdData = {
+                            cmd: "EXPIRED",
+                            typelist: ""
+                        }
+                        controller.requestProductList(cmdData, "", 0)
                     }
                 }
 
@@ -113,7 +125,11 @@ Item {
                     onTriggered: {
                         filterType = "VALID"
                         filterText = "Còn hạn"
-                        controller.requestProductList("VALID", "", 0)
+                        let cmdData = {
+                            cmd: "VALID",
+                            typelist: ""
+                        }
+                        controller.requestProductList(cmdData, "", 0)
                     }
                 }
             }
@@ -315,7 +331,11 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         rootProductList.currentPage--
-                        controller.requestProductList("LIST", "", rootProductList.currentPage)
+                        let cmdData = {
+                            cmd: "LIST",
+                            typelist: ""
+                        }
+                        controller.requestProductList(cmdData, "", rootProductList.currentPage)
                     }
 
                 }
@@ -365,7 +385,11 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         rootProductList.currentPage++
-                        controller.requestProductList("LIST", "", rootProductList.currentPage)
+                        let cmdData = {
+                            cmd: "LIST",
+                            typelist: ""
+                        }
+                        controller.requestProductList(cmdData, "", rootProductList.currentPage)
                     }
 
                 }
@@ -382,7 +406,11 @@ Item {
         onAccepted: {
             controller.requestProductCommand("DELETE", "", selectedProductName, "", "", "")
             selectedProductName = ""
-            controller.requestProductList("LIST", "", 0)
+            let cmdData = {
+                cmd: "LIST",
+                typelist: ""
+            }
+            controller.requestProductList(cmdData, "", 0)
         }
     }
 

@@ -15,7 +15,12 @@ Item {
     property var batches: []
 
     Component.onCompleted: {
-        controller.requestBatchList("LIST","EXPIREDDATE", "", "AMONTH", rootNotification.itemPerPage, rootNotification.currentPage)
+        let cmdData = {
+            cmd: "LIST",
+            typelist: "EXPIREDDATE",
+            duration: "AMONTH"
+        }
+        controller.requestBatchList(cmdData, "", "", rootNotification.itemPerPage, rootNotification.currentPage)
 
     }
 
@@ -181,7 +186,12 @@ Item {
                 anchors.fill: parent
                 onClicked: {
                     rootNotification.currentPage--
-                    controller.requestBatchList("LIST","EXPIREDDATE", "", "AMONTH", rootNotification.itemPerPage, rootNotification.currentPage)
+                    let cmdData = {
+                        cmd: "LIST",
+                        typelist: "EXPIREDDATE",
+                        duration: "AMONTH"
+                    }
+                    controller.requestBatchList(cmdData, "", "", rootNotification.itemPerPage, rootNotification.currentPage)
                 }
 
             }
@@ -231,7 +241,12 @@ Item {
                 anchors.fill: parent
                 onClicked: {
                     rootNotification.currentPage++
-                    controller.requestBatchList("LIST","EXPIREDDATE", "", "AMONTH", rootNotification.itemPerPage, rootNotification.currentPage)
+                    let cmdData = {
+                        cmd: "LIST",
+                        typelist: "EXPIREDDATE",
+                        duration: "AMONTH"
+                    }
+                    controller.requestBatchList(cmdData, "", "", rootNotification.itemPerPage, rootNotification.currentPage)
                 }
 
             }

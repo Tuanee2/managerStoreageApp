@@ -15,14 +15,19 @@ Item {
     property bool isRight: false
     property bool isLeft: false
     property int currentPage: 0
+    property int peoplePerPage: 12
 
     Component.onCompleted: {
-        controller.requestCustomerList("LIST", "", currentPage);
+        let cmdData = {
+            cmd: "LIST",
+            typelist: ""
+        }
+        controller.requestCustomerList(cmdData, "", rootCustomerList.peoplePerPage, currentPage);
     }
 
     function updatePageFlags(customerListSize) {
         rootCustomerList.isLeft = currentPage > 0
-        rootCustomerList.isRight = customerListSize >= 12  // bạn nên định nghĩa `itemsPerPage`
+        rootCustomerList.isRight = customerListSize >= rootCustomerList.peoplePerPage  // bạn nên định nghĩa `itemsPerPage`
     }
 
     Connections {
@@ -90,7 +95,11 @@ Item {
                     onTriggered: {
                         filterType = "LIST"
                         filterText = "Tất cả"
-                        controller.requestProductList("LIST", "", 0)
+                        let cmdData = {
+                            cmd: "LIST",
+                            typelist: ""
+                        }
+                        controller.requestProductList(cmdData, "", 0)
                     }
                 }
 
@@ -282,7 +291,11 @@ Item {
                 anchors.fill: parent
                 onClicked: {
                     rootCustomerList.currentPage--
-                    controller.requestBatchList("LIST", "", rootCustomerList.currentPage)
+                    let cmdData = {
+                        cmd: "LIST",
+                        typelist: ""
+                    }
+                    controller.requestCustomerList(cmdData, "", rootCustomerList.peoplePerPage, rootCustomerList.currentPage)
                 }
                 
             }
@@ -332,8 +345,11 @@ Item {
                 anchors.fill: parent
                 onClicked: {
                     rootCustomerList.currentPage++
-                    controller.requestCustomerList("LIST", "", rootCustomerList.currentPage)
-                    console.log("Received batch list. Size:")
+                    let cmdData = {
+                        cmd: "LIST",
+                        typelist: ""
+                    }
+                    controller.requestCustomerList(cmdData, "", rootCustomerList.peoplePerPage, rootCustomerList.currentPage)
                 }
 
             }
@@ -350,7 +366,11 @@ Item {
             controller.requestCustomerCommand("DELETE", rootCustomerList.selectedCustomerName, "", "", rootCustomerList.selectedCustomerPhoneNumber)
             rootCustomerList.selectedCustomerName = ""
             rootCustomerList.selectedCustomerPhoneNumber = ""
-            controller.requestCustomerList("LIST", "", currentPage)
+            let cmdData = {
+                cmd: "LIST",
+                typelist: ""
+            }
+            controller.requestCustomerList(cmdData, "", rootCustomerList.peoplePerPage, rootCustomerList.currentPage)
         }
     }
 

@@ -6,10 +6,11 @@
 #include "logic/storeage.h"
 #include "logic/databasemanager.h"
 #include "logic/appcontroller.h"
+#include "logic/updateapp.h"
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setApplicationVersion("1.0.2");
+    QCoreApplication::setApplicationVersion("1.0.0");
     QGuiApplication app(argc, argv);
     QDir::setCurrent(QCoreApplication::applicationDirPath());
 
@@ -21,11 +22,13 @@ int main(int argc, char *argv[])
     QObject::connect(dbThread, &QThread::finished, store, &QObject::deleteLater);
     dbThread->start();
 
+    UpdateApp *updater = new UpdateApp();
     appcontroller* controller = new appcontroller(store);
 
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("controller", controller);
+    engine.rootContext()->setContextProperty("updater", updater);
 
     QObject::connect(
         &engine,

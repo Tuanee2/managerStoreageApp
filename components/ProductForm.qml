@@ -19,8 +19,17 @@ Item {
     property int updatecost: 0
 
     Component.onCompleted: {
-        controller.requestProductList("ONE", productName, 0)
-        controller.requestBatchList("LIST", "", productName, "", productDetail.itemsPerPage, productDetail.currentPage)
+        let cmdData = {
+            cmd: "ONE",
+            typelist: ""
+        }
+        controller.requestProductList(cmdData, productName, 0)
+        let cmdData1 = {
+            cmd: "LIST",
+            typelist: "",
+            duration: ""
+        }
+        controller.requestBatchList(cmdData1, productName, "", productDetail.itemsPerPage, productDetail.currentPage)
     }
 
     function updatePageFlags(batchListSize) {
@@ -333,7 +342,12 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         productDetail.currentPage--
-                        controller.requestBatchList("LIST", "", productName, "", productDetail.itemsPerPage, productDetail.currentPage)
+                        let cmdData = {
+                            cmd: "LIST",
+                            typelist: "",
+                            duration: ""
+                        }
+                        controller.requestBatchList(cmdData, productName, "", productDetail.itemsPerPage, productDetail.currentPage)
                     }
                     
                 }
@@ -383,7 +397,12 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         productDetail.currentPage++
-                        controller.requestBatchList("LIST", "", productName, "", productDetail.itemsPerPage, productDetail.currentPage)
+                        let cmdData = {
+                            cmd: "LIST",
+                            typelist: "",
+                            duration: ""
+                        }
+                        controller.requestBatchList(cmdData, productName, "", productDetail.itemsPerPage, productDetail.currentPage)
 
                     }
 

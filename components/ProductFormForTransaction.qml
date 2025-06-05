@@ -19,7 +19,12 @@ Item {
     property int total: 0
 
     Component.onCompleted: {
-        controller.requestBatchList("LIST", "", batchlist4trans.productName, "", batchlist4trans.itemsPerPage, batchlist4trans.currentPage)
+        let cmdData = {
+            cmd: "LIST",
+            typelist: "",
+            duration: ""
+        }
+        controller.requestBatchList(cmdData, batchlist4trans.productName, "", batchlist4trans.itemsPerPage, batchlist4trans.currentPage)
         rootWindow.isTransactionProductSelect = false
         rootWindow.isTransactionBatchSelect = true
     }
@@ -263,7 +268,12 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         batchlist4trans.currentPage--
-                        controller.requestBatchList("LIST", "", batchlist4trans.productName, "", batchlist4trans.itemsPerPage, batchlist4trans.currentPage)
+                        let cmdData = {
+                            cmd: "LIST",
+                            typelist: "",
+                            duration: ""
+                        }
+                        controller.requestBatchList(cmdData, batchlist4trans.productName, "", batchlist4trans.itemsPerPage, batchlist4trans.currentPage)
                     }
                     
                 }
@@ -313,7 +323,12 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         batchlist4trans.currentPage++
-                        controller.requestBatchList("LIST", "", batchlist4trans.productName, "", batchlist4trans.itemsPerPage, batchlist4trans.currentPage)
+                        let cmdData = {
+                            cmd: "LIST",
+                            typelist: "",
+                            duration: ""
+                        }
+                        controller.requestBatchList(cmdData, batchlist4trans.productName, "", batchlist4trans.itemsPerPage, batchlist4trans.currentPage)
 
                     }
 

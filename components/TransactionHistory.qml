@@ -21,7 +21,10 @@ Item {
 
 
     Component.onCompleted: {
-        controller.requestOrderList(rootTransactionHistory.command, rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
+        let cmdData = {
+            cmd: rootTransactionHistory.command
+        }
+        controller.requestOrderList(cmdData, "", rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
     }
 
     Connections {
@@ -160,8 +163,11 @@ Item {
                             rootWindow.notification.showNotification("⚠️ ngày bắt đầu phải trước ngày kết thúc")
                             return;
                         }
+                        let cmdData = {
+                            cmd: rootTransactionHistory.command
+                        }
 
-                        controller.requestOrderList(rootTransactionHistory.command, rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
+                        controller.requestOrderList(cmdData, "", rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
                     }
                 }
             }
@@ -339,7 +345,10 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         rootTransactionHistory.currentPage--
-                        controller.requestOrderList(rootTransactionHistory.command, rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
+                        let cmdData = {
+                            cmd: rootTransactionHistory.command
+                        }
+                        controller.requestOrderList(cmdData, "", rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
                     }
 
                 }
@@ -389,7 +398,10 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         rootTransactionHistory.currentPage++
-                        controller.requestOrderList(rootTransactionHistory.command, rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
+                        let cmdData = {
+                            cmd: rootTransactionHistory.command
+                        }
+                        controller.requestOrderList(cmdData, "", rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
                     }
 
                 }

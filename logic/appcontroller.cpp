@@ -92,7 +92,6 @@ appcontroller::appcontroller(storeage* store, QObject* parent)
     connect(m_store, &storeage::orderListReady,
         this, &appcontroller::onOrderListReady, Qt::QueuedConnection);
     // ****************************************
-
 }
 
 void appcontroller::requestCommandOrder_UI(const QString& cmd){
@@ -189,16 +188,10 @@ void appcontroller::onProductCommandResult(bool done) {
 // ****************************************
 
 // ****< Lấy danh sách sản phẩm >****
-void appcontroller::requestProductList(const QString& cmd, const QString& keyword,int numPage) {
+void appcontroller::requestProductList(QVariantMap CmdData, const QString& keyword,int numPage) {
     cmdContext CMD;
-    CMD.cmd = QStringToCmd(cmd);
-    emit productListRequested(CMD, keyword, numPage);
-}
-
-void appcontroller::requestProductList(const QString& cmd, const QString& cmdExtension, const QString& keyword, int numPage){
-    cmdContext CMD;
-    CMD.cmd = QStringToCmd(cmd);
-    CMD.typelist = QStringToTypeList(cmdExtension);
+    CMD.cmd = QStringToCmd(CmdData.value("cmd").toString());
+    CMD.typelist = QStringToTypeList(CmdData.value("typelist").toString());
     emit productListRequested(CMD, keyword, numPage);
 }
 
@@ -247,13 +240,11 @@ void appcontroller::onBatchInfoResult(double result, cmdContext cmd){
     emit batchInfoResult(result , TypeToQString(cmd.type));
 }
 
-void appcontroller::requestBatchList(const QString& cmd, const QString& cmdExtension, const QString& productName, const QString& keyword, int numOfBatch, int numPage){
+void appcontroller::requestBatchList(QVariantMap cmdData, const QString& productName, const QString& keyword, int numOfBatch, int numPage){
     cmdContext CMD;
-    CMD.cmd = QStringToCmd(cmd);
-    CMD.typelist = QStringToTypeList(cmdExtension);
-    if(CMD.typelist == type_of_list::EXPIREDDATE){
-        CMD.duration = QStringToDuration(keyword);
-    }
+    CMD.cmd = QStringToCmd(cmdData.value("cmd").toString());
+    CMD.typelist = QStringToTypeList(cmdData.value("typelist").toString());
+    CMD.duration = QStringToDuration(cmdData.value("duration").toString());
     emit batchListRequested(CMD, productName, keyword, numOfBatch, numPage);
 }
 
@@ -285,16 +276,10 @@ void appcontroller::onCustomerCommandResult(bool done, cmdContext cmd){
     emit customerCommandResult(done, CmdToQString(cmd.cmd));
 }
 
-void appcontroller::requestCustomerList(const QString& cmd, const QString& keyword, int numPage){
+void appcontroller::requestCustomerList(QVariantMap cmdData, const QString& keyword, int peoplePerPage, int numPage){
     cmdContext CMD;
-    CMD.cmd = QStringToCmd(cmd);
-    emit customerListRequested(CMD, keyword, numPage);
-}
-
-void appcontroller::requestCustomerList(const QString& cmd, const QString& cmdExtension, const QString& keyword, int numPage){
-    cmdContext CMD;
-    CMD.cmd = QStringToCmd(cmd);
-    CMD.typelist = QStringToTypeList(cmdExtension);
+    CMD.cmd = QStringToCmd(cmdData.value("cmd").toString());
+    CMD.typelist = QStringToTypeList(cmdData.value("typelist").toString());
     emit customerListRequested(CMD, keyword, numPage);
 }
 
@@ -323,14 +308,10 @@ void appcontroller::onOrderCommandResult(bool done, cmdContext cmd){
     emit orderCommandResult(done, CmdToQString(cmd.cmd));
 }
 
-void appcontroller::requestOrderList(const QString& cmd, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage){
+void appcontroller::requestOrderList(QVariantMap cmdData, const QString& keyword, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage){
     cmdContext CMD;
-    CMD.cmd = QStringToCmd(cmd);
-    emit orderListRequested(CMD, "", dateBegin, dateEnd, numOfOrder, numPage);
-}
-
-void appcontroller::requestOrderList(const QString& cmd, const QString& keywword, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage){
-
+    CMD.cmd = QStringToCmd(cmdData.value("cmd").toString());
+    emit orderListRequested(CMD, keyword, dateBegin, dateEnd, numOfOrder, numPage);
 }
 
 void appcontroller::onOrderListReady(QList<QVariantMap> list, cmdContext cmd){
@@ -338,3 +319,4 @@ void appcontroller::onOrderListReady(QList<QVariantMap> list, cmdContext cmd){
 }
 
 // ****************************************
+

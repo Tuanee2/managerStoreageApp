@@ -6,6 +6,7 @@
 #include "configcommand.h"
 #include "customer.h"
 #include "order.h"
+#include "updateapp.h"
 
 class appcontroller : public QObject
 {
@@ -82,8 +83,7 @@ public slots:
 
 // **********< Lấy danh sách sản phẩm >**********
 public:
-    Q_INVOKABLE void requestProductList(const QString& cmd, const QString& keyword, int numPage);
-    Q_INVOKABLE void requestProductList(const QString& cmd, const QString& cmdExtension, const QString& keyword, int numPage);
+    Q_INVOKABLE void requestProductList(QVariantMap CmdData, const QString& keyword, int numPage);
 
 signals:
     // for database thread
@@ -132,7 +132,7 @@ public slots:
 
 // *********< Lấy danh sách các lô sản phẩm >*********
 public: 
-    Q_INVOKABLE void requestBatchList(const QString& cmd, const QString& cmdExtension, const QString& productName, const QString& keyword, int numOfBatch, int numPage);
+    Q_INVOKABLE void requestBatchList(QVariantMap cmdData, const QString& productName, const QString& keyword, int numOfBatch, int numPage);
 
 signals:
     // for database thread
@@ -166,8 +166,7 @@ public slots:
 
 // *********< Lấy danh sách khách hàng >*********
 public:
-    Q_INVOKABLE void requestCustomerList(const QString& cmd, const QString& keyword,int numPage);
-    Q_INVOKABLE void requestCustomerList(const QString& cmd, const QString& cmdExtension, const QString& keyword,int numPage);
+    Q_INVOKABLE void requestCustomerList(QVariantMap cmdData, const QString& keyword, int peplerPerPage, int numPage);
 
 signals:
     // for database thread
@@ -199,8 +198,7 @@ public slots:
 
 // *********< Lấy danh sách đơn hàng >*********
 public:
-    Q_INVOKABLE void requestOrderList(const QString& cmd, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage);
-    Q_INVOKABLE void requestOrderList(const QString& cmd, const QString& keywword, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage);
+    Q_INVOKABLE void requestOrderList(QVariantMap cmdData, const QString& keywword, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage);
 
 signals:
     // for database thread
