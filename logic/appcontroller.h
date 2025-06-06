@@ -77,7 +77,17 @@ public slots:
 // **********************************************
 
 // **********< Lấy số liệu sản phẩm >**********
+public:
+    Q_INVOKABLE void requestProductParam(QVariantMap cmdData, const QString& keyword);
 
+signals:
+    // for thread database
+    void productParamRequested(cmdContext cmd, const QString& keyword);
+    // for UI
+    void productParamResult(double result, const QString& cmd);
+
+public slots:
+    void onProductParamResult(double result, cmdContext cmd);
 
 // **********************************************
 
@@ -129,6 +139,12 @@ public slots:
 
 
 // ****************************************
+
+// *********< Lấy danh sách các lô sản phẩm >*********
+
+
+// ****************************************
+
 
 // *********< Lấy danh sách các lô sản phẩm >*********
 public: 

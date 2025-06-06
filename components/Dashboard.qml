@@ -3,38 +3,82 @@ import QtQuick.Effects
 import QtQuick.Controls
 
 Item {
+    id: rootDashboard
     anchors.fill: parent
+
+    property int numOfTypeProduct: 0
+
+    Component.onCompleted: {
+        let cmdPro = {
+            type: "NUMOFITEM"
+        }
+        controller.requestProductParam(cmdPro, "");
+    }
+
+    Connections {
+        target: controller
+        function onProductParamResult(result, cmd){
+            rootDashboard.numOfTypeProduct = result
+        }
+    }
+
     Rectangle {
         anchors.fill: parent
         color: "transparent"
-        Grid {
-            id: gridLayout
-            anchors {
-                top: parent.top
-                topMargin: parent.height * 0.05
-                left: parent.left
-                leftMargin: parent.width * 0.05
-                right: parent.right
-                rightMargin: parent.width * 0.05
-                bottom: parent.bottom
-                bottomMargin: parent.height * 0.05
+        Rectangle {
+            id: infoOfStorage
+            width: parent.width*0.425
+            height: parent.height*0.4
+            anchors.top : parent.top
+            anchors.topMargin: parent.height*0.05
+            anchors.left: parent.left
+            anchors.leftMargin: parent.width*0.05
+            color: Qt.rgba(0, 0, 0, 0.4)
+            radius: 10
+
+            Text{
+                anchors.centerIn: parent
+                text: rootDashboard.numOfTypeProduct + " Loại sản phẩm"
+                color: "white"
+                font.pixelSize: parent.height*0.15
             }
 
-            columns: 2
-            rowSpacing: parent.height * 0.05
-            columnSpacing: parent.width * 0.05
+        }
 
-            Repeater {
-                model: 4
-                Rectangle {
-                    width: (gridLayout.width - gridLayout.columnSpacing) / 2
-                    height: (gridLayout.height  - gridLayout.rowSpacing) / 2
-                    radius: 20
-                    color: Qt.rgba(1, 1, 1, 0.2)
-                    border.color: Qt.rgba(1, 1, 1, 0.3)
-                    border.width: 1
-                }
-            }
+        Rectangle {
+            //id: infoOfStorage
+            width: parent.width*0.425
+            height: parent.height*0.4
+            anchors.top : parent.top
+            anchors.topMargin: parent.height*0.05
+            anchors.right: parent.right
+            anchors.rightMargin: parent.width*0.05
+            color: Qt.rgba(0, 0, 0, 0.4)
+            radius: 10
+        }
+
+        Rectangle {
+            //id: infoOfStorage
+            width: parent.width*0.425
+            height: parent.height*0.4
+            anchors.bottom : parent.bottom
+            anchors.bottomMargin: parent.height*0.05
+            anchors.right: parent.right
+            anchors.rightMargin: parent.width*0.05
+            color: Qt.rgba(0, 0, 0, 0.4)
+            radius: 10
+        }
+
+        Rectangle {
+            //id: infoOfStorage
+            width: parent.width*0.425
+            height: parent.height*0.4
+            anchors.bottom : parent.bottom
+            anchors.bottomMargin: parent.height*0.05
+            anchors.left: parent.left
+            anchors.leftMargin: parent.width*0.05
+            color: Qt.rgba(0, 0, 0, 0.4)
+            radius: 10
         }
     }
 }

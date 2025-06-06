@@ -187,6 +187,19 @@ void appcontroller::onProductCommandResult(bool done) {
 
 // ****************************************
 
+// **********< Lấy số liệu sản phẩm >**********
+void appcontroller::requestProductParam(QVariantMap cmdData, const QString& keyword){
+    cmdContext CMD;
+    CMD.type = QStringToType(cmdData.value("type").toString());
+    emit productParamRequested(CMD, keyword);
+}
+
+void appcontroller::onProductParamResult(double result, cmdContext cmd){
+
+}
+
+// ****************************************
+
 // ****< Lấy danh sách sản phẩm >****
 void appcontroller::requestProductList(QVariantMap CmdData, const QString& keyword,int numPage) {
     cmdContext CMD;

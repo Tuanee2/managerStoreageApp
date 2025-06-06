@@ -1,10 +1,10 @@
 <Installer>
-    <Name>AppforHa</Name>
+    <Name>AppLanHuyStore</Name>
     <Version>1.0.1</Version>
-    <Title>AppforHa Installer</Title>
+    <Title>AppLanHuyStore Installer</Title>
     <Publisher>Tuanee2</Publisher>
-    <StartMenuDir>AppforHa</StartMenuDir>
-    <TargetDir>@HomeDir@/AppforHa</TargetDir>
+    <StartMenuDir>AppLanHuyStore</StartMenuDir>
+    <TargetDir>@HomeDir@/AppLanHuyStore</TargetDir>
 
     <RemoteRepositories>
         <Repository>

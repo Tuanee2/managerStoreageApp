@@ -67,7 +67,7 @@ void UpdateApp::downloadUpdate() {
     QNetworkReply *reply = manager->get(request);
 
     QString downloadPath = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)
-                           + "/appforHa.app.7z";
+                           + "/appLanHuyStore.app.7z";
     QFile *file = new QFile(downloadPath);
 
     if (!file->open(QIODevice::WriteOnly)) {

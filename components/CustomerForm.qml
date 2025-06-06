@@ -15,9 +15,6 @@ Item {
 
     property var orderList: []
 
-
-
-
     Component.onCompleted: {
         let cmdData = {
             cmd: "LIST",

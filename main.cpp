@@ -3,6 +3,7 @@
 #include <QThread>
 #include <QQmlContext>
 #include <QDir>
+#include <QIcon>
 #include "logic/storeage.h"
 #include "logic/databasemanager.h"
 #include "logic/appcontroller.h"
@@ -12,6 +13,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication::setApplicationVersion("1.0.0");
     QGuiApplication app(argc, argv);
+    app.setWindowIcon(QIcon("qrc:/images/Icon/main_logo.png"));
     QDir::setCurrent(QCoreApplication::applicationDirPath());
 
     QThread* dbThread = new QThread;
@@ -36,7 +38,7 @@ int main(int argc, char *argv[])
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
-    engine.loadFromModule("forHa", "Main");
+    engine.loadFromModule("LanHuyStore", "Main");
 
     return app.exec();
 }

@@ -18,5 +18,6 @@
         <file>Icon/cuida--clipboard-text-outline.svg</file>
         <file>Backgrounds/fix.jpg</file>
         <file>Icon/list.svg</file>
+        <file>Icon/main_logo.png</file>
     </qresource>
 </RCC>

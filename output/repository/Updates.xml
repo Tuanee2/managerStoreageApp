@@ -4,14 +4,14 @@
  <Checksum>true</Checksum>
  <PackageUpdate>
   <Name>com.tuan.myapp</Name>
-  <DisplayName>AppforHa</DisplayName>
-  <Description>Cài đặt ứng dụng AppforHa</Description>
+  <DisplayName>AppLanHuyStore</DisplayName>
+  <Description>Cài đặt ứng dụng AppLanHuyStore</Description>
   <Version>1.0.1</Version>
   <ReleaseDate>2025-05-31</ReleaseDate>
   <Default>true</Default>
   <Essential>true</Essential>
   <UpdateFile CompressedSize="30562581" OS="Any" UncompressedSize="145610833"/>
-  <DownloadableArchives>appforHa.app.7z</DownloadableArchives>
+  <DownloadableArchives>appLanHuyStore.app.7z</DownloadableArchives>
   <SHA1>834f52c878a095055189f9f4a1331251a961e5ba</SHA1>
  </PackageUpdate>
  <SHA1>834f52c878a095055189f9f4a1331251a961e5ba</SHA1>

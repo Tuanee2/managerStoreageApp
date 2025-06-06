@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Đường dẫn đến thư mục chứa .app
-APP_NAME="appforHa"
+APP_NAME="appLanHuyStore"
 BUILD_DIR="./build/Qt_6_8_1_for_macOS-Release04"
 APP_PATH="$BUILD_DIR/$APP_NAME.app"
 EXEC_PATH="$APP_PATH/Contents/MacOS/$APP_NAME"

@@ -21,7 +21,7 @@
 ## 📁 Cấu trúc thư mục
 
 ```
-forHa/
+LanHuyStore/
 ├── components/             # Các thành phần QML tái sử dụng (Drawer, Form, Toast, ...)
 ├── images/                 # Ảnh và icon cho UI
 ├── Main.qml                # Cửa sổ chính
@@ -54,7 +54,7 @@ forHa/
 ```bash
 qmake
 make
-./forHa
+./LanHuyStore
 ```
 
 ---

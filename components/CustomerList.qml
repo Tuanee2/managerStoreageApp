@@ -359,7 +359,8 @@ Item {
 
     Dialog{
         id: deleteCustomerConfirmDialog
-        title: "Bạn có chắc chắn muốn xoá khách hàng?"
+        title: "Bạn có chắc chắn muốn xoá khách hàng?\nToàn bộ thông tin khách hàng bao gồm cả lịch sử đơn hàng sẽ bị xoá"
+        
         standardButtons: Dialog.Yes | Dialog.No
         visible: false
         onAccepted: {
