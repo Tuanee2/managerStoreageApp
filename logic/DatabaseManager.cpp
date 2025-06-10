@@ -668,16 +668,19 @@ QList<Customer*> DatabaseManager::getACustomerByYearOfBirth(const QString& yearO
 }
 
 bool DatabaseManager::insertOrder(Order& order){
-    QString name;
+    QString name = "";
     QSqlQuery queryforname;
-    queryforname.prepare("SELECT name FROM customers WHERE phone_number = :phone_number LIMIT 1");
-    queryforname.bindValue(":phone_number", order.getCustomerPhoneNumber());
-    if (!queryforname.exec()) {
-        qWarning() << "❌ Lỗi khi lấy tên khách hàng :" << queryforname.lastError().text();
-        return false;
-    }
-    if(queryforname.next()){
-        name = queryforname.value(0).toString();
+
+    if(!order.getCustomerPhoneNumber().isEmpty()){
+        queryforname.prepare("SELECT name FROM customers WHERE phone_number = :phone_number LIMIT 1");
+        queryforname.bindValue(":phone_number", order.getCustomerPhoneNumber());
+        if (!queryforname.exec()) {
+            qWarning() << "❌ Lỗi khi lấy tên khách hàng :" << queryforname.lastError().text();
+            return false;
+        }
+        if(queryforname.next()){
+            name = queryforname.value(0).toString();
+        }
     }
 
     QSqlQuery query;
@@ -687,7 +690,7 @@ bool DatabaseManager::insertOrder(Order& order){
     query.addBindValue(order.getCustomerPhoneNumber());
     query.addBindValue(order.getPurchaseTime().toString("yyyy-MM-dd"));
     query.addBindValue(Order::itemToQString(order.getListItem()));
-    query.addBindValue("Ghi chú"); // hoặc order.getNote() nếu có
+    query.addBindValue(order.getNote()); 
 
     if (!query.exec()) {
         qWarning() << "❌ Lỗi khi thêm đơn hàng:" << query.lastError().text();
@@ -771,6 +774,7 @@ QList<Order*> DatabaseManager::getOrder(const QString& customerName, const QStri
         o->setCustomerPhoneNumber(query.value(1).toString());
         o->setPurchaseTime(QDateTime::fromString(query.value(2).toString(), "yyyy-MM-dd"));
         o->QStringToItems(query.value(3).toString());
+        o->setNote(query.value(4).toString());
         list.append(o);
     }
 
@@ -819,6 +823,7 @@ QList<Order*> DatabaseManager::getOrderByPage(cmdContext cmd, const QString& key
         order->setCustomerPhoneNumber(query.value(1).toString());
         order->setPurchaseTime(QDateTime::fromString(query.value(2).toString(), "yyyy-MM-dd"));
         order->setListItem(Order::QStringToItems(query.value(3).toString()));
+        order->setNote(query.value(4).toString());
         list.append(order);
     }
 

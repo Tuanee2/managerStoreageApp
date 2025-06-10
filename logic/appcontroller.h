@@ -199,7 +199,7 @@ public slots:
 // <<<<<<<<<< FOR ORDERS >>>>>>>>>>
 // **********< thêm / sửa / xoá đơn hàng>**********
 public: 
-    Q_INVOKABLE void requestOrderCommand(const QString& cmd, const QString& phoneNumber, const QString& dateExport);
+    Q_INVOKABLE void requestOrderCommand(const QString& cmd, const QString& phoneNumber, const QString& dateExport, const QString& note);
 
 signals:
     // for database thread

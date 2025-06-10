@@ -12,13 +12,17 @@ Item {
     property int currentPage: 0
     property bool isLeft: false
     property bool isRight: false
+    property string order: "DESCENDING"
+    property string typeorder: "TOPURCHASETIME"
 
     property var orderList: []
 
     Component.onCompleted: {
         let cmdData = {
             cmd: "LIST",
-            typelist: "PHONENUMBER"
+            typelist: "PHONENUMBER",
+            order: "DESCENDING",
+            typeorder: "TOPURCHASETIME"
         }
 
         controller.requestOrderList(cmdData, customerPhoneNumber, "", "", rootCustomerForm.orderPerPage, rootCustomerForm.currentPage)
@@ -61,11 +65,90 @@ Item {
     }
 
     Rectangle {
-        id: mainCustomerForm
+        id: filterTypeOrder
+        width: parent.width*0.2
+        height: parent.height*0.05
+        anchors.right: customerBaseInfo.right
         anchors.top: customerBaseInfo.bottom
         anchors.topMargin: parent.height*0.01
+        radius: 10
+        Text {
+            anchors.centerIn: parent
+            text: (rootCustomerForm.typeorder === "TOPURCHASETIME") ? "Thời gian mua hàng" : ""
+            font.pixelSize: parent.height*0.4
+            color: "black"
+        }
+
+        MouseArea{
+            anchors.fill: parent
+            onClicked: {
+                menuoftypeorder.open()
+            }
+        }
+
+        Menu {
+            id: menuoftypeorder
+            y: parent.height
+            MenuItem {
+                text: "Thời điểm mua hàng"
+            }
+            MenuItem {
+                text: "Giá đơn hàng"
+            }
+        }
+
+    }
+
+    Rectangle {
+        id: filterOrder
+        width: parent.width*0.2
+        height: parent.height*0.05
+        anchors.right: filterTypeOrder.left
+        anchors.rightMargin: parent.width*0.01
+        anchors.top: customerBaseInfo.bottom
+        anchors.topMargin: parent.height*0.01
+        radius: 10
+        Text {
+            anchors.centerIn: parent
+            text: (rootCustomerForm.order === "DESCENDING") ? "Giảm dần" : "Tăng dần"
+            font.pixelSize: parent.height*0.4
+            color: "black"
+        }
+
+        MouseArea{
+            anchors.fill: parent
+            onClicked: {
+                menuoforder.open()
+            }
+        }
+
+        Menu {
+            id: menuoforder
+            y: parent.height
+            MenuItem {
+                text: "Tăng dần"
+                onTriggered:{
+                    rootCustomerForm.order = "ASCENDING"
+                }
+            }
+            MenuItem {
+                text: "Giảm dần"
+                onTriggered:{
+                    rootCustomerForm.order = "DESCENDING"
+                }
+            }
+        }
+
+    }
+
+
+
+    Rectangle {
+        id: mainCustomerForm
+        anchors.top: filterOrder.bottom
+        anchors.topMargin: parent.height*0.01
         anchors.horizontalCenter: parent.horizontalCenter
-        height: parent.height*0.69
+        height: parent.height*0.62
         width: parent.width*0.96
         color: "transparent"
         Column {
@@ -186,7 +269,9 @@ Item {
                     rootCustomerForm.currentPage--
                     let cmdData = {
                         cmd: "LIST",
-                        typelist: "PHONENUMBER"
+                        typelist: "PHONENUMBER",
+                        order: "DESCENDING",
+                        typeorder: "TOPURCHASETIME"
                     }
 
                     controller.requestOrderList(cmdData, customerPhoneNumber, "", "", rootCustomerForm.orderPerPage, rootCustomerForm.currentPage)
@@ -243,7 +328,9 @@ Item {
                     rootCustomerForm.currentPage++
                     let cmdData = {
                         cmd: "LIST",
-                        typelist: "PHONENUMBER"
+                        typelist: "PHONENUMBER",
+                        order: "DESCENDING",
+                        typeorder: "TOPURCHASETIME"
                     }
                     controller.requestOrderList(cmdData, customerPhoneNumber, "", "", rootCustomerForm.orderPerPage, rootCustomerForm.currentPage)
                 }

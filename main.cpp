@@ -1,4 +1,5 @@
 #include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QThread>
 #include <QQmlContext>
@@ -11,8 +12,9 @@
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setApplicationVersion("1.0.0");
-    QGuiApplication app(argc, argv);
+    QCoreApplication::setApplicationVersion("1.0.2");
+    //QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
     app.setWindowIcon(QIcon("qrc:/images/Icon/main_logo.png"));
     QDir::setCurrent(QCoreApplication::applicationDirPath());
 

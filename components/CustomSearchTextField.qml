@@ -15,6 +15,7 @@ Rectangle {
     property string target: ""
     property string targetExtension: ""
     property int itemsPerPage: 6
+    property color color4placeholder: "white"
 
     property bool isClick: false 
     property bool isEnable: false
@@ -31,7 +32,7 @@ Rectangle {
         id: input
         anchors.fill:parent
         font.pixelSize: parent.height*0.4
-        placeholderTextColor: "white"
+        placeholderTextColor: root.color4placeholder
         onTextChanged: {
             //console.log(root.isClick)
             if (text.length > 0 && root.isClick === false && input.focus) {
@@ -48,7 +49,7 @@ Rectangle {
                         cmd: "SEARCH",
                         typelist: root.targetExtension
                     }
-                    controller.requestCustomerList(cmdData, "", 6, 0)
+                    controller.requestCustomerList(cmdData, text, 6, 0)
                     
                 }else if(target === "BATCH"){
                     let cmdData = {

@@ -23,7 +23,9 @@ Item {
     Component.onCompleted: {
         let cmdData = {
             cmd: rootTransactionHistory.command,
-            typelist: ""
+            typelist: "",
+            order: "",
+            typeorder: ""
         }
         controller.requestOrderList(cmdData, "", rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
     }
@@ -166,7 +168,9 @@ Item {
                         }
                         let cmdData = {
                             cmd: rootTransactionHistory.command,
-                            typelist: ""
+                            typelist: "",
+                            order: "",
+                            typeorder: ""
                         }
 
                         controller.requestOrderList(cmdData, "", rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
@@ -349,7 +353,9 @@ Item {
                         rootTransactionHistory.currentPage--
                         let cmdData = {
                             cmd: rootTransactionHistory.command,
-                            typelist: ""
+                            typelist: "",
+                            order: "",
+                            typeorder: ""
                         }
                         controller.requestOrderList(cmdData, "", rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
                     }
@@ -403,7 +409,9 @@ Item {
                         rootTransactionHistory.currentPage++
                         let cmdData = {
                             cmd: rootTransactionHistory.command,
-                            typelist: ""
+                            typelist: "",
+                            order: "",
+                            typeorder: ""
                         }
                         controller.requestOrderList(cmdData, "", rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
                     }

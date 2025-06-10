@@ -476,7 +476,7 @@ Window {
 
                 Text {
                     anchors.centerIn: parent
-                    text: "Nhập kho"
+                    text: "Hoàn hàng"
                     color: "white"
                     font.pixelSize: rootWindow.drawerFontSize
                 }

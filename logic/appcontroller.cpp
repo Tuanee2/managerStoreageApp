@@ -307,11 +307,12 @@ void appcontroller::onCustomerListReady(QList<QVariantMap> list, cmdContext cmd)
 
 
 // <<<<<<<<<< FOR ORDERS >>>>>>>>>>
-void appcontroller::requestOrderCommand(const QString& cmd, const QString& phoneNumber, const QString& dateExport){
+void appcontroller::requestOrderCommand(const QString& cmd, const QString& phoneNumber, const QString& dateExport, const QString& note){
     cmdContext CMD;
     CMD.cmd = QStringToCmd(cmd);
     order.setCustomerPhoneNumber(phoneNumber);
     order.setPurchaseTime(QDateTime::fromString(dateExport, "dd-MM-yyyy"));
+    order.setNote(note);
     QJsonObject data = order.toJson();
     order.clean();
     emit orderCommandRequested(CMD, data);
@@ -335,6 +336,8 @@ void appcontroller::requestOrderList(QVariantMap cmdData, const QString& keyword
     cmdContext CMD;
     CMD.cmd = QStringToCmd(cmdData.value("cmd").toString());
     CMD.typelist = QStringToTypeList(cmdData.value("typelist").toString());
+    CMD.order = QStringToSortOrder(cmdData.value("order").toString());
+    CMD.typeOder = QStringToTypeOder(cmdData.value("typeorder").toString());
     emit orderListRequested(CMD, keyword, dateBegin, dateEnd, numOfOrder, numPage);
 }
 

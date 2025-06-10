@@ -42,6 +42,27 @@ type_of_info QStringToType(const QString& type);
 QString TypeToQString(type_of_info type);
 
 typedef enum {
+    ASCENDING,
+    DESCENDING,
+    ORDER_INVALID
+} SortOrder;
+
+SortOrder QStringToSortOrder(const QString& str);
+QString SortOrderToQString(SortOrder ord);
+
+typedef enum {
+    TOPRICE,
+    TOYEAROFBIRTH,
+    TOPURCHASETIME,
+    TOIMPORTDATE,
+    TOEXPIREDDATE,
+    TYPEORDER_INVALID
+} type_of_order;
+
+type_of_order QStringToTypeOder(const QString& typeorder);
+QString TypeOrderToQString(type_of_order typeorder);
+
+typedef enum {
     ALL,
     AMONTH,
     AWEEK,
@@ -57,6 +78,8 @@ typedef struct {
     type_of_list typelist;
     Duration duration;
     QString date;
+    SortOrder order;
+    type_of_order typeOder;
 }cmdContext;
 
 cmdContext QStringToCmdContext(const QString& cmd, const QString& type,const QString& duration);

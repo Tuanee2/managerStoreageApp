@@ -127,3 +127,37 @@ cmdContext QStringToCmdContext(const QString& cmd, const QString& type, const QS
     }
     return con;
 }
+
+SortOrder QStringToSortOrder(const QString& str) {
+    if (str == "ASCENDING") return SortOrder::ASCENDING;
+    if (str == "DESCENDING") return SortOrder::DESCENDING;
+    return SortOrder::ORDER_INVALID;
+}
+
+QString SortOrderToQString(SortOrder ord) {
+    switch (ord) {
+        case SortOrder::ASCENDING: return "ASCENDING";
+        case SortOrder::DESCENDING: return "DESCENDING";
+        default: return "ORDER_INVALID";
+    }
+}
+
+type_of_order QStringToTypeOder(const QString& typeorder) {
+    if (typeorder == "TOPRICE") return type_of_order::TOPRICE;
+    if (typeorder == "TOYEAROFBIRTH") return type_of_order::TOYEAROFBIRTH;
+    if (typeorder == "TOPURCHASETIME") return type_of_order::TOPURCHASETIME;
+    if (typeorder == "TOIMPORTDATE") return type_of_order::TOIMPORTDATE;
+    if (typeorder == "TOEXPIREDDATE") return type_of_order::TOEXPIREDDATE;
+    return type_of_order::TYPEORDER_INVALID;
+}
+
+QString TypeOrderToQString(type_of_order typeorder) {
+    switch (typeorder) {
+        case type_of_order::TOPRICE: return "TOPRICE";
+        case type_of_order::TOYEAROFBIRTH: return "TOYEAROFBIRTH";
+        case type_of_order::TOPURCHASETIME: return "TOPURCHASETIME";
+        case type_of_order::TOIMPORTDATE: return "TOIMPORTDATE";
+        case type_of_order::TOEXPIREDDATE: return "TOEXPIREDDATE";
+        default: return "TYPEORDER_INVALID";
+    }
+}

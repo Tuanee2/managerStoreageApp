@@ -52,7 +52,7 @@ Item {
 
             TextField {
                 id: pricetextfield
-                placeholderText: "Giá sản phẩm (BẮT BUỘC)"
+                placeholderText: "Giá nhập sản phẩm (BẮT BUỘC)"
                 font.pixelSize: 24
                 placeholderTextColor: Qt.rgba( 1, 1, 1, 0.8)
                 verticalAlignment: Text.AlignVCenter

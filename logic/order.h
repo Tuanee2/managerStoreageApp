@@ -13,7 +13,7 @@ class Order : public QObject
     Q_OBJECT
 public:
     explicit Order(QObject *parent = nullptr);
-    Order(const QString& customerName, const QString& phoneNumber, const QList<Products*>& item, const QDateTime& purchaseTime, QObject *parent = nullptr);
+    Order(const QString& customerName, const QString& phoneNumber, const QList<Products*>& item, const QDateTime& purchaseTime, const QString& note, QObject *parent = nullptr);
     Order(const Order& other);
     ~Order();
 
@@ -22,6 +22,7 @@ private:
     QString phoneNumber;
     QList<Products*> item;
     QDateTime purchaseTime;
+    QString note;
 
 public:
     QString getCustomerName() const;
@@ -32,6 +33,8 @@ public:
     void setPurchaseTime(const QDateTime& time);
     QList<Products*>& getListItem();
     void setListItem(const QList<Products*>& item);
+    QString getNote() const;
+    void setNote(const QString& note);
     static QList<Products*> QStringToItems(const QString& data);
     static QString itemToQString(const QList<Products*>& item);
     double getTotalPrice() const;
@@ -39,8 +42,6 @@ public:
 
     QJsonObject toJson() const;
     static Order* fromJson(const QJsonObject& obj);
-
-signals:
 };
 
 #endif // ORDER_H

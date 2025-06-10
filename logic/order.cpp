@@ -6,8 +6,8 @@ Order::Order(QObject *parent)
     : QObject{parent}
 {}
 
-Order::Order(const QString& customerName, const QString& phoneNumber, const QList<Products*>& item, const QDateTime& purchaseTime, QObject *parent) :
-    customerName(customerName), phoneNumber(phoneNumber), item(item), purchaseTime(purchaseTime) {}
+Order::Order(const QString& customerName, const QString& phoneNumber, const QList<Products*>& item, const QDateTime& purchaseTime, const QString& note, QObject *parent) :
+    customerName(customerName), phoneNumber(phoneNumber), item(item), purchaseTime(purchaseTime), note(note) {}
 
 Order::Order(const Order& other){
     this->customerName = other.customerName;
@@ -16,6 +16,7 @@ Order::Order(const Order& other){
         this->item.append(new Products(*p));  // dùng copy constructor của Products
     }
     this->purchaseTime = other.purchaseTime;
+    this->note = note;
 }
 
 Order::~Order() {
@@ -54,6 +55,14 @@ QList<Products*>& Order::getListItem(){
 
 void Order::setListItem(const QList<Products*>& item){
     this->item = item;
+}
+
+QString Order::getNote() const{
+    return note;
+}
+
+void Order::setNote(const QString& note){
+    this->note = note;
 }
 
 QList<Products*> Order::QStringToItems(const QString& data){
@@ -112,6 +121,7 @@ QJsonObject Order::toJson() const {
         itemArray.append(p->toJson());
     }
     obj["items"] = itemArray;
+    obj["note"] = note;
     return obj;
 }
 
@@ -127,5 +137,6 @@ Order* Order::fromJson(const QJsonObject& obj) {
         list.append(Products::fromJson(val.toObject()));
     }
     o->setListItem(list);
+    o->setNote(obj["note"].toString());
     return o;
 }
