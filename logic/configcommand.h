@@ -84,4 +84,18 @@ typedef struct {
 
 cmdContext QStringToCmdContext(const QString& cmd, const QString& type,const QString& duration);
 
+
+
+typedef enum {
+    BRONZE,
+    SILVER,
+    GOLD,
+    PLATINUM,
+    DIAMOND,
+    RANK_INVALID
+}Rank;
+
+Rank QSTringToRank(const QString& rank);
+QString rankToQString(Rank rank);
+
 #endif // CONFIGCOMMAND_H

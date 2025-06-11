@@ -105,6 +105,7 @@ qt_add_qml_module(appLanHuyStore
         logic/customer.h logic/customer.cpp
         logic/order.h logic/order.cpp
         logic/updateapp.h logic/updateapp.cpp
+        logic/promotion.h logic/promotion.cpp
     RESOURCES
         resource.qrc
 

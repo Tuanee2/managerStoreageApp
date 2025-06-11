@@ -249,16 +249,6 @@ Item {
                                 }
                             }
 
-                            Switch{
-                                id: taxSwitch
-                                text: "THUẾ"
-                                checked: false
-                                anchors.left: totalPrice.right
-                                anchors.top: parent.top
-                                onToggled: {
-                                    
-                                }
-                            }
                         }
                     }
 
@@ -287,12 +277,114 @@ Item {
                             
                             Rectangle {
                                 id: nameOfProduct
+                                width: parent.width * 0.5
+                                height: parent.height 
+                                anchors.left: parent.left
+                                anchors.verticalCenter: parent.verticalCenter
+                                color: "transparent"
 
+                                Rectangle {
+                                    id: pName
+                                    width: parent.width*0.4
+                                    height: parent.height*0.5
+                                    anchors.top: parent.top
+                                    anchors.left: parent.left
+                                    color: "transparent"
+                                    Text {
+                                        anchors.left: parent.left
+                                        anchors.leftMargin: parent.width*0.01
+                                        text: "Tên sản phẩm: " + modelData.productName
+                                        color: "black"
+                                        font.pixelSize: parent.height*0.5
+                                    }
+                                }
+
+                                Rectangle {
+                                    id: pQuantity
+                                    width: parent.width*0.4
+                                    height: parent.height*0.5
+                                    anchors.bottom: parent.bottom
+                                    anchors.left: anchors.left
+                                    color: "transparent"
+
+                                    Text {
+                                        anchors.left: parent.left
+                                        anchors.leftMargin: parent.width*0.01
+                                        text: "Số sản phẩm: " + modelData.numOfItem
+                                        color: "black"
+                                        font.pixelSize: parent.height*0.5
+                                    }
+                                }
+
+                                Rectangle {
+                                    id: pCost
+                                    anchors.top: parent.top
+                                    anchors.left: pName.right
+                                    width: parent.width*0.6
+                                    height: parent.height*0.5
+                                    color: "transparent"
+
+                                    Text {
+                                        anchors.left: parent.left
+                                        anchors.leftMargin: parent.width*0.01
+                                        text: "Giá: " + transaction.formatMoney(modelData.price) + " VNĐ"
+                                        color: "black"
+                                        font.pixelSize: parent.height*0.5
+                                    }
+                                }
 
                             }
 
                             Rectangle {
+                                id: forSale
+                                anchors.right: parent.right
+                                anchors.rightMargin: parent.height*2
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: parent.width*0.5 - parent.height*2
+                                height: parent.height
+                                color: "transparent"
+                            }
+
+                            Rectangle {
+                                id: updateBatch
+                                width: parent.height
+                                height: parent.height
+                                radius: 8
+                                anchors.right: parent.right
+                                anchors.rightMargin: parent.height
+                                color: "transparent"
                                 
+                            }
+
+                            Rectangle{
+                                id: deleteProductChoice
+                                width: parent.height
+                                height: parent.height
+                                radius: 8
+                                anchors.right: parent.right
+                                color: "transparent"
+                                Button{
+                                    anchors.fill: parent
+                                    background: Rectangle {
+                                        anchors.fill: parent
+                                        radius: 8
+                                        color: madeleteProductChoice.containsMouse ? Qt.rgba(200/255, 20/255, 20/255, 0.2) : "transparent"
+                                    }
+
+                                    icon.source: "qrc:/images/Icon/cross-circle.svg"
+                                    icon.color: madeleteProductChoice.containsMouse ? Qt.rgba(250/255, 20/255, 20/255, 0.5) : "white"
+
+                                }
+
+                                MouseArea {
+                                    id: madeleteProductChoice
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    onClicked: {
+
+                                    }
+
+                                }
                             }
 
                         }
@@ -357,6 +449,35 @@ Item {
                                 }
                             }
                         }
+                    }
+
+                    Rectangle {
+                        width: mainTransaction.width
+                        height: mainTransaction.height*0.07
+                        color: "transparent" 
+
+                        Text {
+                            id: title4promotion
+                            anchors.left: parent.left
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: "Khuyến mại:    "
+                            font.pixelSize: parent.height*0.4
+                        }
+
+                        TextField {
+                            id: tf4promotion
+                            width: parent.width*0.3
+                            height: parent.height
+                            anchors.left: title4promotion.right 
+                        }
+
+                        Text {
+                            anchors.left: tf4promotion.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: "   VNĐ "
+                            font.pixelSize: parent.height*0.4
+                        }
+
                     }
 
                     Rectangle {
