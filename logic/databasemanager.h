@@ -64,6 +64,7 @@ public:
     QList<Order*> getOrder(const QString& customerName, const QString& phoneNumber, const QDateTime& purchaseTime, int numOfOrder, int numpag);
     QList<Order*> getOrderByPage(cmdContext cmd, const QString& keyword, int numOfOrder,int numpage);
     QList<Order*> getOrderByPeriod(const QString& customerName, const QString& phoneNumber, int numOfOrder,int numpage);
+    QList<QVariantMap> getOrderProfitAndRevenue(const QString& dateBegin, const QString& dateEnd, Duration duration, bool isDescending);
     // ************************************
 };
 

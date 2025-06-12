@@ -262,6 +262,13 @@ void storeage::handleCustomerListRequest(cmdContext cmd, const QString& keyword,
 // <<<<<<<<<< FOR ORDER >>>>>>>>>>
 void storeage::handleOrderCommand(cmdContext cmd, const QJsonObject& data){
     Order* order = Order::fromJson(data);
+    for(Products* p : order->getListItem()){
+        qDebug() << "Gía : "<< p->getCost();
+        int i = 0;
+        for(Batch* b : p->getBatchList()){
+            qDebug() << i << " gía lô: " << b->getCost();
+        }
+    }
     if(cmd.cmd == Cmd::ADD){
         for(Products* p : order->getListItem()){
             for(Batch* b : p->getBatchList()){
@@ -282,19 +289,35 @@ void storeage::handleOrderCommand(cmdContext cmd, const QJsonObject& data){
 
 void storeage::handleOrderListRequest(cmdContext cmd, const QString& keyword, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage){
     QList<Order*> fetchedOrders;
-    fetchedOrders = db->getOrderByPage(cmd, keyword, numOfOrder, numPage);
-
     QList<QVariantMap> result;
 
-    for(Order* order : fetchedOrders){
-        QVariantMap item;
-        item["customer_name"] = order->getCustomerName();
-        item["phone_number"] = order->getCustomerPhoneNumber();
-        item["purchase_time"] = order->getPurchaseTime();
-        item["data"] = Order::itemToQString(order->getListItem());
-        item["total_price"] = order->getTotalPrice();
-        result.append(item);
-        delete order;
+    if(!dateBegin.isEmpty() && !dateEnd.isEmpty()){
+        if(cmd.typelist == type_of_list::ORDER_PROFIT_REVENUE){
+                result = db->getOrderProfitAndRevenue(dateBegin, dateEnd, cmd.duration, (cmd.order == SortOrder::DESCENDING) ? 1 : 0);
+        }else {
+
+        }
+    }else{
+        fetchedOrders = db->getOrderByPage(cmd, keyword, numOfOrder, numPage);
+
+        for(Order* order : fetchedOrders){
+            QVariantMap item;
+            item["customer_name"] = order->getCustomerName();
+            item["phone_number"] = order->getCustomerPhoneNumber();
+            item["purchase_time"] = order->getPurchaseTime();
+            item["data"] = Order::itemToQString(order->getListItem());
+            item["total_price"] = order->getTotalPrice();
+            double profit = 0;
+            for(Products* p : order->getListItem()){
+                for(Batch* b : p->getBatchList()){
+                    profit += (p->getCost() - b->getCost()) * b->getQuantity();
+                }
+            }
+            
+            item["profit"] = profit;
+            result.append(item);
+            delete order;
+        }
     }
 
     emit orderListReady(result, cmd);

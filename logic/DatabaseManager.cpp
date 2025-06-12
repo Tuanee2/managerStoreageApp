@@ -833,3 +833,58 @@ QList<Order*> DatabaseManager::getOrderByPage(cmdContext cmd, const QString& key
 QList<Order*> DatabaseManager::getOrderByPeriod(const QString& customerName, const QString& phoneNumber, int numOfOrder,int numpage){
 
 }
+
+QList<QVariantMap> DatabaseManager::getOrderProfitAndRevenue(const QString& dateBegin, const QString& dateEnd, Duration duration, bool isDescending) {
+    QList<QVariantMap> result;
+    QMap<QString, QPair<double, double>> summary;
+
+    QSqlQuery query;
+    QString sql = "SELECT export_date, data FROM orders WHERE export_date BETWEEN :begin AND :end";
+    if (isDescending) {
+        sql += " ORDER BY export_date DESC";
+    } else {
+        sql += " ORDER BY export_date ASC";
+    }
+
+    query.prepare(sql);
+    query.bindValue(":begin", QDate::fromString(dateBegin, "dd-MM-yyyy").toString("yyyy-MM-dd"));
+    query.bindValue(":end", QDate::fromString(dateEnd, "dd-MM-yyyy").toString("yyyy-MM-dd"));
+
+    if (!query.exec()) {
+        qWarning() << "❌ Failed to fetch orders for profit/revenue:" << query.lastError().text();
+        return result;
+    }
+
+    while (query.next()) {
+        QString dateKey = QDate::fromString(query.value(0).toString(), "yyyy-MM-dd").toString("dd-MM-yyyy");
+        QList<Products*> items = Order::QStringToItems(query.value(1).toString());
+
+        double revenue = 0;
+        double profit = 0;
+        for (Products* p : items) {
+            for (Batch* b : p->getBatchList()) {
+                revenue += p->getCost() * b->getQuantity();
+                profit += (p->getCost() - b->getCost()) * b->getQuantity();
+            }
+            delete p;
+        }
+
+        summary[dateKey].first += revenue;
+        summary[dateKey].second += profit;
+    }
+
+    // Tạo danh sách kết quả từ map
+    QStringList keys = summary.keys();
+    if (isDescending)
+        std::reverse(keys.begin(), keys.end());
+
+    for (const QString& key : keys) {
+        QVariantMap item;
+        item["date"] = key;
+        item["total_price"] = summary[key].first;
+        item["profit"] = summary[key].second;
+        result.append(item);
+    }
+
+    return result;
+}

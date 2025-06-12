@@ -9,6 +9,7 @@ Item {
 
     property int numOfTypeProduct: 0
     property var orderlistdb: []
+    property var profitAndRevenue: []
 
     Component.onCompleted: {
         let cmdPro = {
@@ -18,11 +19,29 @@ Item {
 
         let cmdorder = {
             cmd: "LIST",
+            typelist: "ORDER_PROFIT_REVENUE",
+            order: "DESCENDING",
+            typeorder: "",
+            durian: "ADAY"
+        }
+        let today = new Date();
+        let sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(today.getDate() - 7);
+
+        let dateBegin = Qt.formatDate(sevenDaysAgo, "dd-MM-yyyy");
+        let dateEnd = Qt.formatDate(today, "dd-MM-yyyy");
+
+        controller.requestOrderList(cmdorder, "", dateBegin, dateEnd, 0, 0);
+
+        let cmdorder01 = {
+            cmd: "LIST",
             typelist: "",
             order: "DESCENDING",
-            typeorder: "TOPURCHASETIME"
+            typeorder: "",
+            durian: "ADAY"
         }
-        controller.requestOrderList(cmdorder, "", "", "", 3, 0);
+
+        //controller.requestOrderList(cmdorder01, "", "", "", 3, 0);
 
     }
 
@@ -37,8 +56,25 @@ Item {
         target: controller
         function onOrderListReady(list, cmd){
             if(cmd === "LIST"){
-                console.log("im here")
-                rootDashboard.orderlistdb = list
+                let today = new Date();
+                let fullList = [];
+                for (let i = 6; i >= 0; --i) {
+                    let d = new Date();
+                    d.setDate(today.getDate() - i);
+                    let key = Qt.formatDate(d, "dd-MM-yyyy");
+
+                    let found = list.find(item => item.date === key);
+                    if (found) {
+                        fullList.push(found);
+                    } else {
+                        fullList.push({
+                            date: key,
+                            total_price: 0,
+                            profit: 0
+                        });
+                    }
+                }
+                rootDashboard.profitAndRevenue = fullList;
             }
         }
     }
@@ -48,8 +84,8 @@ Item {
         color: "transparent"
         Rectangle {
             id: infoOfLastestOrder
-            width: parent.width*0.425
-            height: parent.height*0.4
+            width: parent.width*0.325
+            height: parent.height*0.45
             anchors.top : parent.top
             anchors.topMargin: parent.height*0.05
             anchors.left: parent.left
@@ -64,6 +100,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "transparent"
+                clip: true
 
                 Column {
                     anchors.fill: parent
@@ -85,8 +122,8 @@ Item {
 
         Rectangle {
             //id: infoOfStorage
-            width: parent.width*0.425
-            height: parent.height*0.4
+            width: parent.width*0.525
+            height: parent.height*0.45
             anchors.top : parent.top
             anchors.topMargin: parent.height*0.05
             anchors.right: parent.right
@@ -95,16 +132,44 @@ Item {
             radius: 10
 
             ChartView {
-                //title: "Bar Chart"
+                id: chartView
                 anchors.fill: parent
                 legend.alignment: Qt.AlignBottom
                 antialiasing: true
 
+                property var dateLabels: rootDashboard.profitAndRevenue.map(item => item.date)
+                property var revenueValues: rootDashboard.profitAndRevenue.map(item => item.total_price)
+                property var profitValues: rootDashboard.profitAndRevenue.map(item => item.profit)
+                property real maxY: {
+                    let allValues = revenueValues.concat(profitValues);
+                    let maxVal = Math.max(...allValues);
+                    return maxVal === 0 ? 1 : maxVal * 1.2;
+                }
+
+                ValueAxis {
+                    id: axisY
+                    min: 0
+                    max: chartView.maxY
+                }
+
+                BarCategoryAxis {
+                    id: axisX
+                    categories: chartView.dateLabels
+                }
+
                 BarSeries {
-                    id: mySeries
-                    axisX: BarCategoryAxis { categories: ["Hôm nay", "Hôm qua", "Hôm kia"] }
-                    BarSet { label: "Doanh thu"; values: [5, 7, 4] }
-                    BarSet { label: "Lợi nhuận"; values: [4, 5, 1] }
+                    axisX: axisX
+                    axisY: axisY
+
+                    BarSet {
+                        label: "Doanh thu"
+                        values: chartView.revenueValues
+                    }
+
+                    BarSet {
+                        label: "Lợi nhuận"
+                        values: chartView.profitValues
+                    }
                 }
             }
 
@@ -119,7 +184,7 @@ Item {
 
         Rectangle {
             //id: infoOfStorage
-            width: parent.width*0.425
+            width: parent.width*0.325
             height: parent.height*0.4
             anchors.bottom : parent.bottom
             anchors.bottomMargin: parent.height*0.05
@@ -138,7 +203,7 @@ Item {
 
         Rectangle {
             id: infoOfStorage
-            width: parent.width*0.425
+            width: parent.width*0.525
             height: parent.height*0.4
             anchors.bottom : parent.bottom
             anchors.bottomMargin: parent.height*0.05

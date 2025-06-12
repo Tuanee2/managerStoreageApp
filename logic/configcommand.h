@@ -26,6 +26,7 @@ typedef enum {
     EXPORTDATE,
     EXPIREDDATE,
     YEAROFBIRTH,
+    ORDER_PROFIT_REVENUE,
     TYPELIST_INVALID
 }  type_of_list;
 

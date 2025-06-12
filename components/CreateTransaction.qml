@@ -293,9 +293,10 @@ Item {
                                     Text {
                                         anchors.left: parent.left
                                         anchors.leftMargin: parent.width*0.01
+                                        anchors.verticalCenter: parent.verticalCenter
                                         text: "Tên sản phẩm: " + modelData.productName
                                         color: "black"
-                                        font.pixelSize: parent.height*0.5
+                                        font.pixelSize: parent.height*0.4
                                     }
                                 }
 
@@ -310,15 +311,16 @@ Item {
                                     Text {
                                         anchors.left: parent.left
                                         anchors.leftMargin: parent.width*0.01
+                                        anchors.verticalCenter: parent.verticalCenter
                                         text: "Số sản phẩm: " + modelData.numOfItem
                                         color: "black"
-                                        font.pixelSize: parent.height*0.5
+                                        font.pixelSize: parent.height*0.4
                                     }
                                 }
 
                                 Rectangle {
                                     id: pCost
-                                    anchors.top: parent.top
+                                    anchors.bottom: parent.bottom
                                     anchors.left: pName.right
                                     width: parent.width*0.6
                                     height: parent.height*0.5
@@ -327,9 +329,10 @@ Item {
                                     Text {
                                         anchors.left: parent.left
                                         anchors.leftMargin: parent.width*0.01
-                                        text: "Giá: " + transaction.formatMoney(modelData.price) + " VNĐ"
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: "Giá: " + transaction.formatMoney(modelData.price * modelData.numOfItem) + " VNĐ"
                                         color: "black"
-                                        font.pixelSize: parent.height*0.5
+                                        font.pixelSize: parent.height*0.4
                                     }
                                 }
 
@@ -353,6 +356,27 @@ Item {
                                 anchors.right: parent.right
                                 anchors.rightMargin: parent.height
                                 color: "transparent"
+
+                                Button{
+                                    anchors.fill: parent
+                                    background: Rectangle{
+                                        anchors.fill: parent
+                                        radius: 8
+
+                                    }
+                                    icon.source: "qrc:/images/Icon/refresh.svg"
+
+
+                                }
+
+                                MouseArea {
+                                    id: maupdateBatch
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    onClicked: {
+
+                                    }
+                                }
                                 
                             }
 

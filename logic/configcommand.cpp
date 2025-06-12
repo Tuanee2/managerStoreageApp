@@ -59,6 +59,8 @@ type_of_list QStringToTypeList(const QString& typelist){
         return type_of_list::EXPIREDDATE;
     } else if (typelist == "YEAROFBIRTH") {
         return type_of_list::YEAROFBIRTH;
+    } else if (typelist == "ORDER_PROFIT_REVENUE") {
+        return type_of_list::ORDER_PROFIT_REVENUE;
     }
     return type_of_list::TYPELIST_INVALID; // default fallback
 }
@@ -79,8 +81,10 @@ QString typeListToQString(type_of_list typelist){
         return "EXPIREDDATE";
     case type_of_list::YEAROFBIRTH:
         return "YEAROFBIRTH";
+    case type_of_list::ORDER_PROFIT_REVENUE:
+        return "ORDER_PROFIT_REVENUE";
+    default: return"TYPELIST_INVALID";
     }
-    return "TYPELIST_INVALID";
 }
 
 type_of_info QStringToType(const QString& type){

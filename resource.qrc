@@ -19,5 +19,6 @@
         <file>Backgrounds/fix.jpg</file>
         <file>Icon/list.svg</file>
         <file>Icon/main_logo.png</file>
+        <file>Icon/refresh.svg</file>
     </qresource>
 </RCC>
