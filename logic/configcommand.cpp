@@ -1,5 +1,135 @@
 #include "configcommand.h"
 
+
+// new structure: Conversion functions for enum classes
+
+QString commandTypeToQString(CommandType type) {
+    switch (type) {
+        case CommandType::ADD: return "ADD";
+        case CommandType::DELETE: return "DELETE";
+        case CommandType::UPDATE: return "UPDATE";
+        case CommandType::GET: return "GET";
+        case CommandType::CHECK: return "CHECK";
+        default: return "INVALID";
+    }
+}
+
+CommandType QStringToCommandType(const QString& str) {
+    if (str == "ADD") return CommandType::ADD;
+    if (str == "DELETE") return CommandType::DELETE;
+    if (str == "UPDATE") return CommandType::UPDATE;
+    if (str == "GET") return CommandType::GET;
+    if (str == "CHECK") return CommandType::CHECK;
+    return CommandType::INVALID;
+}
+
+QString targetTypeToQString(TargetType type) {
+    switch (type) {
+        case TargetType::PRODUCT: return "PRODUCT";
+        case TargetType::BATCH: return "BATCH";
+        case TargetType::CUSTOMER: return "CUSTOMER";
+        case TargetType::ORDER: return "ORDER";
+        default: return "UNKNOWN";
+    }
+}
+
+TargetType QStringToTargetType(const QString& str) {
+    if (str == "PRODUCT") return TargetType::PRODUCT;
+    if (str == "BATCH") return TargetType::BATCH;
+    if (str == "CUSTOMER") return TargetType::CUSTOMER;
+    if (str == "ORDER") return TargetType::ORDER;
+    return TargetType::UNKNOWN;
+}
+
+QString infoKindToQString(InfoKind kind) {
+    switch (kind) {
+        case InfoKind::GENERAL: return "GENERAL";
+        case InfoKind::FIELD: return "FIELD";
+        case InfoKind::OBJECT: return "OBJECT";
+        default: return "INVALID";
+    }
+}
+
+InfoKind QStringToInfoKind(const QString& str) {
+    if (str == "GENERAL") return InfoKind::GENERAL;
+    if (str == "FIELD") return InfoKind::FIELD;
+    if (str == "OBJECT") return InfoKind::OBJECT;
+    return InfoKind::INVALID;
+}
+
+QString getTypeToQString(GetType type) {
+    switch (type) {
+        case GetType::LIST: return "LIST";
+        case GetType::SEARCH: return "SEARCH";
+        default: return "INVALID";
+    }
+}
+
+GetType QStringToGetType(const QString& str) {
+    if (str == "LIST") return GetType::LIST;
+    if (str == "SEARCH") return GetType::SEARCH;
+    return GetType::INVALID;
+}
+
+QString sortFieldToQString(SortField field) {
+    switch (field) {
+        case SortField::NONE: return "NONE";
+        case SortField::NAME: return "NAME";
+        case SortField::PRICE: return "PRICE";
+        case SortField::DATE: return "DATE";
+        case SortField::RANK: return "RANK";
+        case SortField::VALUE: return "VALUE";
+        default: return "NONE";
+    }
+}
+
+SortField QStringToSortField(const QString& str) {
+    if (str == "NONE") return SortField::NONE;
+    if (str == "NAME") return SortField::NAME;
+    if (str == "PRICE") return SortField::PRICE;
+    if (str == "DATE") return SortField::DATE;
+    if (str == "RANK") return SortField::RANK;
+    if (str == "VALUE") return SortField::VALUE;
+    return SortField::NONE;
+}
+
+QString sortOrderToQString(SortOrderNew order) {
+    switch (order) {
+        case SortOrderNew::ASCENDING: return "ASCENDING";
+        case SortOrderNew::DESCENDING: return "DESCENDING";
+        case SortOrderNew::NONE: return "NONE";
+        default: return "NONE";
+    }
+}
+
+SortOrderNew QStringToSortOrderNew(const QString& str) {
+    if (str == "ASCENDING") return SortOrderNew::ASCENDING;
+    if (str == "DESCENDING") return SortOrderNew::DESCENDING;
+    if (str == "NONE") return SortOrderNew::NONE;
+    return SortOrderNew::NONE;
+}
+
+QString durationToQString(DurationNew duration) {
+    switch (duration) {
+        case DurationNew::ALL: return "ALL";
+        case DurationNew::AMONTH: return "AMONTH";
+        case DurationNew::AWEEK: return "AWEEK";
+        case DurationNew::ADAY: return "ADAY";
+        case DurationNew::CUSTOM: return "CUSTOM";
+        default: return "ALL";
+    }
+}
+
+DurationNew QStringToDurationNew(const QString& str) {
+    if (str == "ALL") return DurationNew::ALL;
+    if (str == "AMONTH") return DurationNew::AMONTH;
+    if (str == "AWEEK") return DurationNew::AWEEK;
+    if (str == "ADAY") return DurationNew::ADAY;
+    if (str == "CUSTOM") return DurationNew::CUSTOM;
+    return DurationNew::ALL;
+}
+
+// old structure
 Cmd QStringToCmd(const QString& cmd){
     if(cmd == "ADD"){
         return Cmd::ADD;
