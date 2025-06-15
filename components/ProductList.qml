@@ -11,24 +11,30 @@ Item {
     property string filterType: "SREACH"
     property string filterText: "Tìm kiếm"
     property int currentPage: 0
+    property int productPerPage: 12
     property bool isLeft: false
     property bool isRight: false
 
     Component.onCompleted: {
         let cmdData = {
-            cmd: "LIST",
-            typelist: ""
+            command: "GET",
+            target: "PRODUCT",
+            infoKind: "OBJECT",
+            mode: "MULTIPLE",
+            getType: "LIST",
+            page: rootProductList.currentPage,
+            pageSize: rootProductList.productPerPage
         }
-        controller.requestProductList(cmdData, "", rootProductList.currentPage);
+        controller.requestProductList(cmdData);
     }
 
     Connections {
         target: controller
         function onProductListReady(list, cmd) {
-            if(filterType === "LIST" || cmd === "LIST"){
+            if(filterType === "LIST" || cmd.getType === "LIST"){
                 products = list;
                 updatePageFlags(list.length)
-            }else if(filterType === "SEARCH" || cmd === "SEARCH"){
+            }else if(filterType === "SEARCH" || cmd.getType === "SEARCH"){
                 products = list;
             }
         }
@@ -91,10 +97,15 @@ Item {
                         filterType = "LIST"
                         filterText = "Tất cả"
                         let cmdData = {
-                            cmd: "LIST",
-                            typelist: ""
+                            command: "GET",
+                            target: "PRODUCT",
+                            infoKind: "OBJECT",
+                            mode: "MULTIPLE",
+                            getType: "LIST",
+                            page: rootProductList.currentPage,
+                            pageSize: rootProductList.productPerPage
                         }
-                        controller.requestProductList(cmdData, "", 0)
+                        controller.requestProductList(cmdData)
                     }
                 }
 
@@ -113,10 +124,18 @@ Item {
                         filterType = "EXPIRED"
                         filterText = "Hết hạn"
                         let cmdData = {
-                            cmd: "EXPIRED",
-                            typelist: ""
+                            command: "GET",
+                            target: "PRODUCT",
+                            infoKind: "OBJECT",
+                            mode: "MULTIPLE",
+                            getType: "LIST",
+                            filters: {
+                                expired: ""
+                            },
+                            page: rootProductList.currentPage,
+                            pageSize: rootProductList.productPerPage
                         }
-                        controller.requestProductList(cmdData, "", 0)
+                        controller.requestProductList(cmdData)
                     }
                 }
 
@@ -126,10 +145,18 @@ Item {
                         filterType = "VALID"
                         filterText = "Còn hạn"
                         let cmdData = {
-                            cmd: "VALID",
-                            typelist: ""
+                            command: "GET",
+                            target: "PRODUCT",
+                            infoKind: "OBJECT",
+                            mode: "MULTIPLE",
+                            getType: "LIST",
+                            filters: {
+                                valid: ""
+                            },
+                            page: rootProductList.currentPage,
+                            pageSize: rootProductList.productPerPage
                         }
-                        controller.requestProductList(cmdData, "", 0)
+                        controller.requestProductList(cmdData)
                     }
                 }
             }
@@ -176,7 +203,7 @@ Item {
                             }
 
                             Text {
-                                text: "Giá: " + modelData["cost"] + " VND"
+                                text: "Giá: " + modelData["cost"] + " VND / " + modelData["unit"]
                                 font.pixelSize: rootWindow.baseFontSize*0.9
                                 color: "white"
                             }
@@ -332,10 +359,15 @@ Item {
                     onClicked: {
                         rootProductList.currentPage--
                         let cmdData = {
-                            cmd: "LIST",
-                            typelist: ""
+                            command: "GET",
+                            target: "PRODUCT",
+                            infoKind: "OBJECT",
+                            mode: "MULTIPLE",
+                            getType: "LIST",
+                            page: rootProductList.currentPage,
+                            pageSize: rootProductList.productPerPage
                         }
-                        controller.requestProductList(cmdData, "", rootProductList.currentPage)
+                        controller.requestProductList(cmdData)
                     }
 
                 }
@@ -386,10 +418,15 @@ Item {
                     onClicked: {
                         rootProductList.currentPage++
                         let cmdData = {
-                            cmd: "LIST",
-                            typelist: ""
+                            command: "GET",
+                            target: "PRODUCT",
+                            infoKind: "OBJECT",
+                            mode: "MULTIPLE",
+                            getType: "LIST",
+                            page: rootProductList.currentPage,
+                            pageSize: rootProductList.productPerPage
                         }
-                        controller.requestProductList(cmdData, "", rootProductList.currentPage)
+                        controller.requestProductList(cmdData)
                     }
 
                 }
@@ -404,13 +441,26 @@ Item {
         standardButtons: Dialog.Yes | Dialog.No
         visible: false
         onAccepted: {
-            controller.requestProductCommand("DELETE", "", selectedProductName, "", "", "")
-            selectedProductName = ""
-            let cmdData = {
-                cmd: "LIST",
-                typelist: ""
+            let cmdData= {
+                command: "DELETE",
+                target: "PRODUCT",
+                data: {
+                    name: selectedProductName
+                }
             }
-            controller.requestProductList(cmdData, "", 0)
+            controller.requestProductCommand(cmdData)
+
+            selectedProductName = ""
+            let cmdData1 = {
+                command: "GET",
+                target: "PRODUCT",
+                infoKind: "OBJECT",
+                mode: "MULTIPLE",
+                getType: "LIST",
+                page: rootProductList.currentPage,
+                pageSize: rootProductList.productPerPage
+            }
+            controller.requestProductList(cmdData1)
         }
     }
 

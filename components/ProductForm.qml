@@ -20,10 +20,15 @@ Item {
 
     Component.onCompleted: {
         let cmdData = {
-            cmd: "ONE",
-            typelist: ""
+            command: "GET",
+            target: "PRODUCT",
+            infoKind: "OBJECT",
+            mode: "SINGLE",
+            filters: {
+                name: productName
+            }
         }
-        controller.requestProductList(cmdData, productName, 0)
+        controller.requestProductList(cmdData)
         let cmdData1 = {
             cmd: "LIST",
             typelist: "",
@@ -40,7 +45,8 @@ Item {
     Connections {
         target: controller
         function onProductListReady(list, cmd) {
-            if(cmd === "ONE"){
+            if(cmd.mode === "SINGLE"){
+                console.log(list.length)
                 productDetail.products = list
                 productDetail.updateName = list[0].productName
                 productDetail.updatecost = list[0].cost

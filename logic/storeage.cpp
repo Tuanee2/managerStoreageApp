@@ -40,62 +40,92 @@ void storeage::handleCheckProductName(const QString& name) {
 // ****************************************
 
 // ****< Thêm/xoá/cập nhật sản phẩm mới >****
-void storeage::handleProductCommand(Products pro, cmdContext cmd) {
-    if(cmd.cmd == Cmd::ADD){
+void storeage::handleProductCommand(BaseCommand cmd) {
+    bool done = false;
+    if(cmd.command == CommandType::ADD){
         Products newone;
-        newone.setProductId(pro.getProductId());
-        newone.setProductName(pro.getProductName());
-        newone.setCost(pro.getCost());
+        newone.setProductId(cmd.data.value("id").toString());
+        newone.setProductName(cmd.data.value("name").toString());
+        newone.setCost(cmd.data.value("price").toFloat());
+        newone.setUnit(cmd.data.value("unit").toString());
         newone.setIsValue(true);
-        newone.setDescription(pro.getDescription());
-        bool done = db->insertProduct(newone);
-        emit productCommandResult(done);
-    }else if(cmd.cmd == Cmd::DELETE){
-        bool done = db->deleteProduct(pro.getProductName());
+        newone.setDescription(cmd.data.value("des").toString());
+        done = db->insertProduct(newone);
+    }else if(cmd.command == CommandType::DELETE){
+        QString productName = cmd.data.value("name").toString();
+        done = db->deleteProduct(productName);
         if (done) {
-            store.remove(pro.getProductId());
-            qDebug() << "✅ Xoá sản phẩm thành công:" << pro.getProductName();
+            //store.remove(pro.getProductId());
+            qDebug() << "✅ Xoá sản phẩm thành công:" << productName;
         } else {
-            qWarning() << "❌ Xoá sản phẩm thất bại:" << pro.getProductName();
+            qWarning() << "❌ Xoá sản phẩm thất bại:" << productName;
         }
-        emit productCommandResult(done);
+    }else if(cmd.command == CommandType::UPDATE){
+
+    }else if(cmd.command == CommandType::CHECK){
+        QString productName = cmd.data.value("name").toString();
+        done = db->checkProductNameExists(productName); 
+    }else{
+        qDebug() << "DATABASE_THREAD [ERROR]: command type is INVALID";
+        return;
     }
+    cmd.data.clear(); 
+    emit productCommandResult(done, cmd);
 }
 
 // ****************************************
 
 // ****< Lấy danh sách sản phẩm >****
-void storeage::handleProductListRequest(cmdContext cmd, const QString& keyword, int numPage) {
-    QList<Products*> fetchedProducts;
-    
-    if(cmd.cmd == Cmd::LIST){
-        fetchedProducts = db->getProductsByPage(numPage);
-    }else if(cmd.cmd == Cmd::SEARCH){
-        if(cmd.typelist == type_of_list::NAME){
-            fetchedProducts = db->getProductListByName(keyword);
-        }else if(cmd.typelist == type_of_list::PRICE){
-            
-            fetchedProducts = db->getProductListByPrice(keyword);
-        }
-        qDebug() << "it run here";
-
-    }else if(cmd.cmd == Cmd::ONE){
-        fetchedProducts = db->getAProductByName(keyword);
-    }
-
+void storeage::handleProductListRequest(BaseCommand cmd) {
     QList<QVariantMap> result;
-    for (Products* p : fetchedProducts) {
-        QVariantMap item;
-        item["productName"] = p->getProductName();
-        item["productId"] = p->getProductId();
-        item["cost"] = p->getCost();
-        item["numOfProduct"] = db->getNumOfItemOfAllBatch(p->getProductName());
-        item["description"] = p->getDescription();
-        item["isValue"] = p->getIsValue();
-        item["totalValue"] = p->totalValue();
-        result.append(item);
-        delete p;
+    QList<Products*> fetchedProducts;
+
+    if(cmd.infoKind == InfoKind::GENERAL){
+
+    }else if(cmd.infoKind == InfoKind::FIELD){
+
+    }else if(cmd.infoKind == InfoKind::OBJECT){
+        if(cmd.fetchMode == FetchMode::SINGLE){
+            if(cmd.filters.contains("name")){
+                qDebug() << "<< 2";
+                fetchedProducts = db->getAProductByName(cmd.filters.value("name").toString());
+            }else if(cmd.filters.contains("price")){
+
+            }else{
+
+            }
+
+        }else if(cmd.fetchMode == FetchMode::MULTIPLE){
+            
+            if(cmd.filters.isEmpty()){
+                fetchedProducts = db->getProductsByPage(cmd.pageSize, cmd.page);
+            }else if(cmd.filters.contains("name")){
+                fetchedProducts = db->getProductListByName(cmd.filters.value("name").toString());
+            }else if(cmd.filters.contains("price")){
+                fetchedProducts = db->getProductListByPrice(cmd.filters.value("price").toString());
+            }
+        }else{
+            qDebug() << "DATABASE_THREAD [ERROR]: fetchMode is INVALID";
+            return;
+        }
+        for (Products* p : fetchedProducts) {
+            QVariantMap item;
+            item["productName"] = p->getProductName();
+            item["productId"] = p->getProductId();
+            item["cost"] = p->getCost();
+            item["unit"] = UnitForShow(p->getUnit());
+            item["numOfProduct"] = db->getNumOfItemOfAllBatch(p->getProductName());
+            item["description"] = p->getDescription();
+            item["isValue"] = p->getIsValue();
+            item["totalValue"] = p->totalValue();
+            result.append(item);
+            delete p;
+        }
+    }else{
+        qDebug() << "DATABASE_THREAD [ERROR]: infokind is INVALID";
+        return;
     }
+    
     emit productListReady(result, cmd);
 }
 
@@ -226,12 +256,15 @@ void storeage::handleCustomerCommand(cmdContext cmd, Customer customer){
 }
 
 void storeage::handleCustomerListRequest(cmdContext cmd, const QString& keyword, int numPage){
+    qDebug() << "<< 1";
     QList<Customer*> fetchedCutomers;
 
     if(cmd.cmd == Cmd::LIST){
         fetchedCutomers = db->getCustomersByPage(numPage);
     }else if(cmd.cmd == Cmd::SEARCH){
+        qDebug() << "<< 2";
         if(cmd.typelist == type_of_list::NAME){
+            qDebug() << "<< 3";
             fetchedCutomers = db->getCustomerByName(keyword);
         }else if(cmd.typelist == type_of_list::PHONENUMBER){
             fetchedCutomers = db->getCustomerByPhoneNumber(keyword);

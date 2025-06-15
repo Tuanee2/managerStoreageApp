@@ -28,7 +28,7 @@ public:
     // ****************************************
 
     // ****< Lấy danh sách sản phẩm >****
-    QList<Products*> getProductsByPage(int numPage);
+    QList<Products*> getProductsByPage(int productPerPage, int numPage);
     QList<Products*> getProductListByName(const QString& keyword);
     QList<Products*> getProductListByPrice(const QString& keyword);
     QList<Products*> getAProductByName(const QString& name);

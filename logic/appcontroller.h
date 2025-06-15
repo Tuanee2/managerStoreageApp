@@ -62,47 +62,32 @@ public slots:
 // **********< Thêm/ sửa/ xoá sản phẩm >*********
 
 public:
-    Q_INVOKABLE void requestProductCommand(const QString& cmd, const QString& id, const QString& name, double price, bool isValue, const QString &des);
+    Q_INVOKABLE void requestProductCommand(QVariantMap cmdData);
 
 signals:
     // for database thread
-    void productCommand(Products pro, cmdContext cmd);
+    void productCommand(BaseCommand cmd);
     // for UI
-    void productCommandResult(bool done);
+    void productCommandResult(bool done, QVariantMap cmd);
 
 
 public slots:
-    void onProductCommandResult(bool done);
-
-// **********************************************
-
-// **********< Lấy số liệu sản phẩm >**********
-public:
-    Q_INVOKABLE void requestProductParam(QVariantMap cmdData, const QString& keyword);
-
-signals:
-    // for thread database
-    void productParamRequested(cmdContext cmd, const QString& keyword);
-    // for UI
-    void productParamResult(double result, const QString& cmd);
-
-public slots:
-    void onProductParamResult(double result, cmdContext cmd);
+    void onProductCommandResult(bool done, BaseCommand cmd);
 
 // **********************************************
 
 // **********< Lấy danh sách sản phẩm >**********
 public:
-    Q_INVOKABLE void requestProductList(QVariantMap CmdData, const QString& keyword, int numPage);
+    Q_INVOKABLE void requestProductList(QVariantMap CmdData);
 
 signals:
     // for database thread
-    void productListRequested(cmdContext cmd, const QString& keyword, int numPage);
+    void productListRequested(BaseCommand cmd);
     // for UI
-    void productListReady(QList<QVariantMap> list, const QString cmd);
+    void productListReady(QList<QVariantMap> list, QVariantMap cmd);
 
 public slots:
-    void onProductListReady(QList<QVariantMap> list, cmdContext cmd);
+    void onProductListReady(QList<QVariantMap> list, BaseCommand cmd);
 
 // ****************************************
 

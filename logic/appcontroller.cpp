@@ -169,47 +169,27 @@ void appcontroller::onProductNameChecked(bool exists) {
 
 // **********< Thêm/ sửa/ xoá sản phẩm >*********
 
-void appcontroller::requestProductCommand(const QString& cmd, const QString& id, const QString& name, double price, bool isValue, const QString &des){
-    Products pro;
-    pro.setProductId(id);
-    pro.setProductName(name);
-    pro.setCost(price);
-    pro.setIsValue(true);
-    pro.setDescription(des);
-    cmdContext command;
-    command.cmd = QStringToCmd(cmd);
-    emit productCommand(pro, command);
+void appcontroller::requestProductCommand(QVariantMap cmdData){
+    BaseCommand command;
+    command = MapToBaseCommand(cmdData);
+    emit productCommand(command);
 }
 
-void appcontroller::onProductCommandResult(bool done) {
-    emit productCommandResult(done);
-}
-
-// ****************************************
-
-// **********< Lấy số liệu sản phẩm >**********
-void appcontroller::requestProductParam(QVariantMap cmdData, const QString& keyword){
-    cmdContext CMD;
-    CMD.type = QStringToType(cmdData.value("type").toString());
-    emit productParamRequested(CMD, keyword);
-}
-
-void appcontroller::onProductParamResult(double result, cmdContext cmd){
-
+void appcontroller::onProductCommandResult(bool done, BaseCommand cmd) {
+    emit productCommandResult(done, BaseCommandToMap(cmd));
 }
 
 // ****************************************
 
 // ****< Lấy danh sách sản phẩm >****
-void appcontroller::requestProductList(QVariantMap CmdData, const QString& keyword,int numPage) {
-    cmdContext CMD;
-    CMD.cmd = QStringToCmd(CmdData.value("cmd").toString());
-    CMD.typelist = QStringToTypeList(CmdData.value("typelist").toString());
-    emit productListRequested(CMD, keyword, numPage);
+void appcontroller::requestProductList(QVariantMap CmdData) {
+    BaseCommand command;
+    command = MapToBaseCommand(CmdData);
+    emit productListRequested(command);
 }
 
-void appcontroller::onProductListReady(QList<QVariantMap> list, cmdContext cmd){
-    emit productListReady(list, CmdToQString(cmd.cmd));
+void appcontroller::onProductListReady(QList<QVariantMap> list, BaseCommand cmd){
+    emit productListReady(list, BaseCommandToMap(cmd));
 }
 
 // ****************************************
@@ -274,6 +254,7 @@ void appcontroller::onBatchListReady(QList<QVariantMap> list, cmdContext cmd){
 // <<<<<<<<<< FOR CUSTOMERS >>>>>>>>>>
 
 void appcontroller::requestCustomerCommand(const QString& cmd, const QString& name, int yearOfBirth, const QString& gender, const QString& phoneNumber){
+    qDebug() << "<< 0";
     cmdContext CMD;
     CMD.cmd = QStringToCmd(cmd);
     Customer customer;

@@ -28,7 +28,6 @@ QString Products::getProductName() const{
 void Products::setProductName(const QString &name){
     if(productName != name){
         productName = name;
-        emit productNameChanged(name);
     }
 }
 
@@ -39,7 +38,6 @@ QString Products::getProductId() const {
 void Products::setProductId(const QString &id){
     if(productId != id){
         productId = id;
-        emit productIdChanged(id);
     }
 }
 
@@ -50,8 +48,14 @@ double Products::getCost() const{
 void Products::setCost(double price){
     if(cost != price){
         cost = price;
-        emit costChanged(price);
     }
+}
+
+Unit Products::getUnit() const{
+    return unit;
+}
+void Products::setUnit(const QString& unit){
+    this->unit = QStringToUnit(unit);
 }
 
 bool Products::getIsValue() const{
@@ -80,7 +84,6 @@ QString Products::getDescription() const{
 void Products::setDescription(const QString &des){
     if(description != des){
         description = des;
-        emit descriptionChanged(des);
     }
 }
 

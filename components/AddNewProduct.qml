@@ -3,7 +3,10 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Material
 
 Item {
+    id: rootAddNewProduct
     anchors.fill: parent
+    property string unit: ""
+
 
     Rectangle {
         id: addNewProduct
@@ -27,7 +30,9 @@ Item {
 
                 background: Rectangle {
                     radius: 10
-                    color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
+                    color: Qt.rgba(0, 0, 0, 0.4)
+                    border.width: 1
+                    border.color: Qt.rgba(1,1,1,0.5)
                 }
                 width: addNewProduct.width*0.6
                 height: addNewProduct.height*0.1
@@ -43,7 +48,9 @@ Item {
 
                 background: Rectangle {
                     radius: 10
-                    color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
+                    color: Qt.rgba(0, 0, 0, 0.4)
+                    border.width: 1
+                    border.color: Qt.rgba(1,1,1,0.5)
                 }
                 width: addNewProduct.width*0.6
                 height: addNewProduct.height*0.1
@@ -59,7 +66,9 @@ Item {
 
                 background: Rectangle {
                     radius: 10
-                    color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
+                    color: Qt.rgba(0, 0, 0, 0.4)
+                    border.width: 1
+                    border.color: Qt.rgba(1,1,1,0.5)
                 }
                 width: addNewProduct.width*0.6
                 height: addNewProduct.height*0.1
@@ -75,11 +84,110 @@ Item {
 
                 background: Rectangle {
                     radius: 10
-                    color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
+                    color: Qt.rgba(0, 0, 0, 0.4)
+                    border.width: 1
+                    border.color: Qt.rgba(1,1,1,0.5)
                 }
                 width: addNewProduct.width*0.6
                 height: addNewProduct.height*0.1
                 color: "white"
+            }
+
+            Rectangle {
+                id: unitfield
+                width: addNewProduct.width*0.4
+                height: addNewProduct.height*0.1
+                radius: 10
+                color: Qt.rgba(0, 0, 0, 0.4)
+                border.width: 1
+                border.color: Qt.rgba(1,1,1,0.5)
+
+                Rectangle {
+                    height: parent.height
+                    width: parent.width*0.4
+                    anchors.left:parent.left
+                    anchors.verticalCenter: parent.verticalCenter
+                    color: "transparent"
+                    Text {
+                        anchors.centerIn: parent
+                        text: "ĐƠN VỊ : "
+                        color: "white"
+                        font.pixelSize: parent.height*0.4
+                    }
+
+                }
+
+                Rectangle {
+                    id: unitContent
+                    height: parent.height
+                    width: parent.width*0.6
+                    anchors.right:parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    color: "transparent"
+                    Text {
+                        id: unittextcontent
+                        anchors.centerIn: parent
+                        text: "KHÔNG XÁC ĐỊNH"
+                        color: "white"
+                        font.pixelSize: parent.height*0.4
+                    }
+                }
+
+                Menu {
+                    id: unitMenu
+                    y: unitfield.height
+                    x: parent.width*0.5
+                    MenuItem{
+                        text: "Chai"
+                        onTriggered: {
+                            unittextcontent.text = "Chai"
+                            rootAddNewProduct.unit = "BOTTLE"
+                        }
+                    }
+                    MenuItem{
+                        text: "Bao"
+                        onTriggered: {
+                            unittextcontent.text = "Bao"
+                            rootAddNewProduct.unit = "BAG"
+                        }
+                    }
+                    MenuItem{
+                        text: "Gói"
+                        onTriggered: {
+                            unittextcontent.text = "Gói"
+                            rootAddNewProduct.unit = "PACK"
+                        }
+                    }
+                    MenuItem{
+                        text: "Thùng"
+                        onTriggered: {
+                            unittextcontent.text = "Thùng"
+                            rootAddNewProduct.unit = "BOX"
+                        }
+                    }
+                    MenuItem{
+                        text: "KG"
+                        onTriggered: {
+                            unittextcontent.text = "Kg"
+                            rootAddNewProduct.unit = "KG"
+                        }
+                    }
+                    MenuItem{
+                        text: "Lít"
+                        onTriggered: {
+                            unittextcontent.text = "Lít"
+                            rootAddNewProduct.unit = "LITER"
+                        }
+                    }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        unitMenu.open()
+                    }
+                }
+
             }
 
             Rectangle {
@@ -118,6 +226,11 @@ Item {
                             return;
                         }
 
+                        if(unittextcontent.text == "KHÔNG XÁC ĐỊNH") {
+                            rootWindow.notification.showNotification("⚠️ Sản phẩm chưa có đơn vị")
+                            return;
+                        }
+
                         // if (!/\d{2}-\d{2}-\d{4}/.test(date)) {
                         //     console.log("⚠️ Ngày không đúng định dạng dd-MM-yyyy");
                         //     rootWindow.notification.showNotification("⚠️ Ngày không đúng định dạng dd-MM-yyyy")
@@ -125,7 +238,15 @@ Item {
                         // }
 
                         // kiểm tra trùng tên
-                        controller.checkProductNameConflict(name);
+                        let cmdData = {
+                            command: "CHECK",
+                            target: "PRODUCT",
+                            data: {
+                                name: name
+                            }
+                        }
+
+                        controller.requestProductCommand(cmdData);
                     }
 
                 }
@@ -147,8 +268,19 @@ Item {
             let name = nametextfield.text.trim();
             let price = parseFloat(pricetextfield.text);
             let description = destextfield.text.trim();
+            let cmdData = {
+                command: "ADD",
+                target: "PRODUCT",
+                data: {
+                    id: id,
+                    name: name,
+                    price: price,
+                    unit: rootAddNewProduct.unit,
+                    des: description
+                }
+            }
 
-            controller.requestProductCommand("ADD", id, name, price, true, description);
+            controller.requestProductCommand(cmdData);
         }
         onRejected: {
             followupDialog.open()
@@ -176,28 +308,24 @@ Item {
         }
     }
 
-    // Trong cùng QML file
     Connections {
         target: controller
-        function onProductNameChecked(exists) {
-            if (exists) {
-                rootWindow.notification.showNotification("⚠️ Tên sản phẩm đã tồn tại");
-            } else {
-                // Tiếp tục thêm sản phẩm
-                rootWindow.notification.showNotification("Thêm sản phẩm");
-                confirmDialog.open()
-            }
-        }
-    }
-
-    Connections {
-        target: controller
-        function onProductCommandResult(done) {
-            if(done){
-                followupDialog.open()
-            }else{
-                clearFields()
-                rootWindow.notification.showNotification("⚠️ Thêm sản phẩm thất bại");
+        function onProductCommandResult(done, cmd) {
+            if(cmd.command === "ADD"){
+                if(done){
+                    followupDialog.open()
+                }else{
+                    clearFields()
+                    rootWindow.notification.showNotification("⚠️ Thêm sản phẩm thất bại");
+                }
+            }else if(cmd.command === "CHECK"){
+                if (done) {
+                    rootWindow.notification.showNotification("⚠️ Tên sản phẩm đã tồn tại");
+                } else {
+                    // Tiếp tục thêm sản phẩm
+                    rootWindow.notification.showNotification("Thêm sản phẩm");
+                    confirmDialog.open()
+                }
             }
         }
     }

@@ -16,6 +16,7 @@ Item {
     property bool isLeft: false
     property int currentPage: 0
     property int peoplePerPage: 12
+    property int productPerPage: 12
 
     Component.onCompleted: {
         let cmdData = {
@@ -96,10 +97,15 @@ Item {
                         filterType = "LIST"
                         filterText = "Tất cả"
                         let cmdData = {
-                            cmd: "LIST",
-                            typelist: ""
+                            command: "GET",
+                            target: "PRODUCT",
+                            infoKind: "OBJECT",
+                            mode: "MULTIPLE",
+                            sortField: "NONE",
+                            page: 0,
+                            pageSize: productPerPage
                         }
-                        controller.requestProductList(cmdData, "", 0)
+                        controller.requestProductList(cmdData)
                     }
                 }
 

@@ -27,6 +27,7 @@ bool DatabaseManager::initialize(){
             "product_id TEXT PRIMARY KEY,"
             "product_name TEXT NOT NULL,"
             "cost REAL NOT NULL,"
+            "unit TEXT NOT NULL,"
             "is_value INTEGER NOT NULL,"
             "description TEXT"
             ")";
@@ -86,11 +87,12 @@ bool DatabaseManager::initialize(){
 
 bool DatabaseManager::insertProduct(const Products& product) {
     QSqlQuery query;
-    query.prepare("INSERT INTO products (product_id, product_name, cost, is_value, description) "
-                  "VALUES (?, ?, ?, ?, ?)");
+    query.prepare("INSERT INTO products (product_id, product_name, cost, unit, is_value, description) "
+                  "VALUES (?, ?, ?, ?, ?, ?)");
     query.addBindValue(product.getProductId());
     query.addBindValue(product.getProductName());
     query.addBindValue(product.getCost());
+    query.addBindValue(UnitToQString(product.getUnit()));
     query.addBindValue(product.getIsValue() ? 1 : 0);
     query.addBindValue(product.getDescription());
 
@@ -196,13 +198,13 @@ bool DatabaseManager::deleteProduct(const QString& pro){
 // ****************************************
 
 // ****< Lấy danh sách sản phẩm >****
-QList<Products*> DatabaseManager::getProductsByPage(int numPage) {
+QList<Products*> DatabaseManager::getProductsByPage(int productPerPage, int numPage) {
     QList<Products*> list;
     QSqlQuery query;
     int limit = 14;
     int offset = numPage * limit;
 
-    query.prepare("SELECT product_id, product_name, cost, is_value, description FROM products "
+    query.prepare("SELECT product_id, product_name, cost, unit, is_value, description FROM products "
                   "LIMIT :limit OFFSET :offset");
     query.bindValue(":limit", limit);
     query.bindValue(":offset", offset);
@@ -217,8 +219,9 @@ QList<Products*> DatabaseManager::getProductsByPage(int numPage) {
         p->setProductId(query.value(0).toString());
         p->setProductName(query.value(1).toString());
         p->setCost(query.value(2).toDouble());
-        p->setIsValue(query.value(3).toBool());
-        p->setDescription(query.value(4).toString());
+        p->setUnit(query.value(3).toString());
+        p->setIsValue(query.value(4).toBool());
+        p->setDescription(query.value(5).toString());
         list.append(p);
     }
 
@@ -231,7 +234,7 @@ QList<Products*> DatabaseManager::getProductListByName(const QString& keyword){
     int limit = 6;
 
     // Dùng số trực tiếp trong LIMIT (SQLite không hỗ trợ bind LIMIT/OFFSET).
-    QString sql = QString("SELECT product_id, product_name, cost, is_value, description "
+    QString sql = QString("SELECT product_id, product_name, cost, unit, is_value, description "
                           "FROM products WHERE product_name LIKE :keyword LIMIT %1").arg(limit);
     query.prepare(sql);
     query.bindValue(":keyword", "%" + keyword + "%");
@@ -246,8 +249,9 @@ QList<Products*> DatabaseManager::getProductListByName(const QString& keyword){
         p->setProductId(query.value(0).toString());
         p->setProductName(query.value(1).toString());
         p->setCost(query.value(2).toDouble());
-        p->setIsValue(query.value(3).toBool());
-        p->setDescription(query.value(4).toString());
+        p->setUnit(query.value(3).toString());
+        p->setIsValue(query.value(4).toBool());
+        p->setDescription(query.value(5).toString());
         list.append(p);
     }
 
@@ -266,7 +270,7 @@ QList<Products*> DatabaseManager::getProductListByPrice(const QString& keyword){
         return list;
     }
 
-    QString sql = QString("SELECT product_id, product_name, cost, is_value, description "
+    QString sql = QString("SELECT product_id, product_name, cost, unit, is_value, description "
                           "FROM products WHERE cost = :price LIMIT %1").arg(limit);
     query.prepare(sql);
     query.bindValue(":price", price);
@@ -281,8 +285,9 @@ QList<Products*> DatabaseManager::getProductListByPrice(const QString& keyword){
         p->setProductId(query.value(0).toString());
         p->setProductName(query.value(1).toString());
         p->setCost(query.value(2).toDouble());
-        p->setIsValue(query.value(3).toBool());
-        p->setDescription(query.value(4).toString());
+        p->setUnit(query.value(3).toString());
+        p->setIsValue(query.value(4).toBool());
+        p->setDescription(query.value(5).toString());
         list.append(p);
     }
 
@@ -295,7 +300,7 @@ QList<Products*> DatabaseManager::getAProductByName(const QString& keyword){
     int limit = 1;
 
     // Dùng số trực tiếp trong LIMIT (SQLite không hỗ trợ bind LIMIT/OFFSET).
-    QString sql = QString("SELECT product_id, product_name, cost, is_value, description "
+    QString sql = QString("SELECT product_id, product_name, cost, unit, is_value, description "
                           "FROM products WHERE product_name LIKE :keyword LIMIT %1").arg(limit);
     query.prepare(sql);
     query.bindValue(":keyword", "%" + keyword + "%");
@@ -310,8 +315,9 @@ QList<Products*> DatabaseManager::getAProductByName(const QString& keyword){
         p->setProductId(query.value(0).toString());
         p->setProductName(query.value(1).toString());
         p->setCost(query.value(2).toDouble());
-        p->setIsValue(query.value(3).toBool());
-        p->setDescription(query.value(4).toString());
+        p->setUnit(query.value(3).toString());
+        p->setIsValue(query.value(4).toBool());
+        p->setDescription(query.value(5).toString());
         list.append(p);
     }
 

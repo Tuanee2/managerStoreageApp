@@ -31,10 +31,10 @@ signals:
 
 // **********< Thêm/ sửa/ xoá sản phẩm >*********
 public slots:
-    void handleProductCommand(Products pro, cmdContext cmd);
+    void handleProductCommand(BaseCommand cmd);
 
 signals:
-    void productCommandResult(bool done);
+    void productCommandResult(bool done, BaseCommand cmd);
 
 // **********************************************
 
@@ -44,10 +44,10 @@ signals:
 // +) Liệt kê
 
 public slots:
-    void handleProductListRequest(cmdContext cmd, const QString& keyword, int numPage);
+    void handleProductListRequest(BaseCommand cmd);
 
 signals:
-    void productListReady(QList<QVariantMap> list, cmdContext cmd);
+    void productListReady(QList<QVariantMap> list, BaseCommand cmd);
 
 // ****************************************
 

@@ -38,11 +38,35 @@ Rectangle {
             if (text.length > 0 && root.isClick === false && input.focus) {
                 // Giả sử controller xử lý gợi ý theo target
                 if(target === "PRODUCT"){
-                    let cmdData = {
-                        cmd: "SEARCH",
-                        typelist: root.targetExtension
+                    let cmdData;
+                    if(root.targetExtension === "NAME"){
+                        cmdData = {
+                            command: "GET",
+                            target: "PRODUCT",
+                            infoKind: "OBJECT",
+                            mode: "MULTIPLE",
+                            getType: "SEARCH",
+                            filters: {
+                                name: text
+                            },
+                            page: 0,
+                            pageSize: 5
+                        }
+                    }else if(root.targetExtension === "PRICE"){
+                        cmdData = {
+                            command: "GET",
+                            target: "PRODUCT",
+                            infoKind: "OBJECT",
+                            mode: "MULTIPLE",
+                            getType: "SEARCH",
+                            filters: {
+                                price: text
+                            },
+                            page: 0,
+                            pageSize: 5
+                        }
                     }
-                    controller.requestProductList(cmdData, text, 0)
+                    controller.requestProductList(cmdData)
         
                 }else if(target === "CUSTOMER"){
                     let cmdData = {
@@ -186,6 +210,7 @@ Rectangle {
     Connections {
         target: controller
         function onCustomerListReady(list, cmd) {
+
             if (cmd === "SEARCH" && input.focus) {
                 suggestionModel.clear()
                 for (let i = 0; i < list.length; ++i) {
@@ -207,7 +232,7 @@ Rectangle {
     Connections {
         target: controller
         function onProductListReady(list, cmd) {
-            if (cmd === "SEARCH" && input.focus) {
+            if (cmd.getType === "SEARCH" && input.focus) {
                 suggestionModel.clear()
                 for (let i = 0; i < list.length; ++i) {
                     suggestionModel.append({ name: list[i]["productName"] })

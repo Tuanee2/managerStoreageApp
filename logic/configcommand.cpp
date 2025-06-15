@@ -71,6 +71,20 @@ GetType QStringToGetType(const QString& str) {
     return GetType::INVALID;
 }
 
+FetchMode QStringToFetchMode(const QString& str){
+    if (str == "SINGLE") return FetchMode::SINGLE;
+    if (str == "MULTIPLE") return FetchMode::MULTIPLE;
+    return FetchMode::INVALID;
+}
+
+QString FetchModeToQString(FetchMode mode){
+    switch(mode){
+        case FetchMode::SINGLE: return "SINGLE";
+        case FetchMode::MULTIPLE: return "MULTIPLE";
+        default: return "INVALID";
+    }
+}
+
 QString sortFieldToQString(SortField field) {
     switch (field) {
         case SortField::NONE: return "NONE";
@@ -127,6 +141,49 @@ DurationNew QStringToDurationNew(const QString& str) {
     if (str == "ADAY") return DurationNew::ADAY;
     if (str == "CUSTOM") return DurationNew::CUSTOM;
     return DurationNew::ALL;
+}
+
+BaseCommand MapToBaseCommand(QVariantMap cmdData) {
+    BaseCommand cmd;
+
+    cmd.command = cmdData.contains("command") ? QStringToCommandType(cmdData.value("command").toString()) : CommandType::INVALID;
+    cmd.target = cmdData.contains("target") ? QStringToTargetType(cmdData.value("target").toString()) : TargetType::UNKNOWN;
+    cmd.infoKind = cmdData.contains("infoKind") ? QStringToInfoKind(cmdData.value("infoKind").toString()) : InfoKind::INVALID;
+    cmd.getType = cmdData.contains("getType") ? QStringToGetType(cmdData.value("getType").toString()) : GetType::INVALID;
+    cmd.fetchMode = cmdData.contains("mode") ? QStringToFetchMode(cmdData.value("mode").toString()) : FetchMode::INVALID;
+    cmd.sortField = cmdData.contains("sortField") ? QStringToSortField(cmdData.value("sortField").toString()) : SortField::NONE;
+    cmd.sortOrder = cmdData.contains("sortOrder") ? QStringToSortOrderNew(cmdData.value("sortOrder").toString()) : SortOrderNew::NONE;
+    cmd.duration = cmdData.contains("duration") ? QStringToDurationNew(cmdData.value("duration").toString()) : DurationNew::ADAY;
+    cmd.page = cmdData.contains("page") ? cmdData.value("page").toInt() : 1;
+    cmd.pageSize = cmdData.contains("pageSize") ? cmdData.value("pageSize").toInt() : 10;
+    cmd.filters = cmdData.contains("filters") ? cmdData.value("filters").toMap() : QVariantMap();
+    cmd.data = cmdData.contains("data") ? cmdData.value("data").toMap() : QVariantMap();
+    return cmd;
+}
+
+QVariantMap BaseCommandToMap(BaseCommand cmdData) {
+    QVariantMap map;
+    QString commandStr = commandTypeToQString(cmdData.command);
+    map["command"] = commandStr.isEmpty() ? "INVALID" : commandStr;
+    QString targetStr = targetTypeToQString(cmdData.target);
+    map["target"] = targetStr.isEmpty() ? "UNKNOWN" : targetStr;
+    QString infoKindStr = infoKindToQString(cmdData.infoKind);
+    map["infoKind"] = infoKindStr.isEmpty() ? "INVALID" : infoKindStr;
+    QString getTypeStr = getTypeToQString(cmdData.getType);
+    map["getType"] = getTypeStr.isEmpty() ? "INVALID" : getTypeStr;
+    QString fetchModeStr = FetchModeToQString(cmdData.fetchMode);
+    map["mode"] = fetchModeStr.isEmpty() ? "INVALID" : fetchModeStr;
+    QString sortFieldStr = sortFieldToQString(cmdData.sortField);
+    map["sortField"] = sortFieldStr.isEmpty() ? "NONE" : sortFieldStr;
+    QString sortOrderStr = sortOrderToQString(cmdData.sortOrder);
+    map["sortOrder"] = sortOrderStr.isEmpty() ? "NONE" : sortOrderStr;
+    QString durationStr = durationToQString(cmdData.duration);
+    map["duration"] = durationStr.isEmpty() ? "ADAY" : durationStr;
+    map["page"] = cmdData.page > 0 ? cmdData.page : 1;
+    map["pageSize"] = cmdData.pageSize > 0 ? cmdData.pageSize : 10;
+    map["filters"] = cmdData.filters.isEmpty() ? QVariantMap() : cmdData.filters;
+    map["data"] = cmdData.data.isEmpty() ? QVariantMap() : cmdData.data;
+    return map;
 }
 
 // old structure
@@ -313,7 +370,7 @@ Rank QSTringToRank(const QString& rank){
 }
 
 QString rankToQString(Rank rank){
-     if(rank == Rank::BRONZE){
+    if(rank == Rank::BRONZE){
         return "BRONZE";
     }else if(rank == Rank::SILVER){
         return "SILVER";
@@ -325,5 +382,39 @@ QString rankToQString(Rank rank){
         return "DIAMOND";
     }else{
         return "RANK_INVALID";
+    }
+}
+
+Unit QStringToUnit(const QString& str){
+    if(str == "BOTTLE") return Unit::BOTTLE;
+    if(str == "BAG") return Unit::BAG;
+    if(str == "BOX") return Unit::BOX;
+    if(str == "PACK") return Unit::PACK;
+    if(str == "KILO") return Unit::KILO;
+    if(str == "LITER") return Unit::LITER;
+    return Unit::INVALID;
+}
+
+QString UnitToQString(Unit unit){
+    switch(unit) {
+        case Unit::BOTTLE: return "BOTTLE";
+        case Unit::BAG: return "BAG";
+        case Unit::BOX: return "BOX";
+        case Unit::PACK: return "PACK";
+        case Unit::KILO: return "KILO";
+        case Unit::LITER: return "LITER";
+        default: return "INVALID"; 
+    }
+}
+
+QString UnitForShow(Unit unit){
+    switch(unit) {
+        case Unit::BOTTLE: return "Chai";
+        case Unit::BAG: return "Bao";
+        case Unit::BOX: return "Thùng";
+        case Unit::PACK: return "Gói";
+        case Unit::KILO: return "Kg";
+        case Unit::LITER: return "Lít";
+        default: return "KHÔNG XÁC ĐỊNH"; 
     }
 }

@@ -18,10 +18,15 @@ Item {
 
     Component.onCompleted: {
         let cmdData = {
-            cmd: "LIST",
-            typelist: ""
+            command: "GET",
+            target: "PRODUCT",
+            infoKind: "OBJECT",
+            mode: "MULTIPLE",
+            getType: "LIST",
+            page: productListTransaction.currentPage,
+            pageSize: productListTransaction.productPerPage
         }
-        controller.requestProductList(cmdData, "", productListTransaction.currentPage);
+        controller.requestProductList(cmdData);
     }
 
     Connections {
@@ -158,10 +163,15 @@ Item {
                     onClicked: {
                         productListTransaction.currentPage--
                         let cmdData = {
-                            cmd: "LIST",
-                            typelist: ""
+                            command: "GET",
+                            target: "PRODUCT",
+                            infoKind: "OBJECT",
+                            mode: "MULTIPLE",
+                            getType: "LIST",
+                            page: productListTransaction.currentPage,
+                            pageSize: productListTransaction.productPerPage
                         }
-                        controller.requestProductList(cmdData, "", productListTransaction.currentPage);
+                        controller.requestProductList(cmdData);
                     }
 
                 }
@@ -212,10 +222,15 @@ Item {
                     onClicked: {
                         productListTransaction.currentPage++
                         let cmdData = {
-                            cmd: "LIST",
-                            typelist: ""
+                            command: "GET",
+                            target: "PRODUCT",
+                            infoKind: "OBJECT",
+                            mode: "MULTIPLE",
+                            getType: "LIST",
+                            page: productListTransaction.currentPage,
+                            pageSize: productListTransaction.productPerPage
                         }
-                        controller.requestProductList(cmdData, "", productListTransaction.currentPage);
+                        controller.requestProductList(cmdData);
                     }
 
                 }

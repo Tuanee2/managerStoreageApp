@@ -9,6 +9,7 @@
 enum class CommandType { ADD, DELETE, UPDATE, GET, CHECK, INVALID };
 enum class TargetType { PRODUCT, BATCH, CUSTOMER, ORDER, UNKNOWN };
 enum class InfoKind { GENERAL, FIELD, OBJECT, INVALID };
+enum class FetchMode {SINGLE, MULTIPLE, INVALID };
 enum class GetType {LIST, SEARCH, INVALID };
 enum class SortField { NONE, NAME, PRICE, DATE, RANK, VALUE };
 enum class SortOrderNew { ASCENDING, DESCENDING, NONE };
@@ -22,6 +23,8 @@ TargetType QStringToTargetType(const QString& str);
 QString infoKindToQString(InfoKind kind);
 InfoKind QStringToInfoKind(const QString& str);
 QString getTypeToQString(GetType type);
+FetchMode QStringToFetchMode(const QString& str);
+QString FetchModeToQString(FetchMode mode);
 GetType QStringToGetType(const QString& str);
 QString sortFieldToQString(SortField field);
 SortField QStringToSortField(const QString& str);
@@ -35,6 +38,7 @@ struct BaseCommand {
     TargetType target = TargetType::UNKNOWN;
     InfoKind infoKind = InfoKind::INVALID;
     GetType getType = GetType::INVALID;
+    FetchMode fetchMode = FetchMode::INVALID;
     QVariantMap filters;    // keyword, status, range, etc.
     QVariantMap data;       // dùng cho ADD, UPDATE
     SortField sortField = SortField::NONE;
@@ -43,6 +47,9 @@ struct BaseCommand {
     int page = -1;
     int pageSize = -1;
 };
+
+BaseCommand MapToBaseCommand(QVariantMap cmdData);
+QVariantMap BaseCommandToMap(BaseCommand cmdData);
 // old structure
 
 typedef enum{
@@ -129,16 +136,30 @@ cmdContext QStringToCmdContext(const QString& cmd, const QString& type,const QSt
 
 
 
-typedef enum {
+enum class Rank{
     BRONZE,
     SILVER,
     GOLD,
     PLATINUM,
     DIAMOND,
     RANK_INVALID
-}Rank;
+};
 
 Rank QSTringToRank(const QString& rank);
 QString rankToQString(Rank rank);
+
+enum class Unit{
+    BOTTLE,
+    BAG,
+    BOX,
+    PACK,
+    KILO,
+    LITER,
+    INVALID
+};
+
+Unit QStringToUnit(const QString& str);
+QString UnitToQString(Unit unit);
+QString UnitForShow(Unit unit);
 
 #endif // CONFIGCOMMAND_H
