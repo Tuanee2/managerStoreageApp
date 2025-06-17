@@ -127,6 +127,7 @@ Window {
                 id: drawerLoader
                 source: "components/MainDrawer.qml"
                 anchors.fill: parent
+               
             }
         }
 

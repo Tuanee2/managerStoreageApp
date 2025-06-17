@@ -253,32 +253,24 @@ void appcontroller::onBatchListReady(QList<QVariantMap> list, cmdContext cmd){
 
 // <<<<<<<<<< FOR CUSTOMERS >>>>>>>>>>
 
-void appcontroller::requestCustomerCommand(const QString& cmd, const QString& name, int yearOfBirth, const QString& gender, const QString& phoneNumber){
-    qDebug() << "<< 0";
-    cmdContext CMD;
-    CMD.cmd = QStringToCmd(cmd);
-    Customer customer;
-    customer.setCustomerName(name);
-    customer.setCustomerYearOfBirth(yearOfBirth);
-    customer.setCustomerGender(QStringToGender(gender));
-    customer.setCustomerPhoneNumber(phoneNumber);
-
-    emit customerCommand(CMD, customer);
+void appcontroller::requestCustomerCommand(QVariantMap cmdData){
+    BaseCommand command;
+    command = MapToBaseCommand(cmdData);
+    emit customerCommand(command);
 }
 
-void appcontroller::onCustomerCommandResult(bool done, cmdContext cmd){
-    emit customerCommandResult(done, CmdToQString(cmd.cmd));
+void appcontroller::onCustomerCommandResult(bool done, BaseCommand cmd){
+    emit customerCommandResult(done, BaseCommandToMap(cmd));
 }
 
-void appcontroller::requestCustomerList(QVariantMap cmdData, const QString& keyword, int peoplePerPage, int numPage){
-    cmdContext CMD;
-    CMD.cmd = QStringToCmd(cmdData.value("cmd").toString());
-    CMD.typelist = QStringToTypeList(cmdData.value("typelist").toString());
-    emit customerListRequested(CMD, keyword, numPage);
+void appcontroller::requestCustomerList(QVariantMap cmdData){
+    BaseCommand command;
+    command = MapToBaseCommand(cmdData);
+    emit customerListRequested(command);
 }
 
-void appcontroller::onCustomerListReady(QList<QVariantMap> list, cmdContext cmd){
-    emit customerListReady(list, CmdToQString(cmd.cmd));
+void appcontroller::onCustomerListReady(QList<QVariantMap> list, BaseCommand cmd){
+    emit customerListReady(list, BaseCommandToMap(cmd));
 }
 
 // ****************************************

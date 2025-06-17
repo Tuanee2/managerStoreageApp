@@ -69,11 +69,49 @@ Rectangle {
                     controller.requestProductList(cmdData)
         
                 }else if(target === "CUSTOMER"){
-                    let cmdData = {
-                        cmd: "SEARCH",
-                        typelist: root.targetExtension
+                    let cmdData;
+                    if(root.targetExtension === "NAME"){
+                        cmdData = {
+                            command: "GET",
+                            target: "CUSTOMER",
+                            infoKind: "OBJECT",
+                            getType: "SEARCH",
+                            mode: "MULTIPLE",
+                            filters: {
+                                name: text
+                            },
+                            page: 0,
+                            pageSize: 5
+                        }
+                    }else if(root.targetExtension === "PHONENUMBER"){
+                        cmdData = {
+                            command: "GET",
+                            target: "CUSTOMER",
+                            infoKind: "OBJECT",
+                            getType: "SEARCH",
+                            mode: "MULTIPLE",
+                            filters: {
+                                phonenumber: text
+                            },
+                            page: 0,
+                            pageSize: 5
+                        }
+                    }else if(root.targetExtension === "YEAROFBIRTH"){
+                        cmdData = {
+                            command: "GET",
+                            target: "CUSTOMER",
+                            infoKind: "OBJECT",
+                            getType: "SEARCH",
+                            mode: "MULTIPLE",
+                            filters: {
+                                yearofbirth: text
+                            },
+                            page: 0,
+                            pageSize: 5
+                        }
                     }
-                    controller.requestCustomerList(cmdData, text, 6, 0)
+    
+                    controller.requestCustomerList(cmdData)
                     
                 }else if(target === "BATCH"){
                     let cmdData = {
@@ -100,7 +138,7 @@ Rectangle {
     Popup {
         id: suggestionPopup
         width: parent.width
-        height: parent.height*3
+        height: parent.height*5
         y: input.height
         x: 0
         padding: 0
@@ -157,12 +195,35 @@ Rectangle {
                             if(!root.isCreateTransaction){
                                 if(root.targetExtension === "NAME"){
                                     root.suggestionSelected({name: model.name, phoneNumber: model.phone, yearOfBirth: model.year})
+                                
                                 }else if(root.targetExtension === "PHONENUMBER"){
                                     root.suggestionSelected({name: model.name, phoneNumber: model.phone, yearOfBirth: model.year})
                                     input.text = model.phone
+                                    
                                 }else if(root.targetExtension === "YEAROFBIRTH"){
                                     root.suggestionSelected({name: model.name, phoneNumber: model.phone, yearOfBirth: model.year})
                                     input.text = model.year
+                                    
+                                }
+                            }else{
+                                if(root.targetExtension === "NAME"){
+                                    root.suggestionSelected({name: model.name, phoneNumber: model.phone, yearOfBirth: model.year})
+                                    console.log("<< 1100")
+                                    pageLoader.setSource("CustomerForm.qml", {
+                                        customerPhoneNumber: model.phone_number
+                                    })
+                                }else if(root.targetExtension === "PHONENUMBER"){
+                                    root.suggestionSelected({name: model.name, phoneNumber: model.phone, yearOfBirth: model.year})
+                                    input.text = model.phone
+                                    pageLoader.setSource("CustomerForm.qml", {
+                                        customerPhoneNumber: model.phone_number
+                                    })
+                                }else if(root.targetExtension === "YEAROFBIRTH"){
+                                    root.suggestionSelected({name: model.name, phoneNumber: model.phone, yearOfBirth: model.year})
+                                    input.text = model.year
+                                    pageLoader.setSource("CustomerForm.qml", {
+                                        customerPhoneNumber: model.phone_number
+                                    })
                                 }
                             }
                         } else if (root.target === "BATCH"){
@@ -211,7 +272,7 @@ Rectangle {
         target: controller
         function onCustomerListReady(list, cmd) {
 
-            if (cmd === "SEARCH" && input.focus) {
+            if (cmd.getType === "SEARCH" && input.focus) {
                 suggestionModel.clear()
                 for (let i = 0; i < list.length; ++i) {
                     suggestionModel.append({

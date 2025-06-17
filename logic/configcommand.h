@@ -135,19 +135,6 @@ typedef struct {
 cmdContext QStringToCmdContext(const QString& cmd, const QString& type,const QString& duration);
 
 
-
-enum class Rank{
-    BRONZE,
-    SILVER,
-    GOLD,
-    PLATINUM,
-    DIAMOND,
-    RANK_INVALID
-};
-
-Rank QSTringToRank(const QString& rank);
-QString rankToQString(Rank rank);
-
 enum class Unit{
     BOTTLE,
     BAG,

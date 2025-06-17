@@ -45,6 +45,17 @@ Item {
         rootProductList.isRight = productListSize >= 12  // bạn nên định nghĩa `itemsPerPage`
     }
 
+    function formatMoney(n) {
+        let str = n.toString();
+        let result = "";
+        while (str.length > 3) {
+            result = "," + str.slice(-3) + result;
+            str = str.slice(0, -3);
+        }
+        result = str + result;
+        return result;
+    }
+
 
     Rectangle {
         id: productList
@@ -203,7 +214,7 @@ Item {
                             }
 
                             Text {
-                                text: "Giá: " + modelData["cost"] + " VND / " + modelData["unit"]
+                                text: "Giá: " + rootProductList.formatMoney(modelData["cost"]) + " VND / " + modelData["unit"]
                                 font.pixelSize: rootWindow.baseFontSize*0.9
                                 color: "white"
                             }

@@ -20,10 +20,15 @@ Item {
 
     Component.onCompleted: {
         let cmdData = {
-            cmd: "LIST",
-            typelist: ""
+            command: "GET",
+            target: "CUSTOMER",
+            infoKind: "OBJECT",
+            mode: "MULTIPLE",
+            getType: "LIST",
+            page: rootCustomerList.currentPage,
+            pageSize: rootCustomerList.peoplePerPage
         }
-        controller.requestCustomerList(cmdData, "", rootCustomerList.peoplePerPage, currentPage);
+        controller.requestCustomerList(cmdData);
     }
 
     function updatePageFlags(customerListSize) {
@@ -34,9 +39,9 @@ Item {
     Connections {
         target: controller
         function onCustomerListReady(list, cmd) {
-            if(filterType === "LIST" || cmd === "LIST"){
+            if(filterType === "LIST" || cmd.getType === "LIST"){
                 customers = list;
-            }else if(filterType === "SEARCH" || cmd === "SEARCH"){
+            }else if(filterType === "SEARCH" || cmd.getType === "SEARCH"){
                 customers = list;
             }
             updatePageFlags(list.length)
@@ -298,10 +303,15 @@ Item {
                 onClicked: {
                     rootCustomerList.currentPage--
                     let cmdData = {
-                        cmd: "LIST",
-                        typelist: ""
+                        command: "GET",
+                        target: "CUSTOMER",
+                        infoKind: "OBJECT",
+                        mode: "MULTIPLE",
+                        getType: "LIST",
+                        page: rootCustomerList.currentPage,
+                        pageSize: rootCustomerList.peoplePerPage
                     }
-                    controller.requestCustomerList(cmdData, "", rootCustomerList.peoplePerPage, rootCustomerList.currentPage)
+                    controller.requestCustomerList(cmdData)
                 }
                 
             }
@@ -352,10 +362,15 @@ Item {
                 onClicked: {
                     rootCustomerList.currentPage++
                     let cmdData = {
-                        cmd: "LIST",
-                        typelist: ""
+                        command: "GET",
+                        target: "CUSTOMER",
+                        infoKind: "OBJECT",
+                        mode: "MULTIPLE",
+                        getType: "LIST",
+                        page: rootCustomerList.currentPage,
+                        pageSize: rootCustomerList.peoplePerPage
                     }
-                    controller.requestCustomerList(cmdData, "", rootCustomerList.peoplePerPage, rootCustomerList.currentPage)
+                    controller.requestCustomerList(cmdData)
                 }
 
             }
@@ -370,14 +385,26 @@ Item {
         standardButtons: Dialog.Yes | Dialog.No
         visible: false
         onAccepted: {
-            controller.requestCustomerCommand("DELETE", rootCustomerList.selectedCustomerName, "", "", rootCustomerList.selectedCustomerPhoneNumber)
+            let cmdData = {
+                command: "DELETE",
+                data: {
+                    phonenumber: rootCustomerList.selectedCustomerPhoneNumber
+                }
+            }
+
+            controller.requestCustomerCommand(cmdData)
             rootCustomerList.selectedCustomerName = ""
             rootCustomerList.selectedCustomerPhoneNumber = ""
-            let cmdData = {
-                cmd: "LIST",
-                typelist: ""
+            let cmdData1 = {
+                command: "GET",
+                target: "CUSTOMER",
+                infoKind: "OBJECT",
+                mode: "MULTIPLE",
+                getType: "LIST",
+                page: rootCustomerList.currentPage,
+                pageSize: rootCustomerList.peoplePerPage
             }
-            controller.requestCustomerList(cmdData, "", rootCustomerList.peoplePerPage, rootCustomerList.currentPage)
+            controller.requestCustomerList(cmdData1)
         }
     }
 

@@ -353,38 +353,6 @@ QString TypeOrderToQString(type_of_order typeorder) {
     }
 }
 
-Rank QSTringToRank(const QString& rank){
-    if(rank == "BRONZE"){
-        return Rank::BRONZE;
-    }else if(rank == "SILVER"){
-        return Rank::SILVER;
-    }else if(rank == "GOLD"){
-        return Rank::GOLD;
-    }else if(rank == "PLATINUM"){
-        return Rank::PLATINUM;
-    }else if(rank == "DIAMOND"){
-        return Rank::DIAMOND;
-    }else{
-        return Rank::RANK_INVALID;
-    }
-}
-
-QString rankToQString(Rank rank){
-    if(rank == Rank::BRONZE){
-        return "BRONZE";
-    }else if(rank == Rank::SILVER){
-        return "SILVER";
-    }else if(rank == Rank::GOLD){
-        return "GOLD";
-    }else if(rank == Rank::PLATINUM){
-        return "PLATINUM";
-    }else if(rank == Rank::DIAMOND){
-        return "DIAMOND";
-    }else{
-        return "RANK_INVALID";
-    }
-}
-
 Unit QStringToUnit(const QString& str){
     if(str == "BOTTLE") return Unit::BOTTLE;
     if(str == "BAG") return Unit::BAG;

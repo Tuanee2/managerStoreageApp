@@ -4,6 +4,8 @@ import QtQuick.Controls.Material
 
 Item {
     anchors.fill: parent
+    
+    property ApplicationWindow rootWindow
 
     Rectangle {
         id: addNewCustomer
@@ -122,8 +124,16 @@ Item {
                             return;
                         }
 
+                        let cmdData = {
+                            command: "CHECK",
+                            target: "CUSTOMER",
+                            data: {
+                                phonenumber: phoneNumber
+                            }
+                        }
+
                         // kiểm tra trùng tên
-                        controller.requestCustomerCommand("CHECKPHONENUMBER", "", "", true, phoneNumber);
+                        controller.requestCustomerCommand(cmdData);
                     }
 
                 }
@@ -145,7 +155,18 @@ Item {
             let yearofbirth = parseInt(agetextfield.text);
             let phoneNumber = phonenumbertextfield.text.trim();
             let gender = genderComboBox.currentIndex // 0: Nam, 1: Nữ, 2: Khác
-            controller.requestCustomerCommand("ADD", name, yearofbirth, gender, phoneNumber);
+
+            let cmdData = {
+                command: "ADD",
+                data: {
+                    name: name,
+                    phonenumber: phoneNumber,
+                    yearofbirth: yearofbirth,
+                    gender: gender
+                }
+            }
+
+            controller.requestCustomerCommand(cmdData);
         }
         onRejected: {
             followupDialog.open()
@@ -175,21 +196,14 @@ Item {
     // Trong cùng QML file
     Connections {
         target: controller
-        function onCustomerCommandResult(exists, cmd) {
-            if(cmd === "CHECKPHONENUMBER"){
-                if (exists) {
+        function onCustomerCommandResult(done, cmd) {
+            if(cmd.command === "CHECK"){
+                if (done) {
                     rootWindow.notification.showNotification("⚠️ Số điện thoại khách hàng đã tồn tại");
                 } else {
                     confirmDialog.open()
                 }
-            }
-        }
-    }
-
-    Connections {
-        target: controller
-        function onCustomerCommandResult(done, cmd) {
-            if(cmd === "ADD"){
+            }else if(cmd.command == "ADD"){
                 if(done){
                     followupDialog.open()
                 }else{
@@ -199,6 +213,5 @@ Item {
             }
         }
     }
-
 
 }

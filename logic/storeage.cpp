@@ -87,7 +87,6 @@ void storeage::handleProductListRequest(BaseCommand cmd) {
     }else if(cmd.infoKind == InfoKind::OBJECT){
         if(cmd.fetchMode == FetchMode::SINGLE){
             if(cmd.filters.contains("name")){
-                qDebug() << "<< 2";
                 fetchedProducts = db->getAProductByName(cmd.filters.value("name").toString());
             }else if(cmd.filters.contains("price")){
 
@@ -238,51 +237,76 @@ void storeage::handleBatchListRequest(cmdContext cmd, const QString& productName
 
 
 // <<<<<<<<<< FOR CUSTOMER >>>>>>>>>>
-void storeage::handleCustomerCommand(cmdContext cmd, Customer customer){
-    bool done;
-    if(cmd.cmd == Cmd::ADD){
-        done = db->insertCustomer(customer);
-    }else if(cmd.cmd == Cmd::CHECKPHONENUMBER){
-        done = db->checkCustomerPhoneNumberExists(customer.getCustomerPhoneNumber());
-    }else if(cmd.cmd == Cmd::DELETE){
-        if(customer.getCustomerPhoneNumber() != ""){
-            done = db->deleteCustomerByPhoneNumber(customer.getCustomerPhoneNumber());
-        }else{
-            done = db->deleteCustomerByName(customer.getCustomerName());
-        }
+void storeage::handleCustomerCommand(BaseCommand cmd){
+    bool done = false;
+    if(cmd.command == CommandType::ADD){
+        Customer newone;
+        newone.setCustomerName(cmd.data.value("name").toString());
+        newone.setCustomerPhoneNumber(cmd.data.value("phonenumber").toString());
+        newone.setCustomerYearOfBirth(cmd.data.value("yearofbirth").toInt());
+        newone.setCustomerGender(static_cast<Gender>(cmd.data.value("gender").toInt()));
+        newone.setCustomerRewardPoints(0);
+        newone.setRank("BROZE");
+        newone.setDebtPoints(0);
+        newone.setDebtStatus("NO_DEBT");
+        done = db->insertCustomer(newone);
+    }else if(cmd.command == CommandType::DELETE){
+        done = db->deleteCustomerByPhoneNumber(cmd.data.value("phonenumber").toString());
+
+    }else if(cmd.command == CommandType::UPDATE){
+
+    }else if(cmd.command == CommandType::CHECK){
+        done = db->checkCustomerPhoneNumberExists(cmd.data.value("phonenumber").toString());
+
+    }else{
+        qDebug() << "DATABASE_THREAD [ERROR]: command type is INVALID";
+        return;
     }
 
     emit customerCommandResult(done, cmd);
 }
 
-void storeage::handleCustomerListRequest(cmdContext cmd, const QString& keyword, int numPage){
-    qDebug() << "<< 1";
+void storeage::handleCustomerListRequest(BaseCommand cmd){
     QList<Customer*> fetchedCutomers;
-
-    if(cmd.cmd == Cmd::LIST){
-        fetchedCutomers = db->getCustomersByPage(numPage);
-    }else if(cmd.cmd == Cmd::SEARCH){
-        qDebug() << "<< 2";
-        if(cmd.typelist == type_of_list::NAME){
-            qDebug() << "<< 3";
-            fetchedCutomers = db->getCustomerByName(keyword);
-        }else if(cmd.typelist == type_of_list::PHONENUMBER){
-            fetchedCutomers = db->getCustomerByPhoneNumber(keyword);
-        }else if(cmd.typelist == type_of_list::YEAROFBIRTH){
-            fetchedCutomers = db->getCustomerByYearOfBirth(keyword);
-        }
-    }
-
     QList<QVariantMap> result;
 
-    for(Customer* c : fetchedCutomers){
-        QVariantMap item;
-        item["name"] = c->getCustomerName();
-        item["phone_number"] = c->getCustomerPhoneNumber();
-        item["year_of_birth"] = c->getCustomerYearOfBirth();
-        item["gender"] = GenderToQString(c->getCustomerGender());
-        result.append(item);
-        delete c;
+    if(cmd.infoKind == InfoKind::GENERAL){
+
+    }else if(cmd.infoKind == InfoKind::FIELD){
+
+    }else if(cmd.infoKind == InfoKind::OBJECT){
+        if(cmd.fetchMode == FetchMode::SINGLE){
+            if(cmd.filters.contains("phonenumber")){
+                fetchedCutomers = db->getACustomerByPhoneNumber(cmd.filters.value("phonenumber").toString());
+            }
+        }else if(cmd.fetchMode == FetchMode::MULTIPLE){
+            if(cmd.filters.isEmpty()){
+                fetchedCutomers = db->getCustomersByPage(cmd.pageSize, cmd.page);
+            }else{
+                if(cmd.filters.contains("phonenumber")){
+                    fetchedCutomers = db->getCustomerByPhoneNumber(cmd.filters.value("phonenumber").toString());
+                }else if(cmd.filters.contains("name")){
+                    fetchedCutomers = db->getCustomerByName(cmd.filters.value("name").toString());
+                }else if(cmd.filters.contains("yearofbirth")){
+                    fetchedCutomers = db->getCustomerByYearOfBirth(cmd.filters.value("yearofbirth").toString());
+                }
+            }
+        }else{
+            return;
+        }
+
+        for(Customer* c : fetchedCutomers){
+            QVariantMap item;
+            item["name"] = c->getCustomerName();
+            item["phone_number"] = c->getCustomerPhoneNumber();
+            item["year_of_birth"] = c->getCustomerYearOfBirth();
+            item["gender"] = GenderToQString(c->getCustomerGender());
+            result.append(item);
+            delete c;
+        }
+
+    }else{
+        return;
     }
 
     emit customerListReady(result, cmd);

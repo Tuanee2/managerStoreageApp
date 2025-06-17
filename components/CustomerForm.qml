@@ -16,6 +16,7 @@ Item {
     property string typeorder: "TOPURCHASETIME"
 
     property var orderList: []
+    property var customer: []
 
     Component.onCompleted: {
         let cmdData = {
@@ -26,6 +27,19 @@ Item {
         }
 
         controller.requestOrderList(cmdData, customerPhoneNumber, "", "", rootCustomerForm.orderPerPage, rootCustomerForm.currentPage)
+
+        let cmdData1 = {
+            command: "GET",
+            target: "CUSTOMER",
+            infoKind: "OBJECT",
+            mode: "SINGLE",
+            getType: "LIST",
+            filters: {
+                phonenumber: rootCustomerForm.customerPhoneNumber
+            }
+        }
+
+        controller.requestCustomerList(cmdData1)
     }
 
     Connections {
@@ -35,6 +49,16 @@ Item {
                 rootCustomerForm.orderList = list
                 updatePageFlags(list.length)
             }
+        }
+    }
+
+    Connections {
+        target: controller
+        function onCustomerListReady(list, cmd){
+            if(cmd.getType === "LIST"){
+                rootCustomerForm.customer = list
+            }
+
         }
     }
 
@@ -60,8 +84,98 @@ Item {
         anchors.topMargin: parent.height*0.01
         anchors.horizontalCenter: parent.horizontalCenter
         width: parent.width*0.96
-        height:parent.height*0.185
-        color: Qt.rgba(1, 1, 1, 0.2)
+        height:parent.height*0.285
+        color: "white"
+        radius: 10
+
+        Rectangle {
+            id: nameField
+            height: parent.height/3
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.leftMargin: parent.width*0.01
+            Text {
+                text: "Tên : "
+                color: "black"
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: parent.height*0.4
+            }
+
+        }
+
+        Rectangle {
+            id: phonenumberField
+            height: parent.height/3
+            anchors.top: nameField.bottom
+            anchors.left: parent.left
+            anchors.leftMargin: parent.width*0.01
+            Text {
+                text: "SĐT : "
+                color: "black"
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: parent.height*0.4
+            }
+        }
+
+        Rectangle {
+            id: yearOfBirthField
+            height: parent.height/3
+            anchors.top: phonenumberField.bottom
+            anchors.left: parent.left
+            anchors.leftMargin: parent.width*0.01
+            Text {
+                text: "Năm sinh : "
+                color: "black"
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: parent.height*0.4
+            }
+        }
+
+
+
+        Rectangle{
+            width: parent.height
+            height: parent.height
+            anchors.right: parent.right
+            anchors.rightMargin: parent.height/2
+            anchors.verticalCenter: parent.verticalCenter
+            color: "transparent"
+
+            Canvas {
+                id: arcCanvasBorder
+                anchors.centerIn: parent
+                width: parent.height*0.9
+                height: parent.height*0.9
+                onPaint: {
+                    var ctx = getContext("2d")
+                    ctx.clearRect(0, 0, width, height)
+
+                    let gradient = ctx.createRadialGradient(width/2, height/2, height/6, width/2, height/2, height/2)
+                    gradient.addColorStop(0, "rgba(0,255,255,1)")
+                    gradient.addColorStop(1, "rgba(0,255,255,0)")
+
+                    ctx.beginPath()
+                    ctx.arc(width / 2, height / 2, height* 2/ 5, Math.PI*3/4 , Math.PI*9/4) // từ góc 0 đến 90 độ
+                    ctx.strokeStyle = gradient
+                    ctx.lineWidth = height/15
+                    ctx.stroke()
+
+                }
+            }
+
+            Text {
+                anchors.centerIn: parent
+                text: "100%"
+                color: "black"
+                font.pixelSize: parent.height*0.2
+            }
+
+        }
+
+
     }
 
     Rectangle {
@@ -148,7 +262,7 @@ Item {
         anchors.top: filterOrder.bottom
         anchors.topMargin: parent.height*0.01
         anchors.horizontalCenter: parent.horizontalCenter
-        height: parent.height*0.62
+        height: parent.height*0.52
         width: parent.width*0.96
         color: "transparent"
         Column {

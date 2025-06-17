@@ -51,7 +51,7 @@ public:
     bool checkCustomerPhoneNumberExists(const QString& phoneNumber);
     QList<Customer*> getCustomerByName(const QString& name); 
     QList<Customer*> getCustomerByPhoneNumber(const QString& phone);
-    QList<Customer*> getCustomersByPage(int numPage);
+    QList<Customer*> getCustomersByPage(int peoplePerPage, int numPage);
     QList<Customer*> getCustomerByYearOfBirth(const QString& yearOfBirth);
     QList<Customer*> getACustomerByName(const QString& name);
     QList<Customer*> getACustomerByPhoneNumber(const QString& phone);

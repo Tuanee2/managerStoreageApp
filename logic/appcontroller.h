@@ -152,30 +152,30 @@ public slots:
 // <<<<<<<<<< FOR CUSTOMERS >>>>>>>>>>
 // **********< thêm / sửa / xoá khách hàng>**********
 public:
-    Q_INVOKABLE void requestCustomerCommand(const QString& cmd, const QString& name, int yearOfBirth, const QString& gender, const QString& phoneNumber);
+    Q_INVOKABLE void requestCustomerCommand(QVariantMap cmdData);
 
 signals:
     // for database thread
-    void customerCommand(cmdContext cmd, Customer customer);
+    void customerCommand(BaseCommand cmd);
     // for UI
-    void customerCommandResult(bool done, const QString& cmd);
+    void customerCommandResult(bool done, QVariantMap cmd);
 
 public slots:
-    void onCustomerCommandResult(bool done, cmdContext cmd);
+    void onCustomerCommandResult(bool done, BaseCommand cmd);
 
 // ****************************************
 
 // *********< Lấy danh sách khách hàng >*********
 public:
-    Q_INVOKABLE void requestCustomerList(QVariantMap cmdData, const QString& keyword, int peplerPerPage, int numPage);
+    Q_INVOKABLE void requestCustomerList(QVariantMap cmdData);
 
 signals:
     // for database thread
-    void customerListRequested(cmdContext cmd, const QString& keyword, int numPage);
+    void customerListRequested(BaseCommand cmd);
     // for UI
-    void customerListReady(QList<QVariantMap> list, const QString& cmd);
+    void customerListReady(QList<QVariantMap> list, QVariantMap cmd);
 public slots:
-    void onCustomerListReady(QList<QVariantMap> list, cmdContext cmd);
+    void onCustomerListReady(QList<QVariantMap> list, BaseCommand cmd);
 
 // ****************************************
 

@@ -12,6 +12,54 @@ QString GenderToQString(Gender gender){
     return "UNKNOW";
 }
 
+Rank QStringToRank(const QString& rank){
+    if(rank == "BRONZE"){
+        return Rank::BRONZE;
+    }else if(rank == "SILVER"){
+        return Rank::SILVER;
+    }else if(rank == "GOLD"){
+        return Rank::GOLD;
+    }else if(rank == "PLATINUM"){
+        return Rank::PLATINUM;
+    }else if(rank == "DIAMOND"){
+        return Rank::DIAMOND;
+    }else{
+        return Rank::RANK_INVALID;
+    }
+}
+
+QString rankToQString(Rank rank){
+    if(rank == Rank::BRONZE){
+        return "BRONZE";
+    }else if(rank == Rank::SILVER){
+        return "SILVER";
+    }else if(rank == Rank::GOLD){
+        return "GOLD";
+    }else if(rank == Rank::PLATINUM){
+        return "PLATINUM";
+    }else if(rank == Rank::DIAMOND){
+        return "DIAMOND";
+    }else{
+        return "RANK_INVALID";
+    }
+}
+
+Debt QStringToDebt(const QString& debt){
+    if(debt == "NO_DEBT") return Debt::NO_DEBT;
+    if(debt == "DEBT_BY_DATE") return Debt::DEBT_BY_DATE;
+    if(debt == "DEBT_BY_SEASON") return Debt::DEBT_BY_SEASON;
+    return Debt::INVALID;
+}
+
+QString debtToQString(Debt debt){
+    switch(debt) {
+        case Debt::NO_DEBT: return "NO_DEBT";
+        case Debt::DEBT_BY_DATE: return "DEBT_BY_DATE";
+        case Debt::DEBT_BY_SEASON: return "DEBT_BY_SEASON";
+        default: return "INVALID";
+    }
+}
+
 Customer::Customer(QObject *parent)
     : QObject{parent}
 {}
@@ -64,4 +112,36 @@ Gender Customer::getCustomerGender() const{
 
 void Customer::setCustomerGender(Gender gender){
     this->gender = gender;
+}
+
+int Customer::getCustomerRewardPoints() const{
+    return rewardPoints;
+}
+
+void Customer::setCustomerRewardPoints(int reward){
+    rewardPoints = reward;
+}
+
+Rank Customer::getRank() const{
+    return rank;
+}
+
+void Customer::setRank(const QString& rank){
+    this->rank = QStringToRank(rank);
+}
+
+int Customer::getDebtPoints() const{
+    return debtPoints;
+}
+
+void Customer::setDebtPoints(int points){
+    this->debtPoints = points;
+}
+
+Debt Customer::getDebtStatus() const{
+    return debt;
+}
+
+void Customer::setDebtStatus(const QString& status){
+    this->debt = QStringToDebt(status);
 }

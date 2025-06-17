@@ -58,7 +58,11 @@ bool DatabaseManager::initialize(){
             "name TEXT NOT NULL,"
             "phone_number TEXT NOT NULL,"
             "gender TEXT NOT NULL,"
-            "year_of_birth INTEGER NOT NULL"
+            "year_of_birth INTEGER NOT NULL,"
+            "reward_points INTEGER NOT NULL,"
+            "rank TEXT NOT NULL,"
+            "debt_points INTEGER NOT NULL,"
+            "debt TEXT NOT NULL"
             ")";
 
         if (!query.exec(createCustomersTableQuery)) {
@@ -449,11 +453,15 @@ double DatabaseManager::getNumOfALLBatchExpired(const QDateTime& time){
 
 bool DatabaseManager::insertCustomer(const Customer& customer) {
     QSqlQuery query;
-    query.prepare("INSERT INTO customers (name, phone_number, gender, year_of_birth) VALUES (?, ?, ?, ?)");
+    query.prepare("INSERT INTO customers (name, phone_number, gender, year_of_birth, reward_points, rank, debt_points, debt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     query.addBindValue(customer.getCustomerName());
     query.addBindValue(customer.getCustomerPhoneNumber());
     query.addBindValue(GenderToQString(customer.getCustomerGender()));
     query.addBindValue(customer.getCustomerYearOfBirth());
+    query.addBindValue(customer.getCustomerRewardPoints());
+    query.addBindValue(rankToQString(customer.getRank()));
+    query.addBindValue(customer.getDebtPoints());
+    query.addBindValue(debtToQString(customer.getDebtStatus()));
 
     if (!query.exec()) {
         qWarning() << "Failed to insert customer:" << query.lastError().text();
@@ -498,7 +506,7 @@ bool DatabaseManager::checkCustomerPhoneNumberExists(const QString& phoneNumber)
     return false;
 }
 
-QList<Customer*> DatabaseManager::getCustomersByPage(int numPage) {
+QList<Customer*> DatabaseManager::getCustomersByPage(int peoplePerPage, int numPage) {
     QList<Customer*> list;
     QSqlQuery query;
     int limit = 12;

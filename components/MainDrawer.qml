@@ -7,7 +7,6 @@ Item {
     id: rootDrawer
     anchors.fill: parent
 
-
     Rectangle{
         width: parent.width
         height: parent.height*0.2
