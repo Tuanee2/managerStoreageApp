@@ -100,9 +100,9 @@ signals:
 
 // <<<<<<<<<< FOR ORDER >>>>>>>>>>
 public slots:
-    void handleOrderCommand(cmdContext cmd, const QJsonObject& data);
+    void handleOrderCommand(BaseCommand cmd);
 signals:
-    void orderCommandResult(bool done, cmdContext cmd);
+    void orderCommandResult(bool done, BaseCommand cmd);
 
 public slots:
     void handleOrderListRequest(cmdContext cmd, const QString& keyword, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage);

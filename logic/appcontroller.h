@@ -126,12 +126,6 @@ public slots:
 // ****************************************
 
 // *********< Lấy danh sách các lô sản phẩm >*********
-
-
-// ****************************************
-
-
-// *********< Lấy danh sách các lô sản phẩm >*********
 public: 
     Q_INVOKABLE void requestBatchList(QVariantMap cmdData, const QString& productName, const QString& keyword, int numOfBatch, int numPage);
 
@@ -184,16 +178,16 @@ public slots:
 // <<<<<<<<<< FOR ORDERS >>>>>>>>>>
 // **********< thêm / sửa / xoá đơn hàng>**********
 public: 
-    Q_INVOKABLE void requestOrderCommand(const QString& cmd, const QString& phoneNumber, const QString& dateExport, const QString& note);
+    Q_INVOKABLE void requestOrderCommand(QVariantMap cmdData);
 
 signals:
     // for database thread
-    void orderCommandRequested(cmdContext cmd, const QJsonObject& data);
+    void orderCommandRequested(BaseCommand cmd);
     // for UI
-    void orderCommandResult(bool done, const QString& cmd);
+    void orderCommandResult(bool done, QVariantMap cmd);
 
 public slots:
-    void onOrderCommandResult(bool done, cmdContext cmd);
+    void onOrderCommandResult(bool done, BaseCommand cmd);
 
 // ****************************************
 

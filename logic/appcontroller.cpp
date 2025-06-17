@@ -280,19 +280,25 @@ void appcontroller::onCustomerListReady(QList<QVariantMap> list, BaseCommand cmd
 
 
 // <<<<<<<<<< FOR ORDERS >>>>>>>>>>
-void appcontroller::requestOrderCommand(const QString& cmd, const QString& phoneNumber, const QString& dateExport, const QString& note){
-    cmdContext CMD;
-    CMD.cmd = QStringToCmd(cmd);
-    order.setCustomerPhoneNumber(phoneNumber);
-    order.setPurchaseTime(QDateTime::fromString(dateExport, "dd-MM-yyyy"));
-    order.setNote(note);
-    QJsonObject data = order.toJson();
-    order.clean();
-    emit orderCommandRequested(CMD, data);
+void appcontroller::requestOrderCommand(QVariantMap cmdData){
+    BaseCommand command;
+    if(cmdData["command"].toString() == "ADD"){
+        order.setCustomerPhoneNumber(cmdData["data"].toMap().value("phonenumber").toString());
+        order.setPurchaseTime(QDateTime::fromString(cmdData["data"].toMap().value("purchasetime").toString(), "dd-MM-yyyy"));
+        order.setNote(cmdData["data"].toMap().value("note").toString());
+
+        QVariantMap outerData = cmdData.value("data").toMap(); 
+        outerData["data"] = order.toJson(); 
+        cmdData["data"] = outerData;
+
+        command = MapToBaseCommand(cmdData);
+        order.clean();
+    }
+    emit orderCommandRequested(command);
 }
 
-void appcontroller::onOrderCommandResult(bool done, cmdContext cmd){
-    emit orderCommandResult(done, CmdToQString(cmd.cmd));
+void appcontroller::onOrderCommandResult(bool done, BaseCommand cmd){
+    emit orderCommandResult(done, BaseCommandToMap(cmd));
 }
 
 void appcontroller::requestOrderParam(QVariantMap cmdData, const QString& keyword, const QString& dateBegin, const QString& dateEnd){

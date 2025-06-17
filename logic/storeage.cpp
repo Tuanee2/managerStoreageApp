@@ -301,6 +301,10 @@ void storeage::handleCustomerListRequest(BaseCommand cmd){
             item["phone_number"] = c->getCustomerPhoneNumber();
             item["year_of_birth"] = c->getCustomerYearOfBirth();
             item["gender"] = GenderToQString(c->getCustomerGender());
+            item["rank"] = rankForShow(c->getRank());
+            item["reward_points"] = c->getCustomerRewardPoints();
+            item["debt"] = debtForShow(c->getDebtStatus());
+            item["debt_points"] = c->getDebtPoints();
             result.append(item);
             delete c;
         }
@@ -317,29 +321,29 @@ void storeage::handleCustomerListRequest(BaseCommand cmd){
 
 
 // <<<<<<<<<< FOR ORDER >>>>>>>>>>
-void storeage::handleOrderCommand(cmdContext cmd, const QJsonObject& data){
-    Order* order = Order::fromJson(data);
-    for(Products* p : order->getListItem()){
-        qDebug() << "Gía : "<< p->getCost();
-        int i = 0;
-        for(Batch* b : p->getBatchList()){
-            qDebug() << i << " gía lô: " << b->getCost();
-        }
-    }
-    if(cmd.cmd == Cmd::ADD){
+void storeage::handleOrderCommand(BaseCommand cmd){
+    bool done = false;
+    Order* order = Order::fromJson(cmd.data.value("data").toJsonObject());
+    if(cmd.command == CommandType::ADD){
         for(Products* p : order->getListItem()){
             for(Batch* b : p->getBatchList()){
                 db->updateBatch(p->getProductName(), *b);
             }
         }
-        db->insertOrder(*order); 
+        done = db->insertOrder(*order); 
+    }else if(cmd.command == CommandType::DELETE){
+        done = db->deleteOrder(order->getCustomerName(), order->getCustomerPhoneNumber(), order->getPurchaseTime());
+    }else if(cmd.command == CommandType::UPDATE){
 
-    }else if(cmd.cmd == Cmd::DELETE){
-        db->deleteOrder(order->getCustomerName(), order->getCustomerPhoneNumber(), order->getPurchaseTime());
+    }else if(cmd.command == CommandType::CHECK){
 
+    }else {
+        
     }
+
     delete order;
-    emit orderCommandResult(true, cmd);
+    cmd.data.clear();
+    emit orderCommandResult(done, cmd);
 }
 
 

@@ -208,21 +208,21 @@ Rectangle {
                             }else{
                                 if(root.targetExtension === "NAME"){
                                     root.suggestionSelected({name: model.name, phoneNumber: model.phone, yearOfBirth: model.year})
-                                    console.log("<< 1100")
                                     pageLoader.setSource("CustomerForm.qml", {
-                                        customerPhoneNumber: model.phone_number
+                                        customerPhoneNumber: model.phone
                                     })
+
                                 }else if(root.targetExtension === "PHONENUMBER"){
                                     root.suggestionSelected({name: model.name, phoneNumber: model.phone, yearOfBirth: model.year})
                                     input.text = model.phone
                                     pageLoader.setSource("CustomerForm.qml", {
-                                        customerPhoneNumber: model.phone_number
+                                        customerPhoneNumber: model.phone
                                     })
                                 }else if(root.targetExtension === "YEAROFBIRTH"){
                                     root.suggestionSelected({name: model.name, phoneNumber: model.phone, yearOfBirth: model.year})
                                     input.text = model.year
                                     pageLoader.setSource("CustomerForm.qml", {
-                                        customerPhoneNumber: model.phone_number
+                                        customerPhoneNumber: model.phone
                                     })
                                 }
                             }

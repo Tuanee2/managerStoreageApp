@@ -44,6 +44,22 @@ QString rankToQString(Rank rank){
     }
 }
 
+QString rankForShow(Rank rank){
+    if(rank == Rank::BRONZE){
+        return "Đồng";
+    }else if(rank == Rank::SILVER){
+        return "Bạc";
+    }else if(rank == Rank::GOLD){
+        return "Đồng";
+    }else if(rank == Rank::PLATINUM){
+        return "Bạc Kim";
+    }else if(rank == Rank::DIAMOND){
+        return "Kim Cương";
+    }else{
+        return "Không xác định";
+    }
+}
+
 Debt QStringToDebt(const QString& debt){
     if(debt == "NO_DEBT") return Debt::NO_DEBT;
     if(debt == "DEBT_BY_DATE") return Debt::DEBT_BY_DATE;
@@ -56,6 +72,15 @@ QString debtToQString(Debt debt){
         case Debt::NO_DEBT: return "NO_DEBT";
         case Debt::DEBT_BY_DATE: return "DEBT_BY_DATE";
         case Debt::DEBT_BY_SEASON: return "DEBT_BY_SEASON";
+        default: return "INVALID";
+    }
+}
+
+QString debtForShow(Debt debt){
+    switch(debt) {
+        case Debt::NO_DEBT: return "Không nợ";
+        case Debt::DEBT_BY_DATE: return "Nợ ngày";
+        case Debt::DEBT_BY_SEASON: return "Nợ mùa";
         default: return "INVALID";
     }
 }

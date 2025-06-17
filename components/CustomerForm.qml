@@ -16,7 +16,7 @@ Item {
     property string typeorder: "TOPURCHASETIME"
 
     property var orderList: []
-    property var customer: []
+    property var customer: ({})
 
     Component.onCompleted: {
         let cmdData = {
@@ -56,7 +56,7 @@ Item {
         target: controller
         function onCustomerListReady(list, cmd){
             if(cmd.getType === "LIST"){
-                rootCustomerForm.customer = list
+                rootCustomerForm.customer = list[0]
             }
 
         }
@@ -90,12 +90,13 @@ Item {
 
         Rectangle {
             id: nameField
-            height: parent.height/3
+            height: parent.height/4
+            width: parent.width*0.3
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.leftMargin: parent.width*0.01
             Text {
-                text: "Tên : "
+                text: "Tên : " + (rootCustomerForm.customer ? rootCustomerForm.customer["name"] : "")
                 color: "black"
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
@@ -106,12 +107,13 @@ Item {
 
         Rectangle {
             id: phonenumberField
-            height: parent.height/3
+            height: parent.height/4
+            width: parent.width*0.3
             anchors.top: nameField.bottom
             anchors.left: parent.left
             anchors.leftMargin: parent.width*0.01
             Text {
-                text: "SĐT : "
+                text: "SĐT : " + (rootCustomerForm.customer ? rootCustomerForm.customer["phone_number"] : "")
                 color: "black"
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
@@ -121,12 +123,13 @@ Item {
 
         Rectangle {
             id: yearOfBirthField
-            height: parent.height/3
+            height: parent.height/4
+            width: parent.width*0.3
             anchors.top: phonenumberField.bottom
             anchors.left: parent.left
             anchors.leftMargin: parent.width*0.01
             Text {
-                text: "Năm sinh : "
+                text: "Năm sinh : " + (rootCustomerForm.customer ? rootCustomerForm.customer["year_of_birth"] : "") 
                 color: "black"
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
@@ -134,7 +137,81 @@ Item {
             }
         }
 
+        Rectangle {
+            id: genderField
+            height: parent.height/4
+            width: parent.width*0.3
+            anchors.top: yearOfBirthField.bottom
+            anchors.left: parent.left
+            anchors.leftMargin: parent.width*0.01
+            Text {
+                text: "Giới tính : " + ((rootCustomerForm.customer["gender"] === "MALE") ? "Nam" : "Nữ")
+                color: "black"
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: parent.height*0.4
+            }
+        }
 
+        Rectangle{
+            id: rankField
+            height: parent.height/4
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.leftMargin: parent.width*0.41
+            Text {
+                text: "Hạng : " + rootCustomerForm.customer["rank"]
+                color: "black"
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: parent.height*0.4
+            }
+        }
+
+        Rectangle{
+            id: rewardField
+            height: parent.height/4
+            anchors.top: rankField.bottom
+            anchors.left: parent.left
+            anchors.leftMargin: parent.width*0.41
+            Text {
+                text: "Tích điểm : " + rootCustomerForm.customer["reward_points"]
+                color: "black"
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: parent.height*0.4
+            }
+        }
+
+        Rectangle{
+            id: debtField
+            height: parent.height/4
+            anchors.top: rewardField.bottom
+            anchors.left: parent.left
+            anchors.leftMargin: parent.width*0.41
+            Text {
+                text: "Tình trạng nợ : " + rootCustomerForm.customer["debt"]
+                color: "black"
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: parent.height*0.4
+            }
+        }
+
+        Rectangle{
+            id: debtPointField
+            height: parent.height/4
+            anchors.top: debtField.bottom
+            anchors.left: parent.left
+            anchors.leftMargin: parent.width*0.41
+            Text {
+                text: "Tiền nợ : " + rootCustomerForm.customer["debt_points"]
+                color: "black"
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: parent.height*0.4
+            }
+        }
 
         Rectangle{
             width: parent.height
