@@ -18,6 +18,7 @@ public:
     ~Order();
 
 private:
+    QString id;
     QString customerName;
     QString phoneNumber;
     QList<Products*> item;
@@ -25,6 +26,8 @@ private:
     QString note;
 
 public:
+    QString getId() const;
+    void setId(const QString& id);
     QString getCustomerName() const;
     void setCustomerName(const QString& name);
     QString getCustomerPhoneNumber() const;
@@ -37,6 +40,8 @@ public:
     void setNote(const QString& note);
     static QList<Products*> QStringToItems(const QString& data);
     static QString itemToQString(const QList<Products*>& item);
+    static QList<QVariant> itemToListVariant(const QList<Products*>& item);
+
     double getTotalPrice() const;
     void clean();
 

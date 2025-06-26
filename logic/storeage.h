@@ -105,9 +105,9 @@ signals:
     void orderCommandResult(bool done, BaseCommand cmd);
 
 public slots:
-    void handleOrderListRequest(cmdContext cmd, const QString& keyword, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage);
+    void handleOrderListRequest(BaseCommand cmd);
 signals:
-    void orderListReady(QList<QVariantMap> list, cmdContext cmd);
+    void orderListReady(QList<QVariantMap> list, BaseCommand cmd);
 // ****************************************
 
 

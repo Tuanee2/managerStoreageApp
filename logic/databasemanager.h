@@ -18,6 +18,7 @@ class DatabaseManager : public QObject
 public:
     explicit DatabaseManager(QObject *parent = nullptr);
     QSqlDatabase db;
+    QSqlDatabase supabaseDb;
     bool initialize();
     bool insertProduct(const Products& product);
     bool checkProductNameExists(const QString& name);
@@ -63,9 +64,16 @@ public:
     bool deleteOrder(const QString& customerName, const QString& phoneNumber, const QDateTime& purchaseTime);
     QList<Order*> getOrder(const QString& customerName, const QString& phoneNumber, const QDateTime& purchaseTime, int numOfOrder, int numpag);
     QList<Order*> getOrderByPage(cmdContext cmd, const QString& keyword, int numOfOrder,int numpage);
+    Order* getOrderById(const QString& id);
     QList<Order*> getOrderByPeriod(const QString& customerName, const QString& phoneNumber, int numOfOrder,int numpage);
+    QList<Order*> getOrderByCustomCommand(BaseCommand command);
     QList<QVariantMap> getOrderProfitAndRevenue(const QString& dateBegin, const QString& dateEnd, Duration duration, bool isDescending);
     // ************************************
+
+    bool connectToSupabase();
+    bool testInsert();
+    // void addToSyncLog(const QString &tableName, const QString &recordId, const QString &action);
+    // void syncToSupabase();
 };
 
 #endif // DATABASEMANAGER_H

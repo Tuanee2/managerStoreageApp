@@ -75,10 +75,6 @@ appcontroller::appcontroller(storeage* store, QObject* parent)
     
     // ****************************************
 
-
-
-
-
     // <<<<<<<<<< FOR ORDERS >>>>>>>>>>
     connect(this, &appcontroller::orderCommandRequested,
         m_store, &storeage::handleOrderCommand, Qt::QueuedConnection);
@@ -301,27 +297,15 @@ void appcontroller::onOrderCommandResult(bool done, BaseCommand cmd){
     emit orderCommandResult(done, BaseCommandToMap(cmd));
 }
 
-void appcontroller::requestOrderParam(QVariantMap cmdData, const QString& keyword, const QString& dateBegin, const QString& dateEnd){
-    cmdContext CMD;
-    CMD.cmd = QStringToCmd(cmdData.value("cmd").toString());
-    emit orderParamRequested(CMD, keyword, dateBegin, dateEnd);
+void appcontroller::requestOrderList(QVariantMap cmdData){
+    BaseCommand command;
+    command = MapToBaseCommand(cmdData);
+    qDebug() << "<< 1";
+    emit orderListRequested(command);
 }
 
-void appcontroller::onOrderParamResult(double param, cmdContext cmd){
-    emit orderParamResult(param, CmdToQString(cmd.cmd));
-}
-
-void appcontroller::requestOrderList(QVariantMap cmdData, const QString& keyword, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage){
-    cmdContext CMD;
-    CMD.cmd = QStringToCmd(cmdData.value("cmd").toString());
-    CMD.typelist = QStringToTypeList(cmdData.value("typelist").toString());
-    CMD.order = QStringToSortOrder(cmdData.value("order").toString());
-    CMD.typeOder = QStringToTypeOder(cmdData.value("typeorder").toString());
-    emit orderListRequested(CMD, keyword, dateBegin, dateEnd, numOfOrder, numPage);
-}
-
-void appcontroller::onOrderListReady(QList<QVariantMap> list, cmdContext cmd){
-    emit orderListReady(list, CmdToQString(cmd.cmd));
+void appcontroller::onOrderListReady(QList<QVariantMap> list, BaseCommand cmd){
+    emit orderListReady(list, BaseCommandToMap(cmd));
 }
 
 // ****************************************

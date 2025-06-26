@@ -1,3 +1,7 @@
+#include <QVariant>
+// Helper function to convert Unit enum/type to QString for display/storage
+// Assuming you have UnitToQString somewhere, otherwise provide a stub.
+
 #include "order.h"
 #include <QJsonObject>
 #include <QJsonArray>
@@ -23,6 +27,14 @@ Order::~Order() {
     for (Products* p : item) {
         delete p;
     }
+}
+
+QString Order::getId() const{
+    return id;
+}
+
+void Order::setId(const QString& id){
+    this->id = id;
 }
 
 QString Order::getCustomerName() const{
@@ -139,4 +151,32 @@ Order* Order::fromJson(const QJsonObject& obj) {
     o->setListItem(list);
     o->setNote(obj["note"].toString());
     return o;
+}
+QList<QVariant> Order::itemToListVariant(const QList<Products*>& item) {
+    QList<QVariant> list;
+    for (Products* p : item) {
+        QVariantMap productMap;
+        productMap["product_name"] = p->getProductName();
+        productMap["product_id"] = p->getProductId();
+        productMap["cost"] = p->getCost();
+        productMap["unit"] = UnitForShow(p->getUnit());
+        productMap["description"] = p->getDescription();
+        productMap["is_value"] = p->getIsValue();
+        productMap["total_value"] = p->totalValue();
+
+        QList<QVariant> batchList;
+        for (Batch* b : p->getBatchList()) {
+            QVariantMap batchMap;
+            batchMap["quantity"] = b->getQuantity();
+            batchMap["cost"] = b->getCost();
+            batchMap["import_date"] = b->getImportDate().toString("yyyy-MM-dd");
+            batchMap["expiry_date"] = b->getExpiryDate().toString("yyyy-MM-dd");
+            batchList.append(batchMap);
+        }
+
+        productMap["batches"] = batchList;
+        list.append(productMap);
+    }
+    qDebug() << "list size: " << list.size();
+    return list;
 }

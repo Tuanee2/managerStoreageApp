@@ -20,13 +20,21 @@ Item {
 
     Component.onCompleted: {
         let cmdData = {
-            cmd: "LIST",
-            typelist: "PHONENUMBER",
-            order: "DESCENDING",
-            typeorder: "TOPURCHASETIME"
+            command: "GET",
+            target: "ORDER",
+            infoKind: "OBJECT",
+            mode: "MULTIPLE",
+            getType: "LIST",
+            sortField: "EXPORTDATE",
+            sortOrder: rootCustomerForm.order, //"DESCENDING",
+            filters: {
+                phonenumber: rootCustomerForm.customerPhoneNumber
+            },
+            page: rootCustomerForm.currentPage,
+            pageSize: rootCustomerForm.orderPerPage
         }
 
-        controller.requestOrderList(cmdData, customerPhoneNumber, "", "", rootCustomerForm.orderPerPage, rootCustomerForm.currentPage)
+        controller.requestOrderList(cmdData)
 
         let cmdData1 = {
             command: "GET",
@@ -45,7 +53,7 @@ Item {
     Connections {
         target: controller
         function onOrderListReady(list, cmd){
-            if( cmd === "LIST" ){
+            if( cmd.getType === "LIST" ){
                 rootCustomerForm.orderList = list
                 updatePageFlags(list.length)
             }
@@ -282,9 +290,15 @@ Item {
             y: parent.height
             MenuItem {
                 text: "Thời điểm mua hàng"
+                onTriggered: {
+                    //rootCustomerForm.order
+                }
             }
             MenuItem {
                 text: "Giá đơn hàng"
+                onTriggered: {
+
+                }
             }
         }
 
@@ -320,12 +334,44 @@ Item {
                 text: "Tăng dần"
                 onTriggered:{
                     rootCustomerForm.order = "ASCENDING"
+                    let cmdData = {
+                        command: "GET",
+                        target: "ORDER",
+                        infoKind: "OBJECT",
+                        mode: "MULTIPLE",
+                        getType: "LIST",
+                        sortField: "EXPORTDATE",
+                        sortOrder: rootCustomerForm.order, //"DESCENDING",
+                        filters: {
+                            phonenumber: rootCustomerForm.customerPhoneNumber
+                        },
+                        page: rootCustomerForm.currentPage,
+                        pageSize: rootCustomerForm.orderPerPage
+                    }
+
+                    controller.requestOrderList(cmdData)
                 }
             }
             MenuItem {
                 text: "Giảm dần"
                 onTriggered:{
                     rootCustomerForm.order = "DESCENDING"
+                    let cmdData = {
+                        command: "GET",
+                        target: "ORDER",
+                        infoKind: "OBJECT",
+                        mode: "MULTIPLE",
+                        getType: "LIST",
+                        sortField: "EXPORTDATE",
+                        sortOrder: rootCustomerForm.order, //"DESCENDING",
+                        filters: {
+                            phonenumber: rootCustomerForm.customerPhoneNumber
+                        },
+                        page: rootCustomerForm.currentPage,
+                        pageSize: rootCustomerForm.orderPerPage
+                    }
+
+                    controller.requestOrderList(cmdData)
                 }
             }
         }
@@ -409,7 +455,9 @@ Item {
                             hoverEnabled: true
 
                             onClicked: {
-
+                                pageLoader.setSource("OrderForm.qml", {
+                                    orderId: modelData.id
+                                })
                             }
 
                         }
@@ -459,13 +507,21 @@ Item {
                 onClicked: {
                     rootCustomerForm.currentPage--
                     let cmdData = {
-                        cmd: "LIST",
-                        typelist: "PHONENUMBER",
-                        order: "DESCENDING",
-                        typeorder: "TOPURCHASETIME"
+                        command: "GET",
+                        target: "ORDER",
+                        infoKind: "OBJECT",
+                        mode: "MULTIPLE",
+                        getType: "LIST",
+                        sortField: "EXPORTDATE",
+                        sortOrder: "DESCENDING",
+                        filters: {
+                            phonenumber: rootCustomerForm.customerPhoneNumber
+                        },
+                        page: rootCustomerForm.currentPage,
+                        pageSize: rootCustomerForm.orderPerPage
                     }
 
-                    controller.requestOrderList(cmdData, customerPhoneNumber, "", "", rootCustomerForm.orderPerPage, rootCustomerForm.currentPage)
+                    controller.requestOrderList(cmdData)
                 }
 
             }
@@ -518,12 +574,21 @@ Item {
                 onClicked: {
                     rootCustomerForm.currentPage++
                     let cmdData = {
-                        cmd: "LIST",
-                        typelist: "PHONENUMBER",
-                        order: "DESCENDING",
-                        typeorder: "TOPURCHASETIME"
+                        command: "GET",
+                        target: "ORDER",
+                        infoKind: "OBJECT",
+                        mode: "MULTIPLE",
+                        getType: "LIST",
+                        sortField: "EXPORTDATE",
+                        sortOrder: "DESCENDING",
+                        filters: {
+                            phonenumber: rootCustomerForm.customerPhoneNumber
+                        },
+                        page: rootCustomerForm.currentPage,
+                        pageSize: rootCustomerForm.orderPerPage
                     }
-                    controller.requestOrderList(cmdData, customerPhoneNumber, "", "", rootCustomerForm.orderPerPage, rootCustomerForm.currentPage)
+
+                    controller.requestOrderList(cmdData)
                 }
 
             }

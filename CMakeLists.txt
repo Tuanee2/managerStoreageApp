@@ -8,62 +8,20 @@ find_package(Qt6 REQUIRED COMPONENTS Quick)
 find_package(Qt6 REQUIRED COMPONENTS Sql)
 find_package(Qt6 REQUIRED COMPONENTS Charts)
 
+
 qt_standard_project_setup(REQUIRES 6.5)
 
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 
+set(PostgreSQL_ROOT "/Applications/Postgres.app/Contents/Versions/14")
+set(CMAKE_PREFIX_PATH "${PostgreSQL_ROOT}")
+link_directories("/Applications/Postgres.app/Contents/Versions/14/lib" "/Applications/Postgres.app/Contents/Versions/14/lib/postgresql")
+
 qt_add_executable(appLanHuyStore
     main.cpp
 )
-
-# qt_add_qml_module(appLanHuyStore
-#     URI LanHuyStore
-#     VERSION 1.0
-#     QML_FILES
-#         Main.qml
-#         RESOURCES resource.qrc
-#         QML_FILES components/Dashboard.qml
-#         QML_FILES components/ProductForm.qml
-#         QML_FILES components/ProductList.qml
-#         SOURCES logic/DatabaseManager.cpp
-#         SOURCES logic/databasemanager.h logic/databasemanager.cpp
-#         QML_FILES
-#         QML_FILES components/HeaderBar.qml
-#         QML_FILES components/Sales.qml
-#         QML_FILES components/Setting.qml
-#         SOURCES logic/products.h logic/products.cpp
-#         SOURCES logic/storeage.h logic/storeage.cpp
-#         SOURCES logic/appcontroller.h logic/appcontroller.cpp
-#         QML_FILES components/AddNewProduct.qml
-#         QML_FILES components/Toast.qml
-#         SOURCES logic/batch.h logic/batch.cpp
-#         SOURCES logic/batch.h logic/batch.cpp
-#         SOURCES logic/configcommand.h
-#         SOURCES logic/configcommand.cpp
-#         SOURCES logic/customer.h logic/customer.cpp
-#         QML_FILES components/ImportBatch.qml
-#         QML_FILES
-#         QML_FILES components/MainDrawer.qml
-#         QML_FILES components/ProductDrawer.qml
-#         QML_FILES components/SuggestionBox.qml
-#         QML_FILES components/CustomerDrawer.qml
-#         QML_FILES components/AddNewCustomer.qml
-#         QML_FILES components/CustomerList.qml
-#         QML_FILES components/CreateTransaction.qml
-#         QML_FILES components/CustomSearchTextField.qml
-#         SOURCES logic/order.h logic/order.cpp
-#         QML_FILES components/CustomChart.qml
-#         QML_FILES components/ProductListForTransaction.qml
-#         QML_FILES components/ProductFormForTransaction.qml
-#         QML_FILES components/TransactionDrawer.qml
-#         QML_FILES components/Notification.qml
-#         QML_FILES components/TransactionHistory.qml
-#         QML_FILES components/OrderForm.qml
-#         SOURCES logic/updateapp.h logic/updateapp.cpp
-#         QML_FILES components/CustomerForm.qml
-# )
 
 qt_add_qml_module(appLanHuyStore
     URI LanHuyStore
@@ -106,9 +64,9 @@ qt_add_qml_module(appLanHuyStore
         logic/order.h logic/order.cpp
         logic/updateapp.h logic/updateapp.cpp
         logic/promotion.h logic/promotion.cpp
+        logic/setting.h logic/setting.cpp
     RESOURCES
         resource.qrc
-
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -122,9 +80,14 @@ set_target_properties(appLanHuyStore PROPERTIES
     WIN32_EXECUTABLE TRUE
 )
 
+link_directories("/opt/homebrew/opt/libpq/lib")
+include_directories("/opt/homebrew/opt/libpq/include")
+set(PostgreSQL_INCLUDE_DIR "/opt/homebrew/opt/libpq/include")
+set(PostgreSQL_LIBRARY "/opt/homebrew/opt/libpq/lib/libpq.dylib")
 
 target_link_libraries(appLanHuyStore
-    PRIVATE Qt6::Quick  Qt6::Sql Qt6::Charts
+    PRIVATE Qt6::Quick Qt6::Sql Qt6::Charts
+    /opt/homebrew/opt/libpq/lib/libpq.5.dylib
 )
 
 include(GNUInstallDirs)

@@ -10,20 +10,21 @@ Item {
     property int numOfTypeProduct: 0
     property var orderlistdb: []
     property var profitAndRevenue: []
+    property var recentOrder: []
 
     Component.onCompleted: {
-        let cmdPro = {
-            type: "NUMOFITEM"
-        }
-        controller.requestProductParam(cmdPro, "");
 
-        let cmdorder = {
-            cmd: "LIST",
-            typelist: "ORDER_PROFIT_REVENUE",
-            order: "DESCENDING",
-            typeorder: "",
-            durian: "ADAY"
+        let cmdData = {
+            command: "GET",
+            target: "PRODUCT",
+            infoKind: "GENERAL",
+            filters: {
+                numofproduct: ""
+            }
+
         }
+        controller.requestProductList(cmdData);
+
         let today = new Date();
         let sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(today.getDate() - 7);
@@ -31,23 +32,51 @@ Item {
         let dateBegin = Qt.formatDate(sevenDaysAgo, "dd-MM-yyyy");
         let dateEnd = Qt.formatDate(today, "dd-MM-yyyy");
 
-        controller.requestOrderList(cmdorder, "", dateBegin, dateEnd, 0, 0);
-
-        let cmdorder01 = {
-            cmd: "LIST",
-            typelist: "",
-            order: "DESCENDING",
-            typeorder: "",
-            durian: "ADAY"
+        let cmdData1 = {
+            command: "GET",
+            target: "ORDER",
+            infoKind: "FIELD",
+            mode: "MULTIPLE",
+            getType: "LIST",
+            filters: {
+                profit: "",
+                revenue: "",
+                daybegin: dateBegin,
+                dayend: dateEnd
+            }
         }
 
-        //controller.requestOrderList(cmdorder01, "", "", "", 3, 0);
+        controller.requestOrderList(cmdData1);
 
+        let cmdData2 = {
+            command: "GET",
+            target: "ORDER",
+            infoKind: "OBJECT",
+            mode: "MULTIPLE",
+            getType: "LIST",
+            sortField: "EXPORTDATE",
+            sortOrder: "DESCENDING",
+            page: 0,
+            pageSize: 3
+        }
+
+        controller.requestOrderList(cmdData2);
+    }
+
+    function formatMoney(n) {
+        let str = n.toString();
+        let result = "";
+        while (str.length > 3) {
+            result = "," + str.slice(-3) + result;
+            str = str.slice(0, -3);
+        }
+        result = str + result;
+        return result;
     }
 
     Connections {
         target: controller
-        function onProductParamResult(result, cmd){
+        function onProductListReady(result, cmd){
             rootDashboard.numOfTypeProduct = result
         }
     }
@@ -55,28 +84,36 @@ Item {
     Connections {
         target: controller
         function onOrderListReady(list, cmd){
-            if(cmd === "LIST"){
-                let today = new Date();
-                let fullList = [];
-                for (let i = 6; i >= 0; --i) {
-                    let d = new Date();
-                    d.setDate(today.getDate() - i);
-                    let key = Qt.formatDate(d, "dd-MM-yyyy");
+            if(cmd.getType === "LIST"){
+                if(cmd.infoKind === "FIELD"){
+                    let today = new Date();
+                    let fullList = [];
+                    for (let i = 6; i >= 0; --i) {
+                        let d = new Date();
+                        d.setDate(today.getDate() - i);
+                        let key = Qt.formatDate(d, "dd-MM-yyyy");
 
-                    let found = list.find(item => item.date === key);
-                    if (found) {
-                        fullList.push(found);
-                    } else {
-                        fullList.push({
-                            date: key,
-                            total_price: 0,
-                            profit: 0
-                        });
+                        let found = list.find(item => item.date === key);
+                        if (found) {
+                            fullList.push(found);
+                        } else {
+                            fullList.push({
+                                date: key,
+                                total_price: 0,
+                                profit: 0
+                            });
+                        }
                     }
+                    rootDashboard.profitAndRevenue = fullList;
+                }else if(cmd.infoKind === "OBJECT"){
+                    rootDashboard.recentOrder = list
                 }
-                rootDashboard.profitAndRevenue = fullList;
             }
         }
+    }
+
+    function formatNumberWithCommas(n) {
+        return Number(n).toLocaleString("en-US", {minimumFractionDigits: 0});
     }
 
     Rectangle {
@@ -104,15 +141,55 @@ Item {
 
                 Column {
                     anchors.fill: parent
-                    spacing: mainorderlist.height*0.03
+                    spacing: mainorderlist.height*0.02
                     Repeater {
-                        model: rootDashboard.orderlistdb
+                        model: rootDashboard.recentOrder 
 
                         delegate: Rectangle {
                             width: mainorderlist.width
-                            height: mainorderlist.height*0.3
+                            height: mainorderlist.height*0.32
                             color: "white"
                             radius: 10
+                            Rectangle{
+                                anchors.left: parent.left
+                                anchors.top: parent.top
+                                width: parent.width
+                                height: parent.height*0.5
+                                color: "transparent"
+                                Text {
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: parent.width*0.05
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: modelData.customer_name
+                                    font.pixelSize: parent.height*0.4
+                                }
+                            }
+
+                            Rectangle{
+                                anchors.left: parent.left
+                                anchors.bottom: parent.bottom
+                                width: parent.width
+                                height: parent.height*0.5
+                                color: "transparent"
+                                Text {
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: parent.width*0.05
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: rootDashboard.formatMoney(modelData.total_price) + "VNĐ"
+                                    font.pixelSize: parent.height*0.4
+                                }
+                                
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onClicked: {
+                                    pageLoader.setSource("OrderForm.qml", {
+                                        orderId: modelData.id
+                                    })
+                                }
+                            }
 
                         }
                     }
@@ -143,13 +220,14 @@ Item {
                 property real maxY: {
                     let allValues = revenueValues.concat(profitValues);
                     let maxVal = Math.max(...allValues);
-                    return maxVal === 0 ? 1 : maxVal * 1.2;
+                    return maxVal === 0 ? 1 : maxVal ;
                 }
 
                 ValueAxis {
                     id: axisY
                     min: 0
                     max: chartView.maxY
+                    labelFormat: "%'d"
                 }
 
                 BarCategoryAxis {

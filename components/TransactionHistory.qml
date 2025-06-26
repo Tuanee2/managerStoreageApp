@@ -9,31 +9,43 @@ Item {
     id: rootTransactionHistory
 
     property var orders: []
+    property var customFilter: ({})
     property int currentPage: 0
-    property int numOfPage: 6
+    property real heightOrder: Math.min(80, rootTransactionHistory.height*0.1)
+    property int numOfPage: rootTransactionHistory.height*0.7/rootTransactionHistory.heightOrder
     property bool isLeft: false
     property bool isRight: false
     property string command: "LIST"
     property string dateBegin: ""
     property string dateEnd: ""
     property bool orderExist: true
-    property string typeofquery: "ALL"
+    property string sortOrder: "DESCENDING"
+    property string sortField: "EXPORTDATE"
+    property string modeQuery: "ALL"
+    property string textMode: "Tất cả"
+    property string customerPhoneNumber: ""
 
 
     Component.onCompleted: {
+        console.log(rootTransactionHistory.numOfPage)
         let cmdData = {
-            cmd: rootTransactionHistory.command,
-            typelist: "",
-            order: "",
-            typeorder: ""
+            command: "GET",
+            target: "ORDER",
+            infoKind: "OBJECT",
+            mode: "MULTIPLE",
+            getType: "LIST",
+            sortField: rootTransactionHistory.sortField,
+            sortOrder: rootTransactionHistory.sortOrder,
+            page: rootTransactionHistory.currentPage,
+            pageSize: rootTransactionHistory.numOfPage
         }
-        controller.requestOrderList(cmdData, "", rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
+        controller.requestOrderList(cmdData)
     }
 
     Connections {
         target: controller
         function onOrderListReady(list, cmd){
-            if(cmd === "LIST"){
+            if(cmd.getType === "LIST"){
                 orders = list;
                 updatePageFlags(list.length)
                 orderExist = (list.length > 0)
@@ -42,8 +54,8 @@ Item {
     }
 
     function updatePageFlags(orderListSize) {
-        rootTransactionHistory.isLeft = currentPage > 0
-        rootTransactionHistory.isRight = orderListSize >= 6  
+        rootTransactionHistory.isLeft = rootTransactionHistory.currentPage > 0
+        rootTransactionHistory.isRight = orderListSize >= rootTransactionHistory.numOfPage
     }
 
     Rectangle {
@@ -55,17 +67,25 @@ Item {
             anchors.top: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width*0.96
-            height: parent.height*0.2
+            height: parent.height*0.12
             radius: 10
-            color: Qt.rgba(0, 0, 0, 0.5)
+            color: Qt.rgba(1, 1, 1, 0.3)
 
             Rectangle{
                 id: typeQuerry
-                width: parent.width*0.08
-                height: parent.height*0.5
+                width: parent.width*0.1
+                height: parent.height*0.96
                 anchors.left: parent.left
                 anchors.leftMargin: parent.width*0.01
                 anchors.verticalCenter: parent.verticalCenter
+                radius: 10
+
+                Text{
+                    anchors.centerIn: parent
+                    text: rootTransactionHistory.textMode
+                    font.pixelSize: parent.height*0.3
+
+                }
 
                 MouseArea {
                     anchors.fill: parent
@@ -81,38 +101,78 @@ Item {
 
                     MenuItem {
                         text: "Tất cả"
+                        onTriggered: {
+                            rootTransactionHistory.modeQuery = "ALL"
+                            rootTransactionHistory.textMode = "Tất cả"
+                            daybegin.text = ""
+                            dayfinish.text = ""
+                            customerInfo.text = ""
+                        }
                     }
                     MenuItem {
-                        text: "Người mua"
-                    }
-                    MenuItem {
-                        text: "Loại sản phẩm"
+                        text: "Tuỳ chỉnh"
+                        onTriggered: {
+                            rootTransactionHistory.modeQuery = "CUSTOM"
+                            rootTransactionHistory.textMode = "Tuỳ chỉnh"
+                        }
                     }
 
                 }
 
             }
 
+            CustomSearchTextField{
+                id: customerInfo
+                width: parent.width*0.25
+                height: parent.height*0.96
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: typeQuerry.right
+                anchors.leftMargin: parent.width*0.01
+                enabled: (rootTransactionHistory.modeQuery === "CUSTOM")
+                color: Qt.rgba( 1, 1, 1, 0.5)
+                placeholderText: "Nhập số điện thoại"
+                //text: rootWindow.customerName
+                //color4placeholder: "black"
+                onSuggestionSelected: (data) => {
+                    rootTransactionHistory.customerPhoneNumber = data.phoneNumber
+                }
+                target: "CUSTOMER"
+                targetExtension: "PHONENUMBER"
+            }
+
+
             TextField {
                 id: daybegin
-                width: parent.width*0.28
-                height:parent.height*0.485
-                anchors.top: parent.top
-                anchors.topMargin: parent.height*0.01
-                anchors.right: parent.right
-                anchors.rightMargin: parent.width*0.21
-
+                width: parent.width*0.2
+                height: parent.height*0.96
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: customerInfo.right
+                anchors.leftMargin: parent.width*0.01
+                enabled: (rootTransactionHistory.modeQuery === "CUSTOM")
+                placeholderText: "Từ ngày"
+                font.pixelSize: parent.height*0.3
+                inputMask: "00-00-0000;_"
+                background: Rectangle {
+                    color: Qt.rgba(0, 0, 0, 0.5)
+                    radius: 4
+                }
             }
 
             TextField {
                 id: dayfinish
-                width: parent.width*0.28
-                height:parent.height*0.485
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: parent.height*0.01
-                anchors.right: parent.right
-                anchors.rightMargin: parent.width*0.21
-
+                width: parent.width*0.2
+                height: parent.height*0.96
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: daybegin.right
+                anchors.leftMargin: parent.width*0.01
+                enabled: (rootTransactionHistory.modeQuery === "CUSTOM")
+                placeholderText: "Đến ngày"
+                font.pixelSize: parent.height*0.3
+                inputMask: "00-00-0000;_"
+                background: Rectangle {
+                    color: Qt.rgba(0, 0, 0, 0.5)
+                    radius: 4
+                }
             }
 
             Rectangle {
@@ -134,49 +194,71 @@ Item {
                     anchors.fill:parent
 
                     onClicked: {
-                        let daybegintext = daybegin.text.trim();
-                        let dayfinishtext = dayfinish.text.trim();
+                        let cmdData
+                        if(rootTransactionHistory.modeQuery === "CUSTOM"){
+                            let daybegintext = daybegin.text.trim();
+                            console.log(daybegintext)
+                            let dayfinishtext = dayfinish.text.trim();
+                            let phoneNumber = rootTransactionHistory.customerPhoneNumber.trim();
 
-                        if (daybegintext === "") {
-                            rootWindow.notification.showNotification("⚠️ Ngày bắt đầu không xác định")
-                            return;
+                            let filters = {};
+                            if (/^\d{2}-\d{2}-\d{4}$/.test(daybegintext)) {
+                                filters.daybegin = daybegintext;
+                            }
+                            if (/^\d{2}-\d{2}-\d{4}$/.test(dayfinishtext)) {
+                                filters.dayend = dayfinishtext;
+                            }
+                            if (phoneNumber.length > 0) {
+                                filters.phonenumber = phoneNumber;
+                            }
+
+                            if (filters.daybegin && filters.dayend) {
+                                let partsbegin = filters.daybegin.split("-");
+                                let partsfinish = filters.dayend.split("-");
+                                let datebegin = new Date(partsbegin[2], partsbegin[1] - 1, partsbegin[0]);
+                                let datefinish = new Date(partsfinish[2], partsfinish[1] - 1, partsfinish[0]);
+                                if (datebegin > datefinish) {
+                                    rootWindow.notification.showNotification("⚠️ ngày bắt đầu phải trước ngày kết thúc");
+                                    return;
+                                }
+                            }
+
+                            rootTransactionHistory.customFilter = filters
+
+                            cmdData = {
+                                command: "GET",
+                                target: "ORDER",
+                                infoKind: "OBJECT",
+                                mode: "MULTIPLE",
+                                getType: "LIST",
+                                sortField: rootTransactionHistory.sortField,
+                                sortOrder: rootTransactionHistory.sortOrder,
+                                filters: filters,
+                                page: rootTransactionHistory.currentPage,
+                                pageSize: rootTransactionHistory.numOfPage
+                            }
+                        }else{
+                            cmdData = {
+                                command: "GET",
+                                target: "ORDER",
+                                infoKind: "OBJECT",
+                                mode: "MULTIPLE",
+                                getType: "LIST",
+                                sortField: rootTransactionHistory.sortField,
+                                sortOrder: rootTransactionHistory.sortOrder,
+                                page: rootTransactionHistory.currentPage,
+                                pageSize: rootTransactionHistory.numOfPage
+                            }
                         }
-
-                        if (!/\d{2}-\d{2}-\d{4}/.test(daybegintext)) {
-                            rootWindow.notification.showNotification("⚠️ Ngày không đúng định dạng dd-MM-yyyy")
-                            return;
-                        }
-
-                        if (dayfinishtext === "") {
-                            rootWindow.notification.showNotification("⚠️ Ngày kết thúc không xác định")
-                            return;
-                        }
-
-                        if (!/\d{2}-\d{2}-\d{4}/.test(dayfinishtext)) {
-                            rootWindow.notification.showNotification("⚠️ Ngày không đúng định dạng dd-MM-yyyy")
-                            return;
-                        }
-
-                        let partsbegin = daybegintext.split("-");
-                        let partsfinish = dayfinishtext.split("-");
-                        let datebegin = new Date(partsbegin[2], partsbegin[1] - 1, partsbegin[0]);
-                        let datefinish = new Date(partsfinish[2], partsfinish[1] - 1, partsfinish[0]);
-
-                        if (datebegin > datefinish) {
-                            rootWindow.notification.showNotification("⚠️ ngày bắt đầu phải trước ngày kết thúc")
-                            return;
-                        }
-                        let cmdData = {
-                            cmd: rootTransactionHistory.command,
-                            typelist: "",
-                            order: "",
-                            typeorder: ""
-                        }
-
-                        controller.requestOrderList(cmdData, "", rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
+                        console.log(transactionList.height*0.15)
+                        controller.requestOrderList(cmdData)
                     }
                 }
             }
+        }
+
+        Rectangle{
+
         }
 
         Rectangle{
@@ -206,7 +288,7 @@ Item {
 
                     delegate: Rectangle{
                         width: transactionList.width
-                        height: transactionList.height*0.15
+                        height: rootTransactionHistory.heightOrder
                         radius: 10
                         color: Qt.rgba(1, 1, 1, 0.3)
 
@@ -282,6 +364,12 @@ Item {
                                 anchors.fill: parent
                                 hoverEnabled:true
 
+                                onClicked: {
+                                    pageLoader.setSource("OrderForm.qml", {
+                                        orderId: modelData.id
+                                    })
+                                }
+
                             }
                         }
 
@@ -352,14 +440,19 @@ Item {
                     onClicked: {
                         rootTransactionHistory.currentPage--
                         let cmdData = {
-                            cmd: rootTransactionHistory.command,
-                            typelist: "",
-                            order: "",
-                            typeorder: ""
+                            command: "GET",
+                            target: "ORDER",
+                            infoKind: "OBJECT",
+                            mode: "MULTIPLE",
+                            getType: "LIST",
+                            sortField: rootTransactionHistory.sortField,
+                            sortOrder: rootTransactionHistory.sortOrder,
+                            filters: (rootTransactionHistory.modeQuery === "CUSTOM") ? rootTransactionHistory.customFilter : undefined,
+                            page: rootTransactionHistory.currentPage,
+                            pageSize: rootTransactionHistory.numOfPage
                         }
-                        controller.requestOrderList(cmdData, "", rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
+                        controller.requestOrderList(cmdData)
                     }
-
                 }
             }
 
@@ -408,14 +501,19 @@ Item {
                     onClicked: {
                         rootTransactionHistory.currentPage++
                         let cmdData = {
-                            cmd: rootTransactionHistory.command,
-                            typelist: "",
-                            order: "",
-                            typeorder: ""
+                            command: "GET",
+                            target: "ORDER",
+                            infoKind: "OBJECT",
+                            mode: "MULTIPLE",
+                            getType: "LIST",
+                            sortField: rootTransactionHistory.sortField,
+                            sortOrder: rootTransactionHistory.sortOrder,
+                            filters: (rootTransactionHistory.modeQuery === "CUSTOM") ? rootTransactionHistory.customFilter : undefined,
+                            page: rootTransactionHistory.currentPage,
+                            pageSize: rootTransactionHistory.numOfPage
                         }
-                        controller.requestOrderList(cmdData, "", rootTransactionHistory.dateBegin, rootTransactionHistory.dateEnd, rootTransactionHistory.numOfPage, rootTransactionHistory.currentPage)
+                        controller.requestOrderList(cmdData)
                     }
-
                 }
             }
 

@@ -304,7 +304,7 @@ Item {
             clearFields() // Xoá nội dung textfield để nhập mới
         }
         onRejected: {
-            pageLoader.source = "components/Dashboard.qml" // Quay lại trang chính
+            pageLoader.source = "components/ProductList.qml" // Quay lại trang chính
         }
     }
 

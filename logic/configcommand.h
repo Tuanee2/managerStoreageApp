@@ -11,7 +11,7 @@ enum class TargetType { PRODUCT, BATCH, CUSTOMER, ORDER, UNKNOWN };
 enum class InfoKind { GENERAL, FIELD, OBJECT, INVALID };
 enum class FetchMode {SINGLE, MULTIPLE, INVALID };
 enum class GetType {LIST, SEARCH, INVALID };
-enum class SortField { NONE, NAME, PRICE, DATE, RANK, VALUE };
+enum class SortField { NONE, NAME, PRICE, DATE, EXPORTDATE, IMPORTDATE, RANK, VALUE };
 enum class SortOrderNew { ASCENDING, DESCENDING, NONE };
 enum class DurationNew { ALL, AMONTH, AWEEK, ADAY, CUSTOM };
 

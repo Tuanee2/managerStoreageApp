@@ -7,6 +7,43 @@ Item {
     anchors.fill: parent
 
     property string productName: ""
+    property bool applyTax: false
+
+    function formatNumberWithCommas(n) {
+        if (typeof n === "string") {
+            n = parseFloat(n.replace(/,/g, ""));
+        }
+        console.log("n : " + n)
+        if (isNaN(n)) return "0";
+        return n.toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+
+
+    function updateCostAll() {
+        let num = parseInt(numtextfield.text);
+        if (isNaN(num) || num === 0) {
+            costalltextfield.text = "0";
+            return;
+        }
+        let unit = parseFloat(costtextfield.text.replace(/,/g, ""));
+        if (isNaN(unit)) unit = 0;
+        costalltextfield.text = (unit * num).toFixed(2);
+    }
+
+    function updateUnitCost() {
+        let num = parseInt(numtextfield.text);
+        if (isNaN(num) || num === 0) {
+            costtextfield.text = "0";
+            return;
+        }
+        let total = parseFloat(costalltextfield.text.replace(/,/g, ""));
+        if (isNaN(total)) total = 0;
+        costtextfield.text = (total / num).toFixed(2);
+    }
+
 
     Rectangle{
         id: importBatchBG
@@ -52,23 +89,97 @@ Item {
                 width: importBatchBG.width*0.6
                 height: importBatchBG.height*0.1
                 color: "white"
-            }
-
-            TextField {
-                id: costtextfield
-                placeholderText: "Giá 1 sản phẩm của lô (BẮT BUỘC)"
-                font.pixelSize: 24
-                placeholderTextColor: Qt.rgba( 1, 1, 1, 0.8)
-                verticalAlignment: Text.AlignVCenter
-
-                background: Rectangle {
-                    radius: 10
-                    color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
+                onTextChanged:{
+                    updateCostAll()
                 }
-                width: importBatchBG.width*0.6
-                height: importBatchBG.height*0.1
-                color: "white"
             }
+
+            Row {
+                spacing: importBatchBG.width*0.02
+                TextField {
+                    id: costtextfield
+                    placeholderText: "Giá 1 sản phẩm của lô (BẮT BUỘC)"
+                    font.pixelSize: 24
+                    placeholderTextColor: Qt.rgba( 1, 1, 1, 0.8)
+                    verticalAlignment: Text.AlignVCenter
+
+                    background: Rectangle {
+                        radius: 10
+                        color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
+                    }
+                    width: importBatchBG.width*0.29
+                    height: importBatchBG.height*0.1
+                    color: "white"
+
+                    onTextChanged: {
+                        if (!costalltextfield.activeFocus) updateCostAll();
+                        // if (costtextfield.activeFocus) {
+                        //     let raw = costtextfield.text.replace(/,/g, "");
+                        //     let formatted = formatNumberWithCommas(raw);
+                        //     if (costtextfield.text !== formatted) {
+                        //         costtextfield.text = formatted;
+                        //         costtextfield.cursorPosition = costtextfield.text.length;
+                        //     }
+                        // }
+                    }
+                }
+
+                TextField {
+                    id: costalltextfield
+                    placeholderText: "Giá lô sản phẩm (BẮT BUỘC)"
+                    font.pixelSize: 24
+                    placeholderTextColor: Qt.rgba( 1, 1, 1, 0.8)
+                    verticalAlignment: Text.AlignVCenter
+
+                    background: Rectangle {
+                        radius: 10
+                        color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
+                    }
+                    width: importBatchBG.width*0.29
+                    height: importBatchBG.height*0.1
+                    color: "white"
+
+                    onTextChanged: {
+                        if (!costtextfield.activeFocus) updateUnitCost();
+                        // if (costalltextfield.activeFocus) {
+                        //     let raw = costalltextfield.text.replace(/,/g, "");
+                        //     let formatted = formatNumberWithCommas(raw);
+                        //     if (costalltextfield.text !== formatted) {
+                        //         costalltextfield.text = formatted;
+                        //         costalltextfield.cursorPosition = costalltextfield.text.length;
+                        //     }
+                        // }
+                    }
+                }
+            }
+
+            Row {
+                spacing: parent.width*0.02
+                Switch {
+                    id: isTax
+                    text: "Có Thuế"
+                    onCheckedChanged: {
+                        importBatch.applyTax = checked
+                        
+                    }
+                }
+
+                Rectangle {
+                    width: importBatchBG.width*0.45
+                    height: importBatchBG.height*0.1
+                    radius: 10
+                    visible: importBatch.applyTax
+                    Text {
+                        anchors.left: parent.left
+                        anchors.leftMargin: parent.width*0.01
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: "Giá 1 sản phẩm sau thuế : " + parseFloat(costtextfield.text)*1.015
+                        font.pixelSize: parent.height*0.3
+                    }
+                }
+
+            }
+            
 
             TextField {
                 id: importdatetextfield

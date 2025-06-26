@@ -91,6 +91,8 @@ QString sortFieldToQString(SortField field) {
         case SortField::NAME: return "NAME";
         case SortField::PRICE: return "PRICE";
         case SortField::DATE: return "DATE";
+        case SortField::EXPORTDATE: return "EXPORTDATE";
+        case SortField::IMPORTDATE: return "IMPORTDATE";
         case SortField::RANK: return "RANK";
         case SortField::VALUE: return "VALUE";
         default: return "NONE";
@@ -102,6 +104,8 @@ SortField QStringToSortField(const QString& str) {
     if (str == "NAME") return SortField::NAME;
     if (str == "PRICE") return SortField::PRICE;
     if (str == "DATE") return SortField::DATE;
+    if (str == "EXPORTDATE") return SortField::EXPORTDATE;
+    if (str == "IMPORTDATE") return SortField::IMPORTDATE;
     if (str == "RANK") return SortField::RANK;
     if (str == "VALUE") return SortField::VALUE;
     return SortField::NONE;
@@ -154,7 +158,7 @@ BaseCommand MapToBaseCommand(QVariantMap cmdData) {
     cmd.sortField = cmdData.contains("sortField") ? QStringToSortField(cmdData.value("sortField").toString()) : SortField::NONE;
     cmd.sortOrder = cmdData.contains("sortOrder") ? QStringToSortOrderNew(cmdData.value("sortOrder").toString()) : SortOrderNew::NONE;
     cmd.duration = cmdData.contains("duration") ? QStringToDurationNew(cmdData.value("duration").toString()) : DurationNew::ADAY;
-    cmd.page = cmdData.contains("page") ? cmdData.value("page").toInt() : 1;
+    cmd.page = cmdData.contains("page") ? cmdData.value("page").toInt() : -1;
     cmd.pageSize = cmdData.contains("pageSize") ? cmdData.value("pageSize").toInt() : 10;
     cmd.filters = cmdData.contains("filters") ? cmdData.value("filters").toMap() : QVariantMap();
     cmd.data = cmdData.contains("data") ? cmdData.value("data").toMap() : QVariantMap();

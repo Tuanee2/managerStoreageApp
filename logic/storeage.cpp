@@ -81,7 +81,9 @@ void storeage::handleProductListRequest(BaseCommand cmd) {
     QList<Products*> fetchedProducts;
 
     if(cmd.infoKind == InfoKind::GENERAL){
-
+        if(cmd.filters.contains("numofproduct")){
+            
+        }
     }else if(cmd.infoKind == InfoKind::FIELD){
 
     }else if(cmd.infoKind == InfoKind::OBJECT){
@@ -348,25 +350,31 @@ void storeage::handleOrderCommand(BaseCommand cmd){
 
 
 
-void storeage::handleOrderListRequest(cmdContext cmd, const QString& keyword, const QString& dateBegin, const QString& dateEnd, int numOfOrder, int numPage){
+void storeage::handleOrderListRequest(BaseCommand cmd){
     QList<Order*> fetchedOrders;
     QList<QVariantMap> result;
+    if(cmd.infoKind == InfoKind::GENERAL){
 
-    if(!dateBegin.isEmpty() && !dateEnd.isEmpty()){
-        if(cmd.typelist == type_of_list::ORDER_PROFIT_REVENUE){
-                result = db->getOrderProfitAndRevenue(dateBegin, dateEnd, cmd.duration, (cmd.order == SortOrder::DESCENDING) ? 1 : 0);
-        }else {
-
+    }else if(cmd.infoKind == InfoKind::FIELD){
+        if(cmd.filters.contains("profit") && cmd.filters.contains("revenue")){
+            QList<QVariantMap> fetchedOrders = db->getOrderProfitAndRevenue(
+                cmd.filters.value("daybegin").toString(),
+                cmd.filters.value("dayend").toString(),
+                Duration::ADAY,
+                true
+            );
+            for (const QVariantMap& item : fetchedOrders) {
+                result.append(item);
+            }
         }
-    }else{
-        fetchedOrders = db->getOrderByPage(cmd, keyword, numOfOrder, numPage);
-
-        for(Order* order : fetchedOrders){
+    }else if(cmd.infoKind == InfoKind::OBJECT){
+        if(cmd.fetchMode == FetchMode::SINGLE){
+            Order* order = db->getOrderById(cmd.filters.value("id").toString());
             QVariantMap item;
             item["customer_name"] = order->getCustomerName();
             item["phone_number"] = order->getCustomerPhoneNumber();
             item["purchase_time"] = order->getPurchaseTime();
-            item["data"] = Order::itemToQString(order->getListItem());
+            item["data"] = Order::itemToListVariant(order->getListItem());
             item["total_price"] = order->getTotalPrice();
             double profit = 0;
             for(Products* p : order->getListItem()){
@@ -374,11 +382,32 @@ void storeage::handleOrderListRequest(cmdContext cmd, const QString& keyword, co
                     profit += (p->getCost() - b->getCost()) * b->getQuantity();
                 }
             }
-            
             item["profit"] = profit;
             result.append(item);
             delete order;
+        }else if(cmd.fetchMode == FetchMode::MULTIPLE){
+            fetchedOrders = db->getOrderByCustomCommand(cmd);
+            for(Order* order : fetchedOrders){
+                QVariantMap item;
+                item["id"] = order->getId();
+                item["customer_name"] = order->getCustomerName();
+                item["phone_number"] = order->getCustomerPhoneNumber();
+                item["purchase_time"] = order->getPurchaseTime();
+                item["data"] = Order::itemToListVariant(order->getListItem());
+                item["total_price"] = order->getTotalPrice();
+                double profit = 0;
+                for(Products* p : order->getListItem()){
+                    for(Batch* b : p->getBatchList()){
+                        profit += (p->getCost() - b->getCost()) * b->getQuantity();
+                    }
+                }
+                item["profit"] = profit;
+                result.append(item);
+                delete order;
+            }
         }
+    }else{
+        return;
     }
 
     emit orderListReady(result, cmd);

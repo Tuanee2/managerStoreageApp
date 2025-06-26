@@ -15,6 +15,8 @@ bool DatabaseManager::initialize(){
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(dbPath);
 
+    //connectToSupabase();
+
     if (!db.open()) {
         qWarning() << "Cannot open database:" << db.lastError().text();
         return false;
@@ -39,7 +41,7 @@ bool DatabaseManager::initialize(){
 
         QString createBatchesTableQuery =
             "CREATE TABLE IF NOT EXISTS product_batches ("
-            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "id TEXT PRIMARY KEY,"
             "product_name TEXT NOT NULL,"
             "quantity INTEGER NOT NULL,"
             "cost REAL NOT NULL,"
@@ -72,7 +74,7 @@ bool DatabaseManager::initialize(){
 
         QString createOrdersTableQuery = 
             "CREATE TABLE IF NOT EXISTS orders ("
-            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "id TEXT PRIMARY KEY,"
             "customer_name TEXT NOT NULL,"
             "phone_number TEXT NOT NULL,"
             "export_date TEXT NOT NULL,"
@@ -84,19 +86,46 @@ bool DatabaseManager::initialize(){
             qWarning() << "Failed to create orders table:" << query.lastError().text();
             return false;
         }
+
+        // Create sync_log table
+        QSqlQuery createLog;
+        createLog.exec("CREATE TABLE IF NOT EXISTS sync_log ("
+                       "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                       "table_name TEXT NOT NULL,"
+                       "record_id TEXT NOT NULL,"
+                       "action TEXT NOT NULL,"
+                       "synced INTEGER DEFAULT 0)");
     }
     qDebug() << "Database file is located at:" << dbPath;
+    //testInsert();
     return true;
 }
 
 bool DatabaseManager::insertProduct(const Products& product) {
+    // Tạo product_id từ ngày thêm + đơn vị
+    QString date = QDate::currentDate().toString("yyyyMMdd");
+    QString unit = UnitToQString(product.getUnit()).toUpper();
+
+    QSqlQuery countQuery;
+    countQuery.prepare("SELECT COUNT(*) FROM products WHERE unit = :unit AND product_id LIKE :prefix");
+    countQuery.bindValue(":unit", unit);
+    countQuery.bindValue(":prefix", date + "_" + unit + "%");
+    countQuery.exec();
+
+    int number = 1;
+    if (countQuery.next()) {
+        number = countQuery.value(0).toInt() + 1;
+    }
+    QString suffix = QString("%1").arg(number, 5, 10, QChar('0'));
+    QString productId = QString("%1_%2_%3").arg(date, unit, suffix);
+
     QSqlQuery query;
     query.prepare("INSERT INTO products (product_id, product_name, cost, unit, is_value, description) "
                   "VALUES (?, ?, ?, ?, ?, ?)");
-    query.addBindValue(product.getProductId());
+    query.addBindValue(productId);
     query.addBindValue(product.getProductName());
     query.addBindValue(product.getCost());
-    query.addBindValue(UnitToQString(product.getUnit()));
+    query.addBindValue(unit);
     query.addBindValue(product.getIsValue() ? 1 : 0);
     query.addBindValue(product.getDescription());
 
@@ -104,7 +133,7 @@ bool DatabaseManager::insertProduct(const Products& product) {
         qWarning() << "Failed to insert product:" << query.lastError().text();
         return false;
     }
-    
+
     return true;
 }
 
@@ -121,9 +150,25 @@ bool DatabaseManager::checkProductNameExists(const QString& name) {
 }
 
 bool DatabaseManager::addBatch(const QString& productName, const Batch& batch) {
+    // Generate batch ID: importDate_ExpiryDate_00001
+    QString importDateStr = batch.getImportDate().toString("yyyyMMdd");
+    QString expiryDateStr = batch.getExpiryDate().toString("yyyyMMdd");
+
+    QSqlQuery countQuery;
+    countQuery.prepare("SELECT COUNT(*) FROM product_batches WHERE import_date = :importDate AND expiry_date = :expiryDate");
+    countQuery.bindValue(":importDate", batch.getImportDate().toString("yyyy-MM-dd"));
+    countQuery.bindValue(":expiryDate", batch.getExpiryDate().toString("yyyy-MM-dd"));
+    int batchNumber = 1;
+    if (countQuery.exec() && countQuery.next()) {
+        batchNumber = countQuery.value(0).toInt() + 1;
+    }
+    QString suffix = QString("%1").arg(batchNumber, 5, 10, QChar('0'));
+    QString batchId = QString("%1_%2_%3").arg(importDateStr, expiryDateStr, suffix);
+
     QSqlQuery query;
-    query.prepare("INSERT INTO product_batches (product_name, quantity, cost, import_date, expiry_date) "
-                  "VALUES (?, ?, ?, ?, ?)");
+    query.prepare("INSERT INTO product_batches (id, product_name, quantity, cost, import_date, expiry_date) "
+                  "VALUES (?, ?, ?, ?, ?, ?)");
+    query.addBindValue(batchId);
     query.addBindValue(productName);
     query.addBindValue(batch.getQuantity());
     query.addBindValue(batch.getCost());
@@ -134,7 +179,8 @@ bool DatabaseManager::addBatch(const QString& productName, const Batch& batch) {
         qWarning() << "❌ Lỗi khi thêm lô hàng:" << query.lastError().text();
         return false;
     }
-
+    // Add to sync log: use productName + import_date + expiry_date as unique record id for batch
+    // addToSyncLog("product_batches", productName + "_" + batch.getImportDate().toString("yyyy-MM-dd") + "_" + batch.getExpiryDate().toString("yyyy-MM-dd"), "INSERT");
     return true;
 }
 
@@ -172,7 +218,8 @@ bool DatabaseManager::updateBatch(const QString& productName, const Batch& batch
         qWarning() << "❌ Lỗi khi cập nhật số lượng lô hàng:" << updateQuery.lastError().text();
         return false;
     }
-
+    // Add to sync log: use productName + import_date + expiry_date as unique record id for batch
+    // addToSyncLog("product_batches", productName + "_" + batch.getImportDate().toString("yyyy-MM-dd") + "_" + batch.getExpiryDate().toString("yyyy-MM-dd"), "UPDATE");
     return true;
 }
 
@@ -467,6 +514,8 @@ bool DatabaseManager::insertCustomer(const Customer& customer) {
         qWarning() << "Failed to insert customer:" << query.lastError().text();
         return false;
     }
+    // Add to sync log: use phone_number as record id
+    // addToSyncLog("customers", customer.getCustomerPhoneNumber(), "INSERT");
     return true;
 }
 
@@ -685,6 +734,11 @@ bool DatabaseManager::insertOrder(Order& order){
     QString name = "";
     QSqlQuery queryforname;
 
+    QString phone = order.getCustomerPhoneNumber();
+    if (phone.isEmpty()) {
+        phone = "0000000000";  // nếu thiếu số điện thoại, dùng toàn số 0
+    }
+
     if(!order.getCustomerPhoneNumber().isEmpty()){
         queryforname.prepare("SELECT name FROM customers WHERE phone_number = :phone_number LIMIT 1");
         queryforname.bindValue(":phone_number", order.getCustomerPhoneNumber());
@@ -697,19 +751,37 @@ bool DatabaseManager::insertOrder(Order& order){
         }
     }
 
+    // Sinh order_id dạng: phoneNumber_yyyyMMdd_00001 (tăng dần theo ngày với từng số điện thoại)
+    QString date = order.getPurchaseTime().toString("yyyyMMdd");
+
+    // Đếm số đơn hàng của khách trong ngày
+    QSqlQuery countQuery;
+    countQuery.prepare("SELECT COUNT(*) FROM orders WHERE phone_number = :phone AND export_date = :date");
+    countQuery.bindValue(":phone", phone);
+    countQuery.bindValue(":date", order.getPurchaseTime().toString("yyyy-MM-dd"));
+    int orderNumber = 1;
+    if (countQuery.exec() && countQuery.next()) {
+        orderNumber = countQuery.value(0).toInt() + 1;
+    }
+    QString numberStr = QString("%1").arg(orderNumber, 5, 10, QChar('0'));
+    QString orderId = QString("%1_%2_%3").arg(phone, date, numberStr);
+
     QSqlQuery query;
-    query.prepare("INSERT INTO orders (customer_name, phone_number, export_date, data, notes) "
-                  "VALUES (?, ?, ?, ?, ?)");
+    query.prepare("INSERT INTO orders (id, customer_name, phone_number, export_date, data, notes) "
+                  "VALUES (?, ?, ?, ?, ?, ?)");
+    query.addBindValue(orderId);
     query.addBindValue(name);
     query.addBindValue(order.getCustomerPhoneNumber());
     query.addBindValue(order.getPurchaseTime().toString("yyyy-MM-dd"));
     query.addBindValue(Order::itemToQString(order.getListItem()));
-    query.addBindValue(order.getNote()); 
+    query.addBindValue(order.getNote());
 
     if (!query.exec()) {
         qWarning() << "❌ Lỗi khi thêm đơn hàng:" << query.lastError().text();
         return false;
     }
+    // Add to sync log: use phone_number + export_date as record id
+    // addToSyncLog("orders", order.getCustomerPhoneNumber() + "_" + order.getPurchaseTime().toString("yyyy-MM-dd"), "INSERT");
     return true;
 }
 
@@ -735,7 +807,7 @@ bool DatabaseManager::deleteOrder(const QString& customerName, const QString& ph
         query.bindValue(":phoneNumber", phoneNumber);
     }
     if(!purchaseTime.isValid()){
-         query.bindValue(":purchaseTime", purchaseTime.toString("yyyy-MM-dd"));
+        query.bindValue(":purchaseTime", purchaseTime.toString("yyyy-MM-dd"));
     }
 
     if (!query.exec()) {
@@ -760,7 +832,9 @@ QList<Order*> DatabaseManager::getOrder(const QString& customerName, const QStri
         sql += " AND export_date = :export_date";
     }
 
-    sql += " LIMIT :limit OFFSET :offset";
+    if(numpage >= 0){
+        sql += " LIMIT :limit OFFSET :offset";
+    }
 
     query.prepare(sql);
 
@@ -774,8 +848,10 @@ QList<Order*> DatabaseManager::getOrder(const QString& customerName, const QStri
         query.bindValue(":export_date", purchaseTime.toString("yyyy-MM-dd"));
     }
 
-    query.bindValue(":limit", numOfOrder);
-    query.bindValue(":offset", numpage * numOfOrder);
+    if(numpage >= 0){
+        query.bindValue(":limit", numOfOrder);
+        query.bindValue(":offset", numpage * numOfOrder);
+    }
 
     if (!query.exec()) {
         qWarning() << "Failed to fetch order:" << query.lastError().text();
@@ -844,9 +920,97 @@ QList<Order*> DatabaseManager::getOrderByPage(cmdContext cmd, const QString& key
     return list;
 }
 
-QList<Order*> DatabaseManager::getOrderByPeriod(const QString& customerName, const QString& phoneNumber, int numOfOrder,int numpage){
+Order* DatabaseManager::getOrderById(const QString& id){
+    Order* order = new Order();
+    QSqlQuery query;
+    QString sql = "SELECT customer_name, phone_number, export_date, data, notes FROM orders WHERE id = :id";
+    query.prepare(sql);
+    query.bindValue(":id",id);
 
+    if(!query.exec()){
+        qWarning() << "Failed to fetch orders by id";
+        return order;
+    }
+
+    if(query.next()){
+        order->setCustomerName(query.value(0).toString());
+        order->setCustomerPhoneNumber(query.value(1).toString());
+        order->setPurchaseTime(QDateTime::fromString(query.value(2).toString(), "yyyy-MM-dd"));
+        order->setListItem(Order::QStringToItems(query.value(3).toString()));
+        order->setNote(query.value(4).toString());
+    }
+
+    return order;
 }
+
+QList<Order*> DatabaseManager::getOrderByPeriod(const QString& customerName, const QString& phoneNumber, int numOfOrder,int numpage){
+    
+}
+
+QList<Order*> DatabaseManager::getOrderByCustomCommand(BaseCommand command){
+    QList<Order* > list;
+    QSqlQuery query;
+    QString sql = "SELECT id, customer_name, phone_number, export_date, data, notes FROM orders WHERE 1=1";
+    if(command.filters.contains("phonenumber")){
+        sql += " AND phone_number = :phoneNumber";
+    }
+    if(command.filters.contains("exportdate")){
+        sql += " AND export_date = :purchaseTime";
+    }else if(command.filters.contains("daybegin") && command.filters.contains("dayend")){
+        sql += " AND export_date BETWEEN :begin AND :end";
+    }
+
+    if(command.sortField != SortField::NONE){
+        if(command.sortOrder == SortOrderNew::DESCENDING){
+            sql += " ORDER BY export_date DESC";
+        }else {
+            sql += " ORDER BY export_date ASC";
+        }
+    }
+
+    if(command.page >= 0){
+        sql += " LIMIT :limit OFFSET :offset";
+    }
+
+    qDebug() << "sql : " << sql;
+
+    query.prepare(sql);
+
+    if(command.filters.contains("phonenumber")){
+        query.bindValue(":phoneNumber", command.filters.value("phonenumber").toString());
+    }
+    if(command.filters.contains("exportdate")){
+        query.bindValue(":purchaseTime", command.filters.value("purchasetime").toString());
+    }else if(command.filters.contains("daybegin") && command.filters.contains("dayend")){
+        query.bindValue(":begin", QDate::fromString(command.filters.value("daybegin").toString(), "dd-MM-yyyy").toString("yyyy-MM-dd"));
+        query.bindValue(":end", QDate::fromString(command.filters.value("dayend").toString(), "dd-MM-yyyy").toString("yyyy-MM-dd"));
+    }
+
+    if(command.page >= 0){
+        query.bindValue(":limit", command.pageSize);
+        query.bindValue(":offset", command.page * command.pageSize);
+    }
+
+    if(!query.exec()){
+        qWarning() << "Failed to fetch orders by page for order";
+        return list;
+    }
+
+    while(query.next()){
+        Order* order = new Order();
+        order->setId(query.value(0).toString());
+        order->setCustomerName(query.value(1).toString());
+        order->setCustomerPhoneNumber(query.value(2).toString());
+        order->setPurchaseTime(QDateTime::fromString(query.value(3).toString(), "yyyy-MM-dd"));
+        order->setListItem(Order::QStringToItems(query.value(4).toString()));
+        order->setNote(query.value(5).toString());
+        list.append(order);
+    }
+    
+    return list;
+   
+}
+
 
 QList<QVariantMap> DatabaseManager::getOrderProfitAndRevenue(const QString& dateBegin, const QString& dateEnd, Duration duration, bool isDescending) {
     QList<QVariantMap> result;
@@ -902,3 +1066,101 @@ QList<QVariantMap> DatabaseManager::getOrderProfitAndRevenue(const QString& date
 
     return result;
 }
+
+
+
+// // --- Sync log support ---
+bool DatabaseManager::connectToSupabase(){
+    supabaseDb = QSqlDatabase::addDatabase("QPSQL", "supabase");
+    supabaseDb.setHostName("aws-0-ap-southeast-1.pooler.supabase.com"); // hoặc IP
+    supabaseDb.setPort(6543); // Supabase mặc định dùng 6543 (dùng pgbouncer)
+    supabaseDb.setDatabaseName("postgres");
+    supabaseDb.setUserName("postgres.omtwkeyzlhmwdhqfvowa"); // thường là postgres hoặc service_role
+    supabaseDb.setPassword("Ha03Lan80Huy78$$");
+
+    if (!supabaseDb.open()) {
+        qDebug() << "Failed to connect to Supabase:" << supabaseDb.lastError().text();
+        return false;
+    } else {
+        qDebug() << "Connected to Supabase successfully!";
+        return true;
+    }
+}
+
+bool DatabaseManager::testInsert(){
+    qDebug() << supabaseDb.databaseName();
+    QString name = "Test Product 01";
+    double price = 20000;
+    QString unit = "BAG";
+    bool isValue = true;
+
+    QString uuid = QUuid::createUuid().toString(QUuid::WithoutBraces); // hoặc viết thủ công
+    QString queryStr = QString(
+        "INSERT INTO products (product_id, product_name, cost, unit, is_value, description) "
+        "VALUES ('%1', '%2', %3, '%4', %5, '%6')"
+    ).arg(uuid)
+    .arg(name)
+    .arg(price)
+    .arg(unit)
+    .arg(isValue ? 1 : 0)
+    .arg("");
+
+    qDebug() << queryStr;
+
+    QSqlQuery query(supabaseDb);
+    if (query.exec(queryStr)) {
+        qDebug() << "[Supabase] Insert thành công!";
+    } else {
+        qDebug() << "[Supabase] Insert lỗi:" << query.lastError().text();
+    }
+}
+
+
+// void DatabaseManager::addToSyncLog(const QString &tableName, const QString &recordId, const QString &action) {
+//     QSqlQuery query;
+//     query.prepare("INSERT INTO sync_log (table_name, record_id, action, synced) VALUES (?, ?, ?, 0)");
+//     query.addBindValue(tableName);
+//     query.addBindValue(recordId);
+//     query.addBindValue(action);
+//     if (!query.exec()) {
+//         qDebug() << "Failed to insert sync log:" << query.lastError().text();
+//     }
+// }
+
+// void DatabaseManager::syncToSupabase() {
+//     QSqlQuery query("SELECT table_name, record_id, action FROM sync_log WHERE synced = 0");
+//     while (query.next()) {
+//         QString table = query.value(0).toString();
+//         QString recordId = query.value(1).toString();
+//         QString action = query.value(2).toString();
+
+//         // Example: only handle INSERT for products
+//         if (table == "products" && action == "INSERT") {
+//             QSqlQuery localQuery;
+//             localQuery.prepare("SELECT * FROM products WHERE product_id = ?");
+//             localQuery.addBindValue(recordId);
+//             if (localQuery.exec() && localQuery.next()) {
+//                 QString productName = localQuery.value(localQuery.record().indexOf("product_name")).toString();
+//                 QString cost = localQuery.value(localQuery.record().indexOf("cost")).toString();
+//                 QString unit = localQuery.value(localQuery.record().indexOf("unit")).toString();
+//                 QString is_value = localQuery.value(localQuery.record().indexOf("is_value")).toString();
+//                 QString description = localQuery.value(localQuery.record().indexOf("description")).toString();
+//                 QString insertQuery = QString("INSERT INTO products (product_id, product_name, cost, unit, is_value, description) VALUES ('%1', '%2', %3, '%4', %5, '%6')")
+//                                       .arg(recordId, productName, cost, unit, is_value, description.replace("'", "''"));
+
+//                 QSqlQuery supabaseQuery(QSqlDatabase::database("supabase"));
+//                 if (!supabaseQuery.exec(insertQuery)) {
+//                     qDebug() << "Failed to sync:" << supabaseQuery.lastError().text();
+//                     continue;
+//                 }
+
+//                 QSqlQuery markSynced;
+//                 markSynced.prepare("UPDATE sync_log SET synced = 1 WHERE table_name = ? AND record_id = ?");
+//                 markSynced.addBindValue(table);
+//                 markSynced.addBindValue(recordId);
+//                 markSynced.exec();
+//             }
+//         }
+//         // Other table sync logic can be added here
+//     }
+// }
