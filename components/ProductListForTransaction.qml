@@ -151,7 +151,7 @@ Item {
                     anchors.fill: parent
                     radius: 8
                     //color: "transparent"
-                    color: Qt.rgba(1, 1, 1, 0.3)
+                    color: productListTransaction.isLeft ? "#80bfff" : "transparent"
                 }
                 Text {
                     text: "<"
@@ -185,6 +185,8 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "white"
                 radius: 8
+                border.width: 1
+                border.color: "#80bfff"
                 Text {
                     anchors.centerIn: parent
                     text: productListTransaction.currentPage
@@ -208,8 +210,7 @@ Item {
 
                     anchors.fill: parent
                     radius: 8
-                    //color: "transparent"
-                    color: Qt.rgba(1, 1, 1, 0.3)
+                    color: productListTransaction.isRight ? "#80bfff" : "transparent"
                 }
 
                 Text {

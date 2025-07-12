@@ -282,7 +282,7 @@ void appcontroller::requestOrderCommand(QVariantMap cmdData){
         order.setCustomerPhoneNumber(cmdData["data"].toMap().value("phonenumber").toString());
         order.setPurchaseTime(QDateTime::fromString(cmdData["data"].toMap().value("purchasetime").toString(), "dd-MM-yyyy"));
         order.setNote(cmdData["data"].toMap().value("note").toString());
-
+        order.setDebt(cmdData["data"].toMap().value("debt").toString());
         QVariantMap outerData = cmdData.value("data").toMap(); 
         outerData["data"] = order.toJson(); 
         cmdData["data"] = outerData;
@@ -300,7 +300,6 @@ void appcontroller::onOrderCommandResult(bool done, BaseCommand cmd){
 void appcontroller::requestOrderList(QVariantMap cmdData){
     BaseCommand command;
     command = MapToBaseCommand(cmdData);
-    qDebug() << "<< 1";
     emit orderListRequested(command);
 }
 

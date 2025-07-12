@@ -538,6 +538,8 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             color: "white"
             radius: 8
+            border.width: 1
+            border.color: "#80bfff"
             Text {
                 anchors.centerIn: parent
                 text: rootCustomerForm.currentPage

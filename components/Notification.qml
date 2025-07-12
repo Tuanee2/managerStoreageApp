@@ -95,9 +95,9 @@ Item {
             anchors.right: invalidDate.left
             anchors.rightMargin: parent.width*0.01
             anchors.verticalCenter: parent.verticalCenter
-            color: maDebt.containsMouse ? "#e6f0ff" : "transparent"
+            color: (maDebt.containsMouse) || (rootNotification.pointer === 1) ? "#e6f0ff" : "transparent"
             border.width: 1
-            border.color: maDebt.containsMouse || (rootNotification.pointer === 1) ? "#80bfff" : Qt.rgba(0, 0, 0, 0.2)
+            border.color: maDebt.containsMouse ? "#80bfff" : Qt.rgba(0, 0, 0, 0.2)
 
             Text {
                 text: "Nợ"
@@ -283,7 +283,7 @@ Item {
                 anchors.fill: parent
                 radius: 8
                 //color: "transparent"
-                color: Qt.rgba(1, 1, 1, 0.3)
+                color: rootNotification.isLeft ? "#80bfff" : "transparent"
             }
             Text {
                 text: "<"
@@ -313,6 +313,8 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             color: "white"
             radius: 8
+            border.width: 1
+            border.color: "#80bfff"
             Text {
                 anchors.centerIn: parent
                 text: rootNotification.currentPage
@@ -337,7 +339,7 @@ Item {
                 anchors.fill: parent
                 radius: 8
                 //color: "transparent"
-                color: Qt.rgba(1, 1, 1, 0.3)
+                color: rootNotification.isRight ? "#80bfff" : "transparent"
             }
 
             Text {

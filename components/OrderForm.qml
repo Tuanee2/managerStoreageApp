@@ -90,6 +90,26 @@ Item {
                             text: "ID : " + rootOrderForm.orderId
 
                         }
+
+                        Rectangle{
+                            visible: rootOrderForm.orderObject["debt"] != "NO_DEBT"
+                            id: debtStatus
+                            width: parent.width*0.2
+                            height: parent.height*0.9
+                            color: Qt.rgba(1.0, 0.6, 0.6, 1.0)
+                            radius: 8
+                            anchors.right: parent.right
+                            anchors.rightMargin: parent.width*0.01
+                            anchors.verticalCenter: parent.verticalCenter
+
+                            Text {
+                                text: (rootOrderForm.orderObject["debt"] === "DEBT_BY_DATE") ? "Nợ ngày" : "Nợ mùa"
+                                font.pixelSize: parent.height * 0.4
+                                color: "white"
+                                anchors.centerIn: parent
+                                font.bold: true
+                            }
+                        }
                     }
 
                     Rectangle {

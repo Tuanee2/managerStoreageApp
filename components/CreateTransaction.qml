@@ -607,6 +607,9 @@ Item {
         anchors.centerIn: parent
         visible: false
         onAccepted: {
+            let debtMode = "NO_DEBT";
+            if(debtDay.checked) debtMode = "DEBT_BY_DATE";
+            if(debtSeason.checked) debtMode = "DEBT_BY_SEASON";
             let cmdData = {
                 command: "ADD",
                 target: "ORDER",
@@ -614,6 +617,7 @@ Item {
                     phonenumber: phoneSearch.text,
                     purchasetime: purchaseTimeTextField.text,
                     note: forNote.text,
+                    debt: debtMode
                 }
             }
             controller.requestOrderCommand(cmdData);

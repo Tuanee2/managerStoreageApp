@@ -521,11 +521,11 @@ Window {
                     background: Rectangle{
                         anchors.fill: parent
                         radius: 10
-                        color: Qt.rgba(1, 1, 1, 0.3)
+                        color: "#80bfff"
                     }
 
                     icon.source: "qrc:/images/Icon/bell-notification-social-media.svg"
-                    icon.color: "white"
+                    icon.color: maNotification.containsMouse ? Qt.rgba(1.0, 1.0, 0.588, 0.25)  : "white"
                 }
 
                 Rectangle{
@@ -545,6 +545,7 @@ Window {
                 }
 
                 MouseArea {
+                    id: maNotification
                     anchors.fill: parent
                     onClicked: {
                         pageLoader.source = "components/Notification.qml"

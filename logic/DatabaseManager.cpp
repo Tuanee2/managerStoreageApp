@@ -775,6 +775,7 @@ bool DatabaseManager::insertOrder(Order& order){
     query.addBindValue(order.getCustomerPhoneNumber());
     query.addBindValue(order.getPurchaseTime().toString("yyyy-MM-dd"));
     query.addBindValue(debtToQString(order.getDebt()));
+    qDebug() << debtToQString(order.getDebt());
     query.addBindValue(Order::itemToQString(order.getListItem()));
     query.addBindValue(order.getNote());
 
@@ -952,9 +953,12 @@ QList<Order*> DatabaseManager::getOrderByPeriod(const QString& customerName, con
 QList<Order*> DatabaseManager::getOrderByCustomCommand(BaseCommand command){
     QList<Order* > list;
     QSqlQuery query;
-    QString sql = "SELECT id, customer_name, phone_number, export_date, data, notes FROM orders WHERE 1=1";
+    QString sql = "SELECT id, customer_name, phone_number, export_date, data, debt, notes FROM orders WHERE 1=1";
     if(command.filters.contains("phonenumber")){
         sql += " AND phone_number = :phoneNumber";
+    }
+    if(command.filters.contains("debt")){
+        sql += " AND debt != :debt";
     }
     if(command.filters.contains("exportdate")){
         sql += " AND export_date = :purchaseTime";
@@ -981,6 +985,9 @@ QList<Order*> DatabaseManager::getOrderByCustomCommand(BaseCommand command){
     if(command.filters.contains("phonenumber")){
         query.bindValue(":phoneNumber", command.filters.value("phonenumber").toString());
     }
+    if(command.filters.contains("debt")){
+        query.bindValue(":debt", "NO_DEBT");
+    }
     if(command.filters.contains("exportdate")){
         query.bindValue(":purchaseTime", command.filters.value("purchasetime").toString());
     }else if(command.filters.contains("daybegin") && command.filters.contains("dayend")){
@@ -1005,7 +1012,8 @@ QList<Order*> DatabaseManager::getOrderByCustomCommand(BaseCommand command){
         order->setCustomerPhoneNumber(query.value(2).toString());
         order->setPurchaseTime(QDateTime::fromString(query.value(3).toString(), "yyyy-MM-dd"));
         order->setListItem(Order::QStringToItems(query.value(4).toString()));
-        order->setNote(query.value(5).toString());
+        order->setDebt(query.value(5).toString());
+        order->setNote(query.value(6).toString());
         list.append(order);
     }
     
@@ -1019,7 +1027,7 @@ QList<QVariantMap> DatabaseManager::getOrderProfitAndRevenue(const QString& date
     QMap<QString, QPair<double, double>> summary;
 
     QSqlQuery query;
-    QString sql = "SELECT export_date, data FROM orders WHERE export_date BETWEEN :begin AND :end";
+    QString sql = "SELECT export_date, data FROM orders WHERE export_date BETWEEN :begin AND :end AND debt = 'NO_DEBT'";
     if (isDescending) {
         sql += " ORDER BY export_date DESC";
     } else {

@@ -135,6 +135,7 @@ QJsonObject Order::toJson() const {
     obj["customerName"] = customerName;
     obj["phoneNumber"] = phoneNumber;
     obj["purchaseTime"] = purchaseTime.toString("dd-MM-yyyy");
+    obj["debt"] = debtToQString(debt);
 
     QJsonArray itemArray;
     for (const Products* p : item) {
@@ -150,7 +151,7 @@ Order* Order::fromJson(const QJsonObject& obj) {
     o->setCustomerName(obj["customerName"].toString());
     o->setCustomerPhoneNumber(obj["phoneNumber"].toString());
     o->setPurchaseTime(QDateTime::fromString(obj["purchaseTime"].toString(), "dd-MM-yyyy"));
-
+    o->setDebt(obj["debt"].toString());
     QJsonArray itemArray = obj["items"].toArray();
     QList<Products*> list;
     for (const QJsonValue& val : itemArray) {

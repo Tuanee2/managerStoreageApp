@@ -305,7 +305,7 @@ Item {
                         width: transactionList.width
                         height: rootTransactionHistory.heightOrder
                         radius: 10
-                        color: "#e6f0ff"
+                        color: (modelData.debt === "NO_DEBT") ? "#e6f0ff" : Qt.rgba(255/255, 100/255, 100/255, 0.25)
                         border.width: 1
                         border.color: Qt.rgba(0, 0, 0, 0.2)
 
@@ -487,7 +487,7 @@ Item {
                     anchors.fill: parent
                     radius: 8
                     //color: "transparent"
-                    color: Qt.rgba(1, 1, 1, 0.3)
+                    color: rootTransactionHistory.isLeft  ? "#80bfff" : "transparent"
                 }
                 Text {
                     text: "<"
@@ -523,6 +523,8 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "white"
                 radius: 8
+                border.width: 1
+                border.color: "#80bfff"
                 Text {
                     anchors.centerIn: parent
                     text: rootTransactionHistory.currentPage
@@ -546,8 +548,7 @@ Item {
 
                     anchors.fill: parent
                     radius: 8
-                    //color: "transparent"
-                    color: Qt.rgba(1, 1, 1, 0.3)
+                    color: rootTransactionHistory.isRight  ? "#80bfff" : "transparent"
                 }
 
                 Text {
