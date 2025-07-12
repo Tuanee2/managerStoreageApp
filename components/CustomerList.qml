@@ -1,7 +1,8 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 import QtQuick.Controls.Material
+import QtQuick.Effects
 
 Item {
     id: rootCustomerList
@@ -139,10 +140,10 @@ Item {
 
                 delegate: Rectangle {
                     width: customerList.width*0.85/2
-                    height: customerList.height * 0.1
+                    height: customerList.height * 0.12
                     radius: 8
-                    color: Qt.rgba( 1, 1, 1, 0.3)
-                    border.color: Qt.rgba( 1, 1, 1, 0.5)
+                    color: "white"
+                    border.color: Qt.rgba( 0, 0, 0, 0.1)
                     border.width: 1
                     Layout.fillWidth: true
 
@@ -150,27 +151,71 @@ Item {
                         anchors.left: parent.left
                         anchors.verticalCenter: parent.verticalCenter
                         height: parent.height
-                        width: parent.width - 4*parent.height
+                        width: parent.width - 3*parent.height
                         color: "transparent"
-                        clip: true
 
-                        Column {
-                            spacing: 4
-                            anchors.verticalCenter: parent.verticalCenter
+                        Button{
+                            id: iconName
                             anchors.left: parent.left
-                            anchors.leftMargin: parent.width*0.05
+                            anchors.top: parent.top
+                            height: parent.height/2
+                            width: parent.height/2
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: "transparent"
+                            }
+                            icon.source: "qrc:/images/Icon/id-card.svg"
+                            icon.color: "#007bff"
+                            icon.width: 100
+                            icon.height: 100
+                        }
+
+                        Rectangle {
+                            id: cusName
+                            anchors.left: iconName.right
+                            anchors.top: parent.top
+                            width: parent.width*0.5
+                            height: parent.height/2
+                            color: "transparent"
                             Text {
+                                anchors.left: parent.left
+                                anchors.verticalCenter: parent.verticalCenter
                                 text: "Tên: " + modelData["name"]
                                 font.pixelSize: rootWindow.baseFontSize*0.9
-                                color: "white"
-                            }
-
-                            Text {
-                                text: "SĐT: " + modelData["phone_number"]
-                                font.pixelSize: rootWindow.baseFontSize*0.9
-                                color: "white"
+                                color: "black"
                             }
                         }
+
+                        Button{
+                            id: iconPhonenumber
+                            anchors.left: parent.left
+                            anchors.bottom: parent.bottom
+                            height: parent.height/2
+                            width: parent.height/2
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: "transparent"
+                            }
+                            icon.source: "qrc:/images/Icon/phone-rotary.svg"
+                            icon.color: "#007bff"
+                        }
+
+                        Rectangle {
+                            id: cusPhonenumber
+                            anchors.left: iconPhonenumber.right
+                            anchors.bottom: parent.bottom
+                            width: parent.width*0.5
+                            height: parent.height/2
+                            color: "transparent"
+                            Text {
+                                anchors.left: parent.left
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: "SĐT: " + modelData["phone_number"]
+                                font.pixelSize: rootWindow.baseFontSize*0.9
+                                color: "black"
+                            }
+                        }
+
                     }
 
                     Button{
@@ -188,7 +233,7 @@ Item {
                         }
 
                         icon.source: "qrc:/images/Icon/file-circle-info.svg"
-                        icon.color: "white"
+                        icon.color: "black"
 
                         MouseArea{
                             id: madetailhButton
@@ -219,7 +264,7 @@ Item {
                         }
 
                         icon.source: "qrc:/images/Icon/add.svg"
-                        icon.color: "white"
+                        icon.color: "black"
 
                         MouseArea{
                             id: maaddBatchButton
@@ -252,7 +297,7 @@ Item {
                         }
 
                         icon.source: "qrc:/images/Icon/cross-circle.svg"
-                        icon.color: "white"
+                        icon.color: "#007bff"
                         MouseArea{
                             id: madeleteProductButton
                             anchors.fill: parent
@@ -347,7 +392,6 @@ Item {
 
                 anchors.fill: parent
                 radius: 8
-                //color: "transparent"
                 color: Qt.rgba(1, 1, 1, 0.3)
             }
 

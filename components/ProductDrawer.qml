@@ -23,7 +23,7 @@ Item {
             text : rootWindow.currentNavigation
             font.bold: true
             font.pixelSize: rootWindow.drawerFontSize*1.2
-            color: "white"
+            color: "black"
         }
     }
 
@@ -39,7 +39,9 @@ Item {
             width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
-            color: mouseArea01.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
+            color: mouseArea01.containsMouse ? "#e6f0ff" : "transparent"
+            border.width: 1
+            border.color: mouseArea01.containsMouse ? "#80bfff" : "transparent"
 
             Button {
                 id: icon01
@@ -53,7 +55,7 @@ Item {
                 }
 
                 icon.source: "qrc:/images/Icon/cuida--clipboard-text-outline.svg"
-                icon.color: "white"
+                icon.color: mouseArea01.containsMouse ? "#007bff" : "#6c757d"
 
             }
 
@@ -61,7 +63,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: icon01.right
                 text: "Danh sách sản phẩm"
-                color: "white"
+                color:  mouseArea01.containsMouse ? "#003366" : "#6c757d"
                 font.pixelSize: rootWindow.drawerFontSize
             }
 
@@ -94,7 +96,9 @@ Item {
             width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
-            color: mouseArea02.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
+            color: mouseArea02.containsMouse ? "#e6f0ff" : "transparent"
+            border.width: 1
+            border.color: mouseArea02.containsMouse ? "#80bfff" : "transparent"
 
             Button {
                 id: icon02
@@ -108,7 +112,7 @@ Item {
                 }
 
                 icon.source: "qrc:/images/Icon/cuida--package-outline.svg"
-                icon.color: "white"
+                icon.color: mouseArea02.containsMouse ? "#007bff" : "#6c757d"
 
             }
 
@@ -116,7 +120,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: icon02.right
                 text: "Thêm sản phẩm mới"
-                color: "white"
+                color: mouseArea02.containsMouse ? "#003366" : "#6c757d"
                 font.pixelSize: rootWindow.drawerFontSize
             }
 
@@ -150,7 +154,9 @@ Item {
             width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
-            color: mouseArea03.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
+            color: mouseArea03.containsMouse ? "#e6f0ff" : "transparent"
+            border.width: 1
+            border.color: mouseArea03.containsMouse ? "#80bfff" : "transparent"
 
             Button {
                 id: icon03
@@ -164,7 +170,7 @@ Item {
                 }
 
                 icon.source: "qrc:/images/Icon/users01.svg"
-                icon.color: "white"
+                icon.color: mouseArea03.containsMouse ? "#007bff" : "#6c757d"
 
             }
 
@@ -173,7 +179,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: icon03.right
                 text: "Nhập kho"
-                color: "white"
+                color:  mouseArea03.containsMouse ? "#003366" : "#6c757d"
                 font.pixelSize: rootWindow.drawerFontSize
             }
 
@@ -206,7 +212,9 @@ Item {
             width: navigationDrawer.width*0.9
             height: width/4
             radius: 4
-            color: mouseArea04.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
+            color: mouseArea04.containsMouse ? "#e6f0ff" : "transparent"
+            border.width: 1
+            border.color: mouseArea04.containsMouse ? "#80bfff" : "transparent"
 
             Button {
                 id: icon04
@@ -220,7 +228,7 @@ Item {
                 }
 
                 icon.source: "qrc:/images/Icon/leave.svg"
-                icon.color: "white"
+                icon.color: mouseArea04.containsMouse ? "#007bff" : "#6c757d"
 
             }
 
@@ -228,7 +236,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: icon04.right
                 text: "Quay lại"
-                color: "white"
+                color:  mouseArea04.containsMouse ? "#003366" : "#6c757d"
                 font.pixelSize: rootWindow.drawerFontSize
             }
 

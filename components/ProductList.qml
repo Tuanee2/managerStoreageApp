@@ -189,8 +189,8 @@ Item {
                     width: productList.width*0.85/2
                     height: productList.height * 0.08
                     radius: 8
-                    color: Qt.rgba( 1, 1, 1, 0.3)
-                    border.color: Qt.rgba( 1, 1, 1, 0.5)
+                    color: "white"
+                    border.color: Qt.rgba( 0, 0, 0, 0.1)
                     border.width: 1
                     Layout.fillWidth: true
 
@@ -210,13 +210,13 @@ Item {
                             Text {
                                 text: "Tên: " + modelData["productName"]
                                 font.pixelSize: rootWindow.baseFontSize*0.9
-                                color: "white"
+                                color: "black"
                             }
 
                             Text {
                                 text: "Giá: " + rootProductList.formatMoney(modelData["cost"]) + " VND / " + modelData["unit"]
                                 font.pixelSize: rootWindow.baseFontSize*0.9
-                                color: "white"
+                                color: "black"
                             }
                         }
                     }
@@ -236,7 +236,7 @@ Item {
                         }
 
                         icon.source: "qrc:/images/Icon/file-circle-info.svg"
-                        icon.color: madetailhButton.containsMouse ? Qt.rgba(240/255, 200/255, 100/255, 1) : "white"
+                        icon.color: madetailhButton.containsMouse ? Qt.rgba(240/255, 200/255, 100/255, 1) : "#007bff"
 
                         MouseArea{
                             id: madetailhButton
@@ -267,7 +267,7 @@ Item {
                         }
 
                         icon.source: "qrc:/images/Icon/add.svg"
-                        icon.color: "white"
+                        icon.color: "#007bff"
 
                         MouseArea{
                             id: maaddBatchButton
@@ -298,7 +298,7 @@ Item {
 
                         }
                         icon.source: "qrc:/images/Icon/minus-circle.svg"
-                        icon.color: "white"
+                        icon.color: "#007bff"
 
                         MouseArea{
                             id: masaleButton
@@ -322,7 +322,7 @@ Item {
                         }
 
                         icon.source: "qrc:/images/Icon/cross-circle.svg"
-                        icon.color: "white"
+                        icon.color: "#007bff"
                         MouseArea{
                             id: madeleteProductButton
                             anchors.fill: parent
@@ -361,7 +361,7 @@ Item {
                 }
                 Text {
                     text: "<"
-                    color: "white"
+                    color: rootProductList.isLeft ? "#80bfff" : "white"
                     anchors.centerIn: parent
                 }
 
@@ -391,6 +391,9 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "white"
                 radius: 8
+                border.width: 1
+                border.color: "#80bfff"
+
                 Text {
                     anchors.centerIn: parent
                     text: rootProductList.currentPage
@@ -420,7 +423,7 @@ Item {
 
                 Text {
                     text: ">"
-                    color: "white"
+                    color: rootProductList.isRight ? "#80bfff" : "white"
                     anchors.centerIn: parent
                 }
 

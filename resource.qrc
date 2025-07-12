@@ -20,5 +20,9 @@
         <file>Icon/list.svg</file>
         <file>Icon/main_logo.png</file>
         <file>Icon/refresh.svg</file>
+        <file>Icon/shopping-cart.svg</file>
+        <file>Icon/calendar-lines-pen.svg</file>
+        <file>Icon/id-card.svg</file>
+        <file>Icon/phone-rotary.svg</file>
     </qresource>
 </RCC>

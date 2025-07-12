@@ -23,7 +23,7 @@ Item {
             text : rootWindow.currentNavigation
             font.bold: true
             font.pixelSize: rootWindow.drawerFontSize*1.2
-            color: "white"
+            color: "black"
         }
     }
 
@@ -34,16 +34,14 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: parent.height*0.2  // Cách đỉnh một khoảng
 
-
-
-
-
         Rectangle {
             id: button04
             width: transDrawer.width*0.9
             height: width/4
             radius: 4
-            color: mouseArea04.containsMouse ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
+            color: mouseArea04.containsMouse ? "#e6f0ff" : "transparent"
+            border.width: 1
+            border.color: mouseArea04.containsMouse ? "#80bfff" : "transparent"
 
             Button {
                 id: icon04
@@ -57,7 +55,7 @@ Item {
                 }
 
                 icon.source: "qrc:/images/Icon/leave.svg"
-                icon.color: "white"
+                icon.color: mouseArea04.containsMouse ? "#007bff" : "#6c757d"
 
             }
 
@@ -65,7 +63,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: icon04.right
                 text: "Quay lại"
-                color: "white"
+                color: mouseArea04.containsMouse ? "#003366" : "#6c757d"
                 font.pixelSize: rootWindow.drawerFontSize
             }
 

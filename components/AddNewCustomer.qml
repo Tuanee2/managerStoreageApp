@@ -24,48 +24,53 @@ Item {
                 id: nametextfield
                 placeholderText: "Tên khách hàng (BẮT BUỘC)"
                 font.pixelSize: 24
-                placeholderTextColor: Qt.rgba( 1, 1, 1, 0.8)
+                placeholderTextColor: Qt.rgba(0, 0, 0, 0.5)
                 verticalAlignment: Text.AlignVCenter
-
                 background: Rectangle {
                     radius: 10
-                    color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
+                    color: "white"     // màu nền của TextField
+                    border.width: 1
+                    border.color: Qt.rgba(0, 0, 0, 0.2)
                 }
                 width: addNewCustomer.width*0.6
                 height: addNewCustomer.height*0.1
-                color: "white"
+                color: "black"
             }
 
             TextField {
                 id: phonenumbertextfield
                 placeholderText: "Số điện thoại (BẮT BUỘC)"
                 font.pixelSize: 24
-                placeholderTextColor: Qt.rgba( 1, 1, 1, 0.8)
+                placeholderTextColor: Qt.rgba(0, 0, 0, 0.5)
                 verticalAlignment: Text.AlignVCenter
 
                 background: Rectangle {
                     radius: 10
-                    color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
+                    color: "white"     // màu nền của TextField
+                    border.width: 1
+                    border.color: Qt.rgba(0, 0, 0, 0.2)
                 }
                 width: addNewCustomer.width*0.6
                 height: addNewCustomer.height*0.1
-                color: "white"
+                color: "black"
             }
 
             TextField {
                 id: agetextfield
                 placeholderText: "Năm sinh (KHÔNG BẮT BUỘC)"
                 font.pixelSize: 24
-                placeholderTextColor: Qt.rgba( 1, 1, 1, 0.8)
+                placeholderTextColor: Qt.rgba(0, 0, 0, 0.5)
                 verticalAlignment: Text.AlignVCenter
 
                 background: Rectangle {
                     radius: 10
-                    color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
+                    color: "white"     // màu nền của TextField
+                    border.width: 1
+                    border.color: Qt.rgba(0, 0, 0, 0.2)
                 }
                 width: addNewCustomer.width*0.6
                 height: addNewCustomer.height*0.1
-                color: "white"
+                color: "black"
             }
 
             ComboBox {
@@ -76,11 +81,13 @@ Item {
                 font.pixelSize: 20
                 background: Rectangle {
                     radius: 10
-                    color: Qt.rgba(1, 1, 1, 0.5)
+                    color: "white"     // màu nền của TextField
+                    border.width: 1
+                    border.color: Qt.rgba(0, 0, 0, 0.2)
                 }
                 contentItem: Text {
                     text: genderComboBox.currentText
-                    color: "white"
+                    color: "black"
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignLeft
                     font.pixelSize: 20

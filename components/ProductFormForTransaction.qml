@@ -85,12 +85,15 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 radius: 6
                 color: "white" 
+                border.width: 1
+                border.color: Qt.rgba(0, 0, 0, 0.2)
                 Text {
                     anchors.fill: parent
                     text: "Số lượng:" + batchlist4trans.total
                     color: "black"
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: parent.height*0.3
                 }
             }
 
@@ -174,8 +177,10 @@ Item {
                 delegate: Rectangle{
                     width: batchInfo.width
                     height: batchInfo.height*0.18
-                    color: Qt.rgba(1, 1, 1, 0.3)
+                    color: "white"
                     radius: 8
+                    border.width: 1
+                    border.color: Qt.rgba(0, 0, 0, 0.2)
                     
                     SpinBox {
                         from: 0
@@ -185,10 +190,11 @@ Item {
                                ? selectedQuantitiesMap[modelData.importdate + "_" + modelData.expireddate]
                                : 0
                         editable: true
-                        width: parent.width*0.3
-                        height: parent.height 
+                        width: parent.width*0.25
+                        height: parent.height*0.8
                         anchors.left: parent.left
-                        anchors.top: parent.top
+                        anchors.leftMargin: parent.width*0.01
+                        anchors.verticalCenter: parent.verticalCenter
                         font.pixelSize: parent.height*0.3
 
                         onValueChanged: {
@@ -208,7 +214,7 @@ Item {
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "Số lượng: " + modelData.quantity
-                            color: "white"
+                            color: "black"
                             font.pixelSize: 20
                         }
 
@@ -224,7 +230,7 @@ Item {
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "| Ngày hết hạn: " + Qt.formatDate(new Date(modelData.expireddate), "dd-MM-yyyy")
-                            color: "white"
+                            color: "black"
                             font.pixelSize: 18
                         }
                     }

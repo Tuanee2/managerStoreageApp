@@ -149,4 +149,15 @@ Unit QStringToUnit(const QString& str);
 QString UnitToQString(Unit unit);
 QString UnitForShow(Unit unit);
 
+enum class Debt{
+    NO_DEBT,
+    DEBT_BY_DATE,
+    DEBT_BY_SEASON,
+    INVALID
+};
+
+Debt QStringToDebt(const QString& debt);
+QString debtToQString(Debt debt);
+QString debtForShow(Debt debt);
+
 #endif // CONFIGCOMMAND_H

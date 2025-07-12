@@ -79,6 +79,7 @@ bool DatabaseManager::initialize(){
             "phone_number TEXT NOT NULL,"
             "export_date TEXT NOT NULL,"
             "data TEXT NOT NULL,"
+            "debt TEXT NOT NULL,"
             "notes TEXT NOT NULL"
             ")";
 
@@ -767,12 +768,13 @@ bool DatabaseManager::insertOrder(Order& order){
     QString orderId = QString("%1_%2_%3").arg(phone, date, numberStr);
 
     QSqlQuery query;
-    query.prepare("INSERT INTO orders (id, customer_name, phone_number, export_date, data, notes) "
-                  "VALUES (?, ?, ?, ?, ?, ?)");
+    query.prepare("INSERT INTO orders (id, customer_name, phone_number, export_date, debt, data, notes) "
+                  "VALUES (?, ?, ?, ?, ?, ?, ?)");
     query.addBindValue(orderId);
     query.addBindValue(name);
     query.addBindValue(order.getCustomerPhoneNumber());
     query.addBindValue(order.getPurchaseTime().toString("yyyy-MM-dd"));
+    query.addBindValue(debtToQString(order.getDebt()));
     query.addBindValue(Order::itemToQString(order.getListItem()));
     query.addBindValue(order.getNote());
 

@@ -65,10 +65,11 @@ Item {
                     width: productList.width*0.85/2
                     height: productList.height * 0.1
                     radius: 8
-                    color: ma4choice.containsMouse ? Qt.rgba( 1, 1, 1, 0.6) : Qt.rgba(1, 1, 1, 0.3)
-                    border.color: Qt.rgba( 1, 1, 1, 0.5)
+                    color: ma4choice.containsMouse ? "#e6f0ff" : "white"
+                    border.color: Qt.rgba( 0, 0, 0, 0.2)
                     border.width: 1
                     Layout.fillWidth: true
+
 
                     Rectangle{
                         anchors.left: parent.left
@@ -86,13 +87,13 @@ Item {
                             Text {
                                 text: "Tên: " + modelData["productName"]
                                 font.pixelSize: rootWindow.baseFontSize*0.9
-                                color: "white"
+                                color: ma4choice.containsMouse ? "#003366" : "black"
                             }
 
                             Text {
                                 text: "Giá: " + modelData["cost"] + " VND"
                                 font.pixelSize: rootWindow.baseFontSize*0.9
-                                color: "white"
+                                color: ma4choice.containsMouse ? "#003366" : "black"
                             }
                         }
                     }
@@ -108,7 +109,7 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "số hàng còn trong kho: " + modelData["numOfProduct"]
                             font.pixelSize: rootWindow.baseFontSize*0.9
-                            color: "white"
+                            color: ma4choice.containsMouse ? "#003366" : "black"
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                         }

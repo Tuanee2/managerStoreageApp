@@ -63,32 +63,36 @@ Item {
                 placeholderText: "Tên sản phẩm (BẮT BUỘC)"
                 text: importBatch.productName
                 font.pixelSize: 24
-                placeholderTextColor: Qt.rgba( 1, 1, 1, 0.8)
+                placeholderTextColor: Qt.rgba(0, 0, 0, 0.4)
                 verticalAlignment: Text.AlignVCenter
 
                 background: Rectangle {
                     radius: 10
-                    color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
+                    color: "transparent"    
+                    border.width: 1
+                    border.color: Qt.rgba(0, 0, 0, 0.2)
                 }
                 width: importBatchBG.width*0.6
                 height: importBatchBG.height*0.1
-                color: "white"
+                color: "black"
             }
 
             TextField {
                 id: numtextfield
                 placeholderText: "số lượng sản phẩm của lô (BẮT BUỘC)"
                 font.pixelSize: 24
-                placeholderTextColor: Qt.rgba( 1, 1, 1, 0.8)
+                placeholderTextColor: Qt.rgba(0, 0, 0, 0.4)
                 verticalAlignment: Text.AlignVCenter
 
                 background: Rectangle {
                     radius: 10
-                    color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
+                    color: "transparent"    
+                    border.width: 1
+                    border.color: Qt.rgba(0, 0, 0, 0.2)
                 }
                 width: importBatchBG.width*0.6
                 height: importBatchBG.height*0.1
-                color: "white"
+                color: "black"
                 onTextChanged:{
                     updateCostAll()
                 }
@@ -100,16 +104,18 @@ Item {
                     id: costtextfield
                     placeholderText: "Giá 1 sản phẩm của lô (BẮT BUỘC)"
                     font.pixelSize: 24
-                    placeholderTextColor: Qt.rgba( 1, 1, 1, 0.8)
+                    placeholderTextColor: Qt.rgba(0, 0, 0, 0.4)
                     verticalAlignment: Text.AlignVCenter
 
                     background: Rectangle {
                         radius: 10
-                        color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
+                        color: "transparent"    
+                        border.width: 1
+                        border.color: Qt.rgba(0, 0, 0, 0.2)    
                     }
                     width: importBatchBG.width*0.29
                     height: importBatchBG.height*0.1
-                    color: "white"
+                    color: "black"
 
                     onTextChanged: {
                         if (!costalltextfield.activeFocus) updateCostAll();
@@ -128,16 +134,18 @@ Item {
                     id: costalltextfield
                     placeholderText: "Giá lô sản phẩm (BẮT BUỘC)"
                     font.pixelSize: 24
-                    placeholderTextColor: Qt.rgba( 1, 1, 1, 0.8)
+                    placeholderTextColor: Qt.rgba(0, 0, 0, 0.4)
                     verticalAlignment: Text.AlignVCenter
 
                     background: Rectangle {
                         radius: 10
-                        color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
+                        color: "transparent"    
+                        border.width: 1
+                        border.color: Qt.rgba(0, 0, 0, 0.2)  
                     }
                     width: importBatchBG.width*0.29
                     height: importBatchBG.height*0.1
-                    color: "white"
+                    color: "black"
 
                     onTextChanged: {
                         if (!costtextfield.activeFocus) updateUnitCost();
@@ -186,32 +194,36 @@ Item {
                 placeholderText: "ngày nhập kho sản phẩm (định dạng DD-MM-YYYY)(BẮT BUỘC)"
                 font.pixelSize: 24
                 text: Qt.formatDate(new Date(), "dd-MM-yyyy")
-                placeholderTextColor: Qt.rgba( 1, 1, 1, 0.8)
+                placeholderTextColor: Qt.rgba(0, 0, 0, 0.4)
                 verticalAlignment: Text.AlignVCenter
 
                 background: Rectangle {
                     radius: 10
-                    color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
+                    color: "transparent"    
+                    border.width: 1
+                    border.color: Qt.rgba(0, 0, 0, 0.2)  
                 }
                 width: importBatchBG.width*0.6
                 height: importBatchBG.height*0.1
-                color: "white"
+                color: "black"
             }
 
             TextField {
                 id: expireddatetextfield
                 placeholderText: "Hạn sử dụng sản phẩm (định dạng DD-MM-YYYY)(BẮT BUỘC)"
                 font.pixelSize: 24
-                placeholderTextColor: Qt.rgba( 1, 1, 1, 0.8)
+                placeholderTextColor: Qt.rgba(0, 0, 0, 0.4)
                 verticalAlignment: Text.AlignVCenter
 
                 background: Rectangle {
                     radius: 10
-                    color: Qt.rgba(1, 1, 1, 0.5)      // màu nền của TextField
+                    color: "transparent"    
+                    border.width: 1
+                    border.color: Qt.rgba(0, 0, 0, 0.2)  
                 }
                 width: importBatchBG.width*0.6
                 height: importBatchBG.height*0.1
-                color: "white"
+                color: "black"
             }
 
             Rectangle {

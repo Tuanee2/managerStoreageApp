@@ -1,4 +1,7 @@
-import QtQuick 2.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Controls.Material
+import QtQuick.Effects
 
 Item {
     id: rootOrderForm
@@ -48,12 +51,14 @@ Item {
         radius: 10
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
+        border.width: 1
+        border.color: Qt.rgba(0, 0, 0, 0.2)
         clip: true
 
         Rectangle {
             id: mainContentOrderInfo
-            width: parent.width*0.98
-            height: parent.height*0.98
+            width: parent.width
+            height: parent.height
             color: "transparent"
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
@@ -72,16 +77,17 @@ Item {
                     Rectangle {
                         id: orderInfoNameId
                         height: mainContentOrderInfo.height*0.08
-                        width: mainContentOrderInfo.width*0.5
+                        width: mainContentOrderInfo.width
                         border.width: 1
-                        border.color: "black"
-                        radius: 8
+                        border.color: Qt.rgba(0, 0, 0, 0.3)
+                        topRightRadius: 10
+                        topLeftRadius: 10
                         Text{
                             anchors.left: parent.left
                             anchors.leftMargin: mainContentOrderInfo.width*0.01
                             anchors.verticalCenter: parent.verticalCenter
                             font.pixelSize: parent.height*0.4
-                            text: "Id : " + rootOrderForm.orderId
+                            text: "ID : " + rootOrderForm.orderId
 
                         }
                     }
@@ -100,43 +106,70 @@ Item {
                             color: "transparent"
                             Text {
                                 anchors.left: parent.left
+                                anchors.leftMargin: mainContentOrderInfo.width*0.01
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: "THÔNG TIN KHÁCH HÀNG"
                                 font.pixelSize: parent.height*0.4
+                                font.bold: true
                             }
                         }
 
-                        Rectangle {
+                        Button {
+                            id: iconName
                             anchors.top: titleCustomerInfo.bottom
                             anchors.left: customerInfo.left
+                            height: customerInfo.height/2
+                            width: customerInfo.height/2
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: "transparent"
+                            }
+                            icon.source: "qrc:/images/Icon/id-card.svg"
+                            icon.color: "#007bff"
+                        }
+
+                        Rectangle {
+                            id: cusname
+                            anchors.top: titleCustomerInfo.bottom
+                            anchors.left: iconName.right
                             width: customerInfo.width*0.39
                             height: customerInfo.height/2
-                            color: Qt.rgba( 1, 1, 1, 0.5)
+                            color: "transparent"
                             Text {
                                 anchors.left: parent.left
-                                anchors.leftMargin: mainContentOrderInfo.width*0.01
                                 anchors.verticalCenter: parent.verticalCenter
                                 font.pixelSize: parent.height*0.4
                                 text: "Tên khách hàng: " + rootOrderForm.orderObject["customer_name"]
                             }
                         }
 
+                        Button{
+                            id: iconPhonenumber
+                            anchors.top: titleCustomerInfo.bottom
+                            anchors.left: cusname.right
+                            height: customerInfo.height/2
+                            width: customerInfo.height/2
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: "transparent"
+                            }
+                            icon.source: "qrc:/images/Icon/phone-rotary.svg"
+                            icon.color: "#007bff"
+                        }
+
                         Rectangle {
                             anchors.top: titleCustomerInfo.bottom
-                            anchors.left: customerInfo.left
-                            anchors.leftMargin: parent.width*0.4
+                            anchors.left: iconPhonenumber.right
                             width: customerInfo.width*0.29
                             height: customerInfo.height/2
                             color: Qt.rgba( 1, 1, 1, 0.5)
                             Text {
                                 anchors.left: parent.left
-                                anchors.leftMargin: mainContentOrderInfo.width*0.01
                                 anchors.verticalCenter: parent.verticalCenter
                                 font.pixelSize: parent.height*0.4
                                 text: "Số điện thoại: " + rootOrderForm.orderObject["phone_number"]
                             }
                         }
-
                     }
 
                     Rectangle {
@@ -154,9 +187,11 @@ Item {
                             color: "transparent"
                             Text {
                                 anchors.left: parent.left
+                                anchors.leftMargin: mainContentOrderInfo.width*0.01
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: "THÔNG TIN ĐƠN HÀNG"
                                 font.pixelSize: parent.height*0.4
+                                font.bold: true
                             }
                         }
 
@@ -166,14 +201,17 @@ Item {
                             width: parent.width
                             anchors.bottom: parent.bottom
                             anchors.left: parent.left
+                            color: "transparent"
                             Rectangle {
                                 id: numOfTypeProduct
                                 width:parent.width*0.3
                                 height: parent.height*0.5
                                 anchors.left:parent.left
                                 anchors.top: parent.top
+                                color: "transparent"
                                 Text {
                                     anchors.left: parent.left
+                                    anchors.leftMargin: mainContentOrderInfo.width*0.01
                                     anchors.verticalCenter: parent.verticalCenter
                                     text: "Số loại sản phẩm: " + rootOrderForm.orderObject["data"].length
                                     verticalAlignment: Text.AlignVCenter
@@ -181,40 +219,47 @@ Item {
                                 }
 
                             }
+
                             Rectangle {
                                 id: numOfItem
                                 width:parent.width*0.3
                                 height: parent.height*0.5
                                 anchors.left:parent.left
                                 anchors.bottom: parent.bottom
+                                color: "transparent"
                                 Text {
                                     anchors.left: parent.left
+                                    anchors.leftMargin: mainContentOrderInfo.width*0.01
                                     anchors.verticalCenter: parent.verticalCenter
                                     text: "Số sản phẩm: " 
                                     verticalAlignment: Text.AlignVCenter
                                     font.pixelSize: parent.height*0.4
                                 }
                             }
+
                             Rectangle{
                                 id: totalPrice
                                 width:parent.width*0.3
                                 height: parent.height*0.5
                                 anchors.left: numOfTypeProduct.right
                                 anchors.top: parent.top
+                                color: "transparent"
                                 Text {
                                     anchors.left: parent.left
                                     anchors.verticalCenter: parent.verticalCenter
-                                    text: "Tổng số tiền: " + rootOrderForm.formatMoney(rootOrderForm.orderObject["total_price"]) + " VND"
+                                    text: "Tổng số tiền: " + rootOrderForm.formatMoney(rootOrderForm.orderObject["total_price"]) + " VNĐ"
                                     verticalAlignment: Text.AlignVCenter
                                     font.pixelSize: parent.height*0.4
                                 }
                             }
+
                             Rectangle {
                                 id: purchaseTime
                                 width:parent.width*0.3
                                 height: parent.height*0.5
                                 anchors.left: numOfItem.right
                                 anchors.bottom: parent.bottom
+                                color: "transparent"
                                 Text {
                                     anchors.left: parent.left
                                     anchors.verticalCenter: parent.verticalCenter
@@ -234,9 +279,11 @@ Item {
 
                         Text {
                             anchors.left: parent.left
+                            anchors.leftMargin: mainContentOrderInfo.width*0.01
                             anchors.verticalCenter: parent.verticalCenter
                             text: "CHI TIẾT ĐƠN HÀNG"
                             font.pixelSize: parent.height*0.4
+                            font.bold: true
                         }
 
                     }
@@ -244,9 +291,10 @@ Item {
                     Repeater {
                         model: rootOrderForm.orderObject["data"]
                         delegate: Rectangle {
-                            width: mainContentOrderInfo.width
+                            width: mainContentOrderInfo.width*0.98
                             height: mainContentOrderInfo.height*0.1
-                            color: Qt.rgba(0, 0, 0, 0.2)
+                            anchors.horizontalCenter: orderInfo.horizontalCenter
+                            color: "#e6f0ff"
                             radius: 8
                             border.width: 1
                             border.color: Qt.rgba(0, 0, 0, 0.5)
@@ -298,7 +346,7 @@ Item {
                                     anchors.left: parent.left
                                     anchors.verticalCenter: parent.verticalCenter
                                     anchors.leftMargin: parent.width*0.01
-                                    text: "| Giá sản phẩm: " + modelData.cost + "/" + modelData.unit
+                                    text: "| Giá sản phẩm: " +rootOrderForm.formatMoney(modelData.cost) + " VNĐ" + "/" + modelData.unit
                                     font.pixelSize: parent.height*0.3
                                 }
 
@@ -315,18 +363,33 @@ Item {
 
                         Text {
                             anchors.left: parent.left
+                            anchors.leftMargin: mainContentOrderInfo.width*0.01
                             anchors.verticalCenter: parent.verticalCenter
                             text: "THÔNG TIN KHUYẾN MÃI"
                             font.pixelSize: parent.height*0.4
+                            font.bold: true
+                        }
+
+                    }
+
+                    Rectangle {
+                        id: noteInfoDetal
+                        width: mainContentOrderInfo.width
+                        height: mainContentOrderInfo.height*0.07
+                        color: "transparent"
+
+                        Text {
+                            anchors.left: parent.left
+                            anchors.leftMargin: mainContentOrderInfo.width*0.01
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: "GHI CHÚ"
+                            font.pixelSize: parent.height*0.4
+                            font.bold: true
                         }
 
                     }
                 }
             }
         }
-
-        
-        
     }
-
 }

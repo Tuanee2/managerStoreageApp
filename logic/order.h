@@ -24,6 +24,7 @@ private:
     QList<Products*> item;
     QDateTime purchaseTime;
     QString note;
+    Debt debt;
 
 public:
     QString getId() const;
@@ -38,6 +39,8 @@ public:
     void setListItem(const QList<Products*>& item);
     QString getNote() const;
     void setNote(const QString& note);
+    Debt getDebt() const;
+    void setDebt(const QString& debt);
     static QList<Products*> QStringToItems(const QString& data);
     static QString itemToQString(const QList<Products*>& item);
     static QList<QVariant> itemToListVariant(const QList<Products*>& item);

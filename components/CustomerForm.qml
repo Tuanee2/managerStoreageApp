@@ -95,6 +95,8 @@ Item {
         height:parent.height*0.285
         color: "white"
         radius: 10
+        border.width: 1
+        border.color: Qt.rgba(0, 0, 0, 0.2)
 
         Rectangle {
             id: nameField
@@ -400,7 +402,9 @@ Item {
                     width: mainCustomerForm.width
                     height: mainCustomerForm.height*0.15
                     radius: 10
-                    color: Qt.rgba(1, 1, 1, 0.5)
+                    color: "white"
+                    border.width: 1
+                    border.color: Qt.rgba(0, 0, 0, 0.2)
 
                     Rectangle {
                         anchors.left: parent.left
@@ -413,7 +417,7 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "Ngày bán: " + Qt.formatDate(new Date(modelData.purchase_time), "dd-MM-yyyy")
                             font.pixelSize: parent.height*0.3
-                            color: "white"
+                            color: "black"
                         }
                     }
 
@@ -428,7 +432,7 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "Giá trị đơn hàng: " +  rootCustomerForm.formatMoney(modelData.total_price) + " VNĐ"
                             font.pixelSize: parent.height*0.3
-                            color: "white"
+                            color: "black"
                         }
                     }
 

@@ -25,7 +25,7 @@ Window {
     // parameter for main search field
     property string targetForMainSearch: "PRODUCT"
     property string targetExtensionForMainSearch: "NAME"
-    property string placeholderForMainSearch: "Nhập tên sản phẩm"
+    property string placeholderForMainSearch: "🔍 Nhập tên sản phẩm"
 
     // *******************************************************************
 
@@ -51,6 +51,12 @@ Window {
 
     property var batchListOfOrder: []
 
+    Rectangle{
+        anchors.fill: parent
+        color: "white"
+    }
+
+
     Component.onCompleted: {
         controller.requestBatchInformation("", "EXPIREDDATE", "AMONTH", "")
     }
@@ -63,38 +69,38 @@ Window {
     }
 
     // Ảnh nền
-    Image {
-        id: background
-        width: parent.width + 40
-        height: parent.height + 40
-        source: "qrc:/images/Backgrounds/fix.jpg"
-        fillMode: Image.PreserveAspectCrop  // Crop đẹp hơn để phủ toàn bộ
-        visible: true  // Ẩn để tránh ảnh gốc lộ ra
-    }
+    // Image {
+    //     id: background
+    //     width: parent.width + 40
+    //     height: parent.height + 40
+    //     source: "qrc:/images/Backgrounds/fix.jpg"
+    //     fillMode: Image.PreserveAspectCrop  // Crop đẹp hơn để phủ toàn bộ
+    //     visible: true  // Ẩn để tránh ảnh gốc lộ ra
+    // }
 
-    MultiEffect {
-        source: background
-        anchors.fill: parent
-        blurEnabled: true
-        blurMax: 50
-        blur: 1
-        brightness: -0.15
-    }
+    // MultiEffect {
+    //     source: background
+    //     anchors.fill: parent
+    //     blurEnabled: true
+    //     blurMax: 50
+    //     blur: 1
+    //     brightness: -0.15
+    // }
 
     Rectangle {
         id: blurBackground
-        width: parent.width*0.96
-        height: parent.height*0.96
+        width: parent.width*0.98
+        height: parent.height*0.98
         anchors.centerIn: parent
-        radius: 30
+        radius: 15
         // border.width: 1
         // border.color: Qt.rgba( 1, 1, 1, 0.5)
         color: Qt.rgba( 1, 1, 1, 0.1)
     }
 
     MultiEffect {
-        width: parent.width*0.96
-        height: parent.height*0.96
+        width: parent.width*0.98
+        height: parent.height*0.98
         anchors.centerIn: parent
         source: blurBackground
         blurEnabled: true
@@ -105,13 +111,13 @@ Window {
 
     Rectangle{
         id: mainWindow
-        width: parent.width*0.96
-        height: parent.height*0.96
+        width: parent.width*0.98
+        height: parent.height*0.98
         anchors.centerIn: parent
-        radius: 30
+        radius: 15
         border.width: 1
-        border.color: Qt.rgba( 1, 1, 1, 0.3)
-        color: "transparent"
+        border.color: Qt.rgba( 0, 0, 0, 0.2)
+        color: "#f8f8f8"
         clip: true
 
         Rectangle {
@@ -120,9 +126,11 @@ Window {
             height: parent.height
             anchors.left: parent.left
             anchors.top: parent.top
-            topLeftRadius: 30
-            bottomLeftRadius: 30
-            color: "transparent"
+            topLeftRadius: 15
+            bottomLeftRadius: 15
+            color: "#f4f6f8"
+            border.width: 1
+            border.color: Qt.rgba( 0, 0, 0, 0.2)
             Loader {
                 id: drawerLoader
                 source: "components/MainDrawer.qml"
@@ -138,9 +146,10 @@ Window {
             height: parent.height
             anchors.top: parent.top
             anchors.right: parent.right
-            topRightRadius: 30
-            bottomRightRadius: 30
-            color: Qt.rgba( 1, 1, 1, 0.05)
+            topRightRadius: 15
+            bottomRightRadius: 15
+            color: "transparent"
+            clip: true
 
             Rectangle {
                 id: content
@@ -149,7 +158,7 @@ Window {
                 height: Math.max(parent.height*0.8, parent.height - 120)
                 anchors.bottom: parent.bottom
                 anchors.right: parent.right
-                bottomRightRadius: 30
+                bottomRightRadius: 15
                 color: "transparent"
                 clip: true
                 //
@@ -176,29 +185,30 @@ Window {
                 anchors.left: parent.left
                 anchors.leftMargin: parent.width*0.05
 
-                Button {
-                    id: searchIcon
-                    anchors.top: parent.top
-                    anchors.left: parent.left
-                    width: parent.height
-                    height: parent.height
-                    background: Rectangle {
-                        anchors.fill: parent
-                        color: "transparent"
-                    }
+                // Button {
+                //     id: searchIcon
+                //     anchors.top: parent.top
+                //     anchors.left: parent.left
+                //     width: parent.height
+                //     height: parent.height
+                //     background: Rectangle {
+                //         anchors.fill: parent
+                //         color: "transparent"
+                //     }
 
-                    icon.source: "qrc:/images/Icon/search.svg"
-                    icon.color: "white"
+                //     icon.source: "qrc:/images/Icon/search.svg"
+                //     icon.color: "white"
 
-                }
+                // }
 
                 CustomSearchTextField {
                     id: mainSearch
-                    width: parent.width - 2*parent.height
+                    width: parent.width - parent.height*1.2
                     height: parent.height
-                    anchors.left: searchIcon.right
+                    anchors.left: parent.left
                     color: Qt.rgba( 1, 1, 1, 0.2)
                     placeholderText: rootWindow.placeholderForMainSearch
+                    color4placeholder: "black"
                     onSuggestionSelected: (data) => {
 
                     }
@@ -222,10 +232,13 @@ Window {
                         background: Rectangle{
                             anchors.fill: parent
                             color: "transparent"
+                            radius: 8
+                            border.width: 1
+                            border.color: "black"
                         }
 
                         icon.source: "qrc:/images/Icon/list.svg"
-                        icon.color: "white"
+                        icon.color: Qt.rgba(0, 0, 0, 0.5)
                         onClicked: mainObjectMenu.open()
                     }
 
@@ -320,7 +333,7 @@ Window {
                             onTriggered: {
                                 rootWindow.targetForMainSearch = "PRODUCT"
                                 rootWindow.targetExtensionForMainSearch = "NAME"
-                                rootWindow.placeholderForMainSearch = "Nhập tên sản phẩm"
+                                rootWindow.placeholderForMainSearch = "🔍 Nhập tên sản phẩm"
                                 productSearchMenu.close()
                                 mainObjectMenu.close()
                             }
@@ -330,7 +343,7 @@ Window {
                             onTriggered: {
                                 rootWindow.targetForMainSearch = "PRODUCT"
                                 rootWindow.targetExtensionForMainSearch = "PRICE"
-                                rootWindow.placeholderForMainSearch = "Nhập giá sản phẩm"
+                                rootWindow.placeholderForMainSearch = "🔍 Nhập giá sản phẩm"
                                 productSearchMenu.close()
                                 mainObjectMenu.close()
                             }
@@ -345,7 +358,7 @@ Window {
                             onTriggered: {
                                 rootWindow.targetForMainSearch = "CUSTOMER"
                                 rootWindow.targetExtensionForMainSearch = "NAME"
-                                rootWindow.placeholderForMainSearch = "Nhập tên khách hàng"
+                                rootWindow.placeholderForMainSearch = "🔍 Nhập tên khách hàng"
                                 customerSearchMenu.close()
                                 mainObjectMenu.close()
                             }
@@ -355,7 +368,7 @@ Window {
                             onTriggered: {
                                 rootWindow.targetForMainSearch = "CUSTOMER"
                                 rootWindow.targetExtensionForMainSearch = "PHONENUMBER"
-                                rootWindow.placeholderForMainSearch = "Nhập số điện thoại"
+                                rootWindow.placeholderForMainSearch = "🔍 Nhập số điện thoại"
                                 customerSearchMenu.close()
                                 mainObjectMenu.close()
                             }
@@ -365,7 +378,7 @@ Window {
                             onTriggered: {
                                 rootWindow.targetForMainSearch = "CUSTOMER"
                                 rootWindow.targetExtensionForMainSearch = "YEAROFBIRTH"
-                                rootWindow.placeholderForMainSearch = "Nhập năm sinh khách hàng"
+                                rootWindow.placeholderForMainSearch = "🔍 Nhập năm sinh khách hàng"
                                 customerSearchMenu.close()
                                 mainObjectMenu.close()
                             }
@@ -381,7 +394,7 @@ Window {
                             onTriggered: {
                                 rootWindow.targetForMainSearch = "BATCH"
                                 rootWindow.targetExtensionForMainSearch = "IMPORTDATE"
-                                rootWindow.placeholderForMainSearch = "Nhập ngày nhập kho"
+                                rootWindow.placeholderForMainSearch = "🔍 Nhập ngày nhập kho"
                                 batchSearchMenu.close()
                                 mainObjectMenu.close()
                             }
@@ -391,7 +404,7 @@ Window {
                             onTriggered: {
                                 rootWindow.targetForMainSearch = "BATCH"
                                 rootWindow.targetExtensionForMainSearch = "EXPIREDDATE"
-                                rootWindow.placeholderForMainSearch = "Nhập ngày hết hạn"
+                                rootWindow.placeholderForMainSearch = "🔍 Nhập ngày hết hạn"
                                 batchSearchMenu.close()
                                 mainObjectMenu.close()
                             }
@@ -407,7 +420,7 @@ Window {
                             onTriggered: {
                                 rootWindow.targetForMainSearch = "ORDER"
                                 rootWindow.targetExtensionForMainSearch = "NAME"
-                                rootWindow.placeholderForMainSearch = "Nhập tên người mua đơn hàng"
+                                rootWindow.placeholderForMainSearch = "🔍 Nhập tên người mua đơn hàng"
                                 orderSearchMenu.close()
                                 mainObjectMenu.close()
                             }
@@ -417,7 +430,7 @@ Window {
                             onTriggered: {
                                 rootWindow.targetForMainSearch = "ORDER"
                                 rootWindow.targetExtensionForMainSearch = "EXPORTDATE"
-                                rootWindow.placeholderForMainSearch = "Nhập ngày mua đơn hàng"
+                                rootWindow.placeholderForMainSearch = "🔍 Nhập ngày mua đơn hàng"
                                 orderSearchMenu.close()
                                 mainObjectMenu.close()
                             }
@@ -488,10 +501,7 @@ Window {
                     hoverEnabled: true
 
                     onClicked:{
-                        if(!rootWindow.isTransactionProductSelect && !rootWindow.isTransactionBatchSelect){
-                            pageLoader.source = "components/ImportBatch.qml"
-                            drawerLoader.source = "components/ProductDrawer.qml"
-                        }
+                        rootWindow.notification.showNotification("⚠️ Tính năng này sẽ được cập nhật trong các phiên bản tới");
                     }
                 }
             }

@@ -77,6 +77,14 @@ void Order::setNote(const QString& note){
     this->note = note;
 }
 
+Debt Order::getDebt() const{
+    return debt;
+}
+
+void Order::setDebt(const QString& debt){
+    this->debt = QStringToDebt(debt);
+}
+
 QList<Products*> Order::QStringToItems(const QString& data){
     QList<Products*> list;
     QJsonDocument doc = QJsonDocument::fromJson(data.toUtf8());

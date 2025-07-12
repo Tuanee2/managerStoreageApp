@@ -6,7 +6,8 @@ Rectangle {
     id: root
     radius: 8
     color: "transparent"
-    border.color: "#cccccc"
+
+    //border.color: "#cccccc"
     //color: "transparent"
 
     property alias text: input.text
@@ -16,6 +17,11 @@ Rectangle {
     property string targetExtension: ""
     property int itemsPerPage: 6
     property color color4placeholder: "white"
+    property int borderWidth: 1
+    property color borderColor: "transparent"
+
+    border.width: root.borderWidth
+    border.color: root.borderColor
 
     property bool isClick: false 
     property bool isEnable: false

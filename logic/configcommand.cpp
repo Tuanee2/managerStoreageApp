@@ -390,3 +390,28 @@ QString UnitForShow(Unit unit){
         default: return "KHÔNG XÁC ĐỊNH"; 
     }
 }
+
+Debt QStringToDebt(const QString& debt){
+    if(debt == "NO_DEBT") return Debt::NO_DEBT;
+    if(debt == "DEBT_BY_DATE") return Debt::DEBT_BY_DATE;
+    if(debt == "DEBT_BY_SEASON") return Debt::DEBT_BY_SEASON;
+    return Debt::INVALID;
+}
+
+QString debtToQString(Debt debt){
+    switch(debt) {
+        case Debt::NO_DEBT: return "NO_DEBT";
+        case Debt::DEBT_BY_DATE: return "DEBT_BY_DATE";
+        case Debt::DEBT_BY_SEASON: return "DEBT_BY_SEASON";
+        default: return "INVALID";
+    }
+}
+
+QString debtForShow(Debt debt){
+    switch(debt) {
+        case Debt::NO_DEBT: return "Không nợ";
+        case Debt::DEBT_BY_DATE: return "Nợ ngày";
+        case Debt::DEBT_BY_SEASON: return "Nợ mùa";
+        default: return "INVALID";
+    }
+}

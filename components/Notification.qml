@@ -11,6 +11,7 @@ Item {
     property int itemPerPage: 6
     property bool isLeft: false
     property bool isRight: false
+    property int pointer: 0
 
     property var batches: []
 
@@ -44,7 +45,93 @@ Item {
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
+        border.width: 1
+        border.color: Qt.rgba(0, 0, 0, 0.3)
+        radius: 8 
 
+        Rectangle{
+            id: invalidDate
+            width: parent.width*0.2
+            height: parent.height*0.8
+            radius: 8
+            anchors.right: parent.right
+            anchors.rightMargin: parent.width*0.01
+            anchors.verticalCenter: parent.verticalCenter
+            color: (maInvalidDate.containsMouse) || (rootNotification.pointer === 0) ? "#e6f0ff" : "transparent"
+            border.width: 1
+            border.color: maInvalidDate.containsMouse ? "#80bfff" : Qt.rgba(0, 0, 0, 0.2)
+
+            Text {
+                text: "Hết Hạn"
+                font.pixelSize: parent.height*0.4
+                anchors.centerIn: parent
+                color: "black"
+            }
+
+            MouseArea {
+                id: maInvalidDate
+                hoverEnabled: true
+                anchors.fill: parent
+                onClicked: {
+                    if(rootNotification.pointer != 0){
+                        rootNotification.pointer = 0
+                        rootNotification.currentPage = 0
+                        let cmdData = {
+                            cmd: "LIST",
+                            typelist: "EXPIREDDATE",
+                            duration: "AMONTH"
+                        }
+                        controller.requestBatchList(cmdData, "", "", rootNotification.itemPerPage, rootNotification.currentPage)
+                    }
+                }
+            }
+        }
+
+        Rectangle{
+            id: debt
+            width: parent.width*0.2
+            height: parent.height*0.8
+            radius: 8
+            anchors.right: invalidDate.left
+            anchors.rightMargin: parent.width*0.01
+            anchors.verticalCenter: parent.verticalCenter
+            color: maDebt.containsMouse ? "#e6f0ff" : "transparent"
+            border.width: 1
+            border.color: maDebt.containsMouse || (rootNotification.pointer === 1) ? "#80bfff" : Qt.rgba(0, 0, 0, 0.2)
+
+            Text {
+                text: "Nợ"
+                font.pixelSize: parent.height*0.4
+                anchors.centerIn: parent
+                color: "black"
+            }
+
+            MouseArea {
+                id: maDebt
+                hoverEnabled: true
+                anchors.fill: parent
+                onClicked: {
+                    if(rootNotification.pointer != 1){
+                        rootNotification.pointer = 1
+                        rootNotification.currentPage = 0
+                        let cmdData = {
+                            command: "GET",
+                            target: "ORDER",
+                            infoKind: "OBJECT",
+                            mode: "MULTIPLE",
+                            getType: "LIST",
+                            filters: {
+                                debt: ""
+                            },
+                            page: rootNotification.currentPage,
+                            pageSize: rootNotification.itemPerPage
+                        }
+                        controller.requestOrderList(cmdData)
+                    }
+                    
+                }
+            }
+        }
     }
 
     Rectangle{
@@ -63,11 +150,21 @@ Item {
             Repeater{
                 model: rootNotification.batches
 
-                delegate: Rectangle{
+                delegate: Loader {
+                    property var itemData: modelData 
+                    sourceComponent: (rootNotification.pointer === 0) ? expiredDelegate : debtDelegate
+                }
+            }
+
+            Component {
+                id: expiredDelegate
+                Rectangle {
                     width: notificationList.width
                     height: notificationList.height*0.15
                     radius: 8
                     color: "white"
+                    border.width: 1
+                    border.color: Qt.rgba(0, 0, 0, 0.2)
 
                     Rectangle {
                         id: nameProductNoti
@@ -80,7 +177,7 @@ Item {
                             anchors.left: parent.left
                             anchors.leftMargin: parent.width*0.1
                             anchors.verticalCenter: parent.verticalCenter
-                            text: "Tên sản phẩm: " + modelData.productName
+                            text: "Tên sản phẩm: " + itemData.productName
                             font.pixelSize: parent.height*0.4
                         }
 
@@ -96,7 +193,7 @@ Item {
                             anchors.left: parent.left
                             anchors.leftMargin: parent.width*0.1
                             anchors.verticalCenter: parent.verticalCenter
-                            text: "Số sản phẩm: " + modelData.quantity
+                            text: "Số sản phẩm: " + itemData.quantity
                             font.pixelSize: parent.height*0.4
                         }
 
@@ -112,7 +209,7 @@ Item {
                             anchors.left: parent.left
                             anchors.leftMargin: parent.width*0.1
                             anchors.verticalCenter: parent.verticalCenter
-                            text: "Ngày nhập: " + modelData.importdate
+                            text: "Ngày nhập: " +  itemData.expireddate
                             font.pixelSize: parent.height*0.4
                         }
 
@@ -128,7 +225,7 @@ Item {
                             anchors.left: parent.left
                             anchors.leftMargin: parent.width*0.1
                             anchors.verticalCenter: parent.verticalCenter
-                            text: "Ngày hết hạn: " + modelData.expireddate
+                            text: "Ngày hết hạn: " + itemData.expireddate
                             font.pixelSize: parent.height*0.4
                         }
 
@@ -143,12 +240,24 @@ Item {
                             anchors.left: parent.left
                             anchors.leftMargin: parent.width*0.1
                             anchors.verticalCenter: parent.verticalCenter
-                            text: (modelData.quantity === -1) ? "Đã hết hạn" : "Hết hạn sau " + modelData.days_left + " ngày"
+                            text: (itemData.quantity === -1) ? "Đã hết hạn" : "Hết hạn sau " + itemData.days_left + " ngày"
                             font.pixelSize: parent.height*0.4
                         }
 
 
                     }
+                }
+            }
+
+            Component {
+                id: debtDelegate
+                Rectangle {
+                    width: notificationList.width
+                    height: notificationList.height*0.15
+                    radius: 8
+                    color: "white"
+                    border.width: 1
+                    border.color: Qt.rgba(0, 0, 0, 0.2)
                 }
             }
         }

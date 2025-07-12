@@ -3,7 +3,7 @@ import QtQuick.Controls 2.15
 
 Rectangle {
     id: toast
-    width: 500
+    width: Math.max(toastText.paintedWidth + 40, 200)
     height: 50
     radius: 8
     color: Qt.rgba(0, 0, 0, 1)

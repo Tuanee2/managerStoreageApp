@@ -17,7 +17,7 @@ set(CMAKE_AUTOMOC ON)
 
 set(PostgreSQL_ROOT "/Applications/Postgres.app/Contents/Versions/14")
 set(CMAKE_PREFIX_PATH "${PostgreSQL_ROOT}")
-link_directories("/Applications/Postgres.app/Contents/Versions/14/lib" "/Applications/Postgres.app/Contents/Versions/14/lib/postgresql")
+
 
 qt_add_executable(appLanHuyStore
     main.cpp

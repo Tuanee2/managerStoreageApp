@@ -69,16 +69,21 @@ Item {
             width: parent.width*0.96
             height: parent.height*0.12
             radius: 10
-            color: Qt.rgba(1, 1, 1, 0.3)
+            color: "white"
+            border.width: 1
+            border.color: Qt.rgba(0, 0, 0, 0.2)
 
             Rectangle{
                 id: typeQuerry
                 width: parent.width*0.1
-                height: parent.height*0.96
+                height: parent.height*0.7
                 anchors.left: parent.left
                 anchors.leftMargin: parent.width*0.01
                 anchors.verticalCenter: parent.verticalCenter
                 radius: 10
+                border.width: 1
+                border.color: ma4typeQuerry.containsMouse ? "#80bfff" : Qt.rgba(0, 0, 0, 0.2)
+                color: ma4typeQuerry.containsMouse ?  "#e6f0ff" : "transparent"
 
                 Text{
                     anchors.centerIn: parent
@@ -88,7 +93,9 @@ Item {
                 }
 
                 MouseArea {
+                    id: ma4typeQuerry
                     anchors.fill: parent
+                    hoverEnabled: true
                     onClicked: {
                         menuTypeQuerry.open()
                     }
@@ -124,7 +131,7 @@ Item {
             CustomSearchTextField{
                 id: customerInfo
                 width: parent.width*0.25
-                height: parent.height*0.96
+                height: parent.height*0.7
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: typeQuerry.right
                 anchors.leftMargin: parent.width*0.01
@@ -132,7 +139,7 @@ Item {
                 color: Qt.rgba( 1, 1, 1, 0.5)
                 placeholderText: "Nhập số điện thoại"
                 //text: rootWindow.customerName
-                //color4placeholder: "black"
+                color4placeholder: "black"
                 onSuggestionSelected: (data) => {
                     rootTransactionHistory.customerPhoneNumber = data.phoneNumber
                 }
@@ -144,7 +151,7 @@ Item {
             TextField {
                 id: daybegin
                 width: parent.width*0.2
-                height: parent.height*0.96
+                height: parent.height*0.7
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: customerInfo.right
                 anchors.leftMargin: parent.width*0.01
@@ -153,15 +160,17 @@ Item {
                 font.pixelSize: parent.height*0.3
                 inputMask: "00-00-0000;_"
                 background: Rectangle {
-                    color: Qt.rgba(0, 0, 0, 0.5)
+                    color: "transparent"
                     radius: 4
+                    border.width: 1
+                    border.color: (rootTransactionHistory.modeQuery === "CUSTOM") ? "#80bfff" : Qt.rgba(0, 0, 0, 0.2)
                 }
             }
 
             TextField {
                 id: dayfinish
                 width: parent.width*0.2
-                height: parent.height*0.96
+                height: parent.height*0.7
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: daybegin.right
                 anchors.leftMargin: parent.width*0.01
@@ -170,19 +179,24 @@ Item {
                 font.pixelSize: parent.height*0.3
                 inputMask: "00-00-0000;_"
                 background: Rectangle {
-                    color: Qt.rgba(0, 0, 0, 0.5)
+                    color: "transparent"
                     radius: 4
+                    border.width: 1
+                    border.color: (rootTransactionHistory.modeQuery === "CUSTOM") ? "#80bfff" : Qt.rgba(0, 0, 0, 0.2)
                 }
             }
 
             Rectangle {
                 id: queryButton
                 width: parent.width*0.18
-                height:parent.height*0.94
+                height:parent.height*0.7
                 radius:10
                 anchors.right: parent.right
                 anchors.rightMargin: parent.width*0.01
                 anchors.verticalCenter: parent.verticalCenter
+                border.width: 1
+                border.color: ma4queryButton.containsMouse ? "#80bfff" : Qt.rgba(0, 0, 0, 0.2)
+                color: ma4queryButton.containsMouse ?  "#e6f0ff" : "transparent"
 
                 Text{
                     anchors.centerIn: parent
@@ -191,8 +205,9 @@ Item {
                 }
 
                 MouseArea {
+                    id: ma4queryButton
                     anchors.fill:parent
-
+                    hoverEnabled: true
                     onClicked: {
                         let cmdData
                         if(rootTransactionHistory.modeQuery === "CUSTOM"){
@@ -290,26 +305,57 @@ Item {
                         width: transactionList.width
                         height: rootTransactionHistory.heightOrder
                         radius: 10
-                        color: Qt.rgba(1, 1, 1, 0.3)
+                        color: "#e6f0ff"
+                        border.width: 1
+                        border.color: Qt.rgba(0, 0, 0, 0.2)
+
+                        Button{
+                            id: iconName
+                            anchors.left: parent.left
+                            height: parent.height
+                            width: parent.height
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: "transparent"
+                            }
+                            icon.source: "qrc:/images/Icon/id-card.svg"
+                            icon.color: "#007bff"
+                        }
 
                         Rectangle{
-                            anchors.left: parent.left
+                            id: cusName
+                            anchors.left: iconName.right
                             height: parent.height
                             width: parent.width*0.3
                             radius: 10
                             color: "transparent"
 
                             Text{
-                                anchors.centerIn: parent
+                                anchors.left: parent.left
+                                //anchors.leftMargin: transactionList.width*0.01
+                                anchors.verticalCenter: parent.verticalCenter
                                 text: (modelData.customer_name === "") ? "Vô danh" : modelData.customer_name
-                                color: "white"
+                                color: "#003366"
                                 font.pixelSize: parent.height*0.3
                             }
                         }
 
+                        Button{
+                            id: iconPhonenumber
+                            anchors.left: cusName.right
+                            height: parent.height
+                            width: parent.height
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: "transparent"
+                            }
+                            icon.source: "qrc:/images/Icon/phone-rotary.svg"
+                            icon.color: "#007bff"
+                        }
+
                         Rectangle{
-                            anchors.left: parent.left
-                            anchors.leftMargin: parent.width*0.3
+                            id: cusPhonenumber
+                            anchors.left: iconPhonenumber.right
                             height: parent.height
                             width: parent.width*0.2
                             radius: 10
@@ -317,25 +363,39 @@ Item {
                             color: "transparent"
 
                             Text{
-                                anchors.centerIn: parent
+                                anchors.left: parent.left
+                                anchors.verticalCenter: parent.verticalCenter
                                 text: modelData.phone_number
-                                color: "white"
+                                color: "#003366"
                                 font.pixelSize: parent.height*0.3
                             }
                         }
 
+                        Button{
+                            id: iconPurchaseTime
+                            anchors.left: cusPhonenumber.right
+                            height: parent.height
+                            width: parent.height
+                            background: Rectangle {
+                                anchors.fill: parent
+                                color: "transparent"
+                            }
+                            icon.source: "qrc:/images/Icon/calendar-lines-pen.svg"
+                            icon.color: "#007bff"
+                        }
+
                         Rectangle{
-                            anchors.left: parent.left
-                            anchors.leftMargin: parent.width*0.5
+                            anchors.left: iconPurchaseTime.right
                             height: parent.height
                             width: parent.width*0.2
                             radius: 10
                             color: "transparent"
 
                             Text{
-                                anchors.centerIn: parent
+                                anchors.left: parent.left
+                                anchors.verticalCenter: parent.verticalCenter
                                 text: Qt.formatDate(new Date(modelData.purchase_time), "dd-MM-yyyy")
-                                color: "white"
+                                color: "#003366"
                                 font.pixelSize: parent.height*0.3
                             }
                         }

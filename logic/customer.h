@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QString>
+#include "configcommand.h"
 
 typedef enum {
     MALE,
@@ -26,17 +27,6 @@ enum class Rank{
 Rank QStringToRank(const QString& rank);
 QString rankToQString(Rank rank);
 QString rankForShow(Rank rank);
-
-enum class Debt{
-    NO_DEBT,
-    DEBT_BY_DATE,
-    DEBT_BY_SEASON,
-    INVALID
-};
-
-Debt QStringToDebt(const QString& debt);
-QString debtToQString(Debt debt);
-QString debtForShow(Debt debt);
 
 class Customer : public QObject
 {
