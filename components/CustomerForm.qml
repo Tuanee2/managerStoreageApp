@@ -105,6 +105,7 @@ Item {
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.leftMargin: parent.width*0.01
+            color: "transparent"
             Text {
                 text: "Tên : " + (rootCustomerForm.customer ? rootCustomerForm.customer["name"] : "")
                 color: "black"
@@ -122,6 +123,7 @@ Item {
             anchors.top: nameField.bottom
             anchors.left: parent.left
             anchors.leftMargin: parent.width*0.01
+            color: "transparent"
             Text {
                 text: "SĐT : " + (rootCustomerForm.customer ? rootCustomerForm.customer["phone_number"] : "")
                 color: "black"
@@ -138,6 +140,7 @@ Item {
             anchors.top: phonenumberField.bottom
             anchors.left: parent.left
             anchors.leftMargin: parent.width*0.01
+            color: "transparent"
             Text {
                 text: "Năm sinh : " + (rootCustomerForm.customer ? rootCustomerForm.customer["year_of_birth"] : "") 
                 color: "black"
@@ -154,6 +157,7 @@ Item {
             anchors.top: yearOfBirthField.bottom
             anchors.left: parent.left
             anchors.leftMargin: parent.width*0.01
+            color: "transparent"
             Text {
                 text: "Giới tính : " + ((rootCustomerForm.customer["gender"] === "MALE") ? "Nam" : "Nữ")
                 color: "black"

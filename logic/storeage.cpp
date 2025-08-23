@@ -375,6 +375,7 @@ void storeage::handleOrderListRequest(BaseCommand cmd){
             item["phone_number"] = order->getCustomerPhoneNumber();
             item["purchase_time"] = order->getPurchaseTime();
             item["data"] = Order::itemToListVariant(order->getListItem());
+            item["debt"] = debtToQString(order->getDebt());
             item["total_price"] = order->getTotalPrice();
             double profit = 0;
             for(Products* p : order->getListItem()){
@@ -406,6 +407,7 @@ void storeage::handleOrderListRequest(BaseCommand cmd){
                 result.append(item);
                 delete order;
             }
+            qDebug() << result.size();
         }
     }else{
         return;

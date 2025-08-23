@@ -29,6 +29,7 @@ Item {
         function onOrderListReady(object, cmd){
             if(cmd.getType === "LIST"){
                 rootOrderForm.orderObject = object[0];
+                console.log(rootOrderForm.orderObject["debt"])
             }
         }
     }
@@ -92,22 +93,29 @@ Item {
                         }
 
                         Rectangle{
-                            visible: rootOrderForm.orderObject["debt"] != "NO_DEBT"
                             id: debtStatus
                             width: parent.width*0.2
                             height: parent.height*0.9
-                            color: Qt.rgba(1.0, 0.6, 0.6, 1.0)
+                            color: (rootOrderForm.orderObject["debt"] == "NO_DEBT") ? Qt.rgba(0.6, 1.0, 0.6, 1.0) : Qt.rgba(1.0, 0.6, 0.6, 1.0)
                             radius: 8
                             anchors.right: parent.right
                             anchors.rightMargin: parent.width*0.01
                             anchors.verticalCenter: parent.verticalCenter
 
                             Text {
-                                text: (rootOrderForm.orderObject["debt"] === "DEBT_BY_DATE") ? "Nợ ngày" : "Nợ mùa"
+                                text: (rootOrderForm.orderObject["debt"] == "NO_DEBT") ? "Đã thanh toán" : (rootOrderForm.orderObject["debt"] === "DEBT_BY_DATE") ? "Nợ ngày" : "Nợ mùa"
                                 font.pixelSize: parent.height * 0.4
                                 color: "white"
                                 anchors.centerIn: parent
                                 font.bold: true
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                enabled: rootOrderForm.orderObject["debt"] != "NO_DEBT"
+                                onClicked:{
+                                    debtPaymentDialog.open()
+                                }
                             }
                         }
                     }
@@ -410,6 +418,89 @@ Item {
                     }
                 }
             }
+        }
+    }
+
+    Dialog {
+        id: debtPaymentDialog
+        title: "Xác nhận thanh toán công nợ"
+        modal: true
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        visible: false
+        width: parent.width * 0.4
+        height: parent.height * 0.5
+
+        property real totalDebt: rootOrderForm.orderObject["total_price"] // Hoặc phần còn nợ
+        property real paymentAmount: 0
+
+        Column {
+            anchors.fill: parent
+            anchors.margins: 20
+            spacing: 10
+
+            CheckBox {
+                id: payAllCheck
+                text: "Trả toàn bộ số tiền còn lại (" + rootOrderForm.formatMoney(debtPaymentDialog.totalDebt) + " VNĐ)"
+                onCheckedChanged: {
+                    if (checked) {
+                        amountField.text = rootOrderForm.formatMoney(debtPaymentDialog.totalDebt);
+                        amountField.enabled = false;
+                        percentField.text = "100"
+                        percentField.enabled = false;
+                        paymentAmount = debtPaymentDialog.totalDebt
+                    } else {
+                        amountField.enabled = true;
+                        amountField.text = ""
+                        percentField.enabled = true;
+                        percentField.text = ""
+                    }
+                }
+            }
+
+            TextField {
+                id: amountField
+                width: parent.width*0.8
+                height: parent.height*0.35
+                font.pixelSize: height*0.3
+                placeholderText: "Nhập số tiền muốn trả (VNĐ)"
+                inputMethodHints: Qt.ImhDigitsOnly
+                enabled: true
+                onTextChanged: {
+                    if (!payAllCheck.checked) {
+                        debtPaymentDialog.paymentAmount = parseFloat(text) || 0
+                    }
+                }
+            }
+
+            TextField {
+                id: percentField
+                width: parent.width*0.8
+                height: parent.height*0.35
+                font.pixelSize: height*0.3
+                placeholderText: "Nhập phần trăm muốn trả (%)"
+                inputMethodHints: Qt.ImhDigitsOnly
+                enabled: true
+                onTextChanged: {
+                    if (!payAllCheck.checked) {
+                        let percent = parseFloat(text)
+                        if (percent >= 0 && percent <= 100) {
+                            debtPaymentDialog.paymentAmount = debtPaymentDialog.totalDebt * percent / 100
+                        }
+                    }
+                }
+            }
+
+            Text {
+                text: "→ Số tiền sẽ thanh toán: " + rootOrderForm.formatMoney(paymentAmount) + " VNĐ"
+                font.pixelSize: 16
+                color: "blue"
+            }
+        }
+
+        onAccepted: {
+            // Gửi paymentAmount đi
+            console.log("Sẽ trả: " + paymentAmount)
+            // controller.payDebt(orderId, paymentAmount)
         }
     }
 }

@@ -195,6 +195,7 @@ Item {
                     Layout.fillWidth: true
 
                     Rectangle{
+                        id: colInfo
                         anchors.left: parent.left
                         anchors.verticalCenter: parent.verticalCenter
                         height: parent.height
@@ -209,13 +210,13 @@ Item {
                             anchors.leftMargin: parent.width*0.05
                             Text {
                                 text: "Tên: " + modelData["productName"]
-                                font.pixelSize: rootWindow.baseFontSize*0.9
+                                font.pixelSize: colInfo.height * 0.3
                                 color: "black"
                             }
 
                             Text {
                                 text: "Giá: " + rootProductList.formatMoney(modelData["cost"]) + " VND / " + modelData["unit"]
-                                font.pixelSize: rootWindow.baseFontSize*0.9
+                                font.pixelSize: colInfo.height * 0.3
                                 color: "black"
                             }
                         }

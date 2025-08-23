@@ -99,6 +99,14 @@ QList<Products*> Order::QStringToItems(const QString& data){
     return list;
 }
 
+double Order::getDebtAmount(){
+    return debtAmount;
+}
+
+void Order::setDebtAmount(double amount){
+    this->debtAmount = amount;
+}
+
 QString Order::itemToQString(const QList<Products*>& item){
     QJsonArray array;
     for (const Products* p : item) {

@@ -50,6 +50,8 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
         radius: 10
+        border.width: 1
+        border.color: Qt.rgba(0, 0, 0, 0.3)
         Rectangle {
             id: mainContentTransaction
             width: parent.width*0.98
@@ -167,6 +169,12 @@ Item {
                     }
 
                     Rectangle {
+                        width: parent.width
+                        height: 2
+                        color: "#80bfff"
+                    }
+
+                    Rectangle {
                         id: orderInfo
                         width: mainTransaction.width
                         height: mainTransaction.height*0.21
@@ -250,6 +258,12 @@ Item {
                     }
 
                     Rectangle {
+                        width: parent.width
+                        height: 2
+                        color: "#80bfff"
+                    }
+
+                    Rectangle {
                         id: orderInfoDetail
                         width: mainTransaction.width
                         height: mainTransaction.height*0.07
@@ -269,12 +283,14 @@ Item {
                         delegate: Rectangle {
                             width: mainContentTransaction.width
                             height: mainContentTransaction.height*0.14
-                            color: Qt.rgba(0, 0, 0, 0.2)
+                            color: Qt.rgba(245/255, 245/255, 250/255, 1)
+                            border.width: 2
+                            border.color: "#80bfff"
                             radius: 10
                             
                             Rectangle {
                                 id: nameOfProduct
-                                width: parent.width * 0.5
+                                width: parent.width * 0.6
                                 height: parent.height 
                                 anchors.left: parent.left
                                 anchors.verticalCenter: parent.verticalCenter
@@ -282,7 +298,7 @@ Item {
 
                                 Rectangle {
                                     id: pName
-                                    width: parent.width*0.4
+                                    width: parent.width*0.5
                                     height: parent.height*0.5
                                     anchors.top: parent.top
                                     anchors.left: parent.left
@@ -291,7 +307,7 @@ Item {
                                         anchors.left: parent.left
                                         anchors.leftMargin: parent.width*0.01
                                         anchors.verticalCenter: parent.verticalCenter
-                                        text: "Tên sản phẩm: " + modelData.productName
+                                        text: "Tên sp: " + modelData.productName
                                         color: "black"
                                         font.pixelSize: parent.height*0.4
                                     }
@@ -299,7 +315,7 @@ Item {
 
                                 Rectangle {
                                     id: pQuantity
-                                    width: parent.width*0.4
+                                    width: parent.width*0.5
                                     height: parent.height*0.5
                                     anchors.bottom: parent.bottom
                                     anchors.left: anchors.left
@@ -309,25 +325,56 @@ Item {
                                         anchors.left: parent.left
                                         anchors.leftMargin: parent.width*0.01
                                         anchors.verticalCenter: parent.verticalCenter
-                                        text: "Số sản phẩm: " + modelData.numOfItem
+                                        text: "Số sp: " + modelData.numOfItem
                                         color: "black"
                                         font.pixelSize: parent.height*0.4
+                                    }
+                                }
+
+                                Rectangle{
+                                    anchors.top: parent.top
+                                    anchors.left: pName.right
+                                    width: parent.width*0.1
+                                    height: parent.height*0.5
+                                    color: "transparent"
+                                    Text {
+                                        text: "Giá: "
+                                        font.pixelSize: parent.height*0.4
+                                        anchors.left: parent.left
+                                        anchors.leftMargin: parent.width*0.01
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                }
+
+                                TextField {
+                                    id: costPerItem
+                                    anchors.top: parent.top
+                                    anchors.topMargin: parent.height*0.02
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: parent.width*0.6
+                                    width: parent.width*0.4
+                                    height: parent.height*0.47
+                                    text: modelData.price
+                                    color: "black"
+                                    onTextChanged: {
+                                        modelData.price = parseInt(text) || 0;
                                     }
                                 }
 
                                 Rectangle {
                                     id: pCost
                                     anchors.bottom: parent.bottom
+                                    anchors.bottomMargin: parent.height * 0.02
                                     anchors.left: pName.right
-                                    width: parent.width*0.6
-                                    height: parent.height*0.5
+                                    width: parent.width*0.5
+                                    height: parent.height*0.47
                                     color: "transparent"
 
                                     Text {
                                         anchors.left: parent.left
                                         anchors.leftMargin: parent.width*0.01
                                         anchors.verticalCenter: parent.verticalCenter
-                                        text: "Giá: " + transaction.formatMoney(modelData.price * modelData.numOfItem) + " VNĐ"
+                                        text: "Giá tổng: " + transaction.formatMoney(modelData.price * modelData.numOfItem) + " VNĐ"
                                         color: "black"
                                         font.pixelSize: parent.height*0.4
                                     }
@@ -338,44 +385,44 @@ Item {
                             Rectangle {
                                 id: forSale
                                 anchors.right: parent.right
-                                anchors.rightMargin: parent.height*2
+                                anchors.rightMargin: parent.height
                                 anchors.verticalCenter: parent.verticalCenter
                                 width: parent.width*0.5 - parent.height*2
                                 height: parent.height
                                 color: "transparent"
                             }
 
-                            Rectangle {
-                                id: updateBatch
-                                width: parent.height
-                                height: parent.height
-                                radius: 8
-                                anchors.right: parent.right
-                                anchors.rightMargin: parent.height
-                                color: "transparent"
+                            // Rectangle {
+                            //     id: updateBatch
+                            //     width: parent.height
+                            //     height: parent.height
+                            //     radius: 8
+                            //     anchors.right: parent.right
+                            //     anchors.rightMargin: parent.height
+                            //     color: "transparent"
 
-                                Button{
-                                    anchors.fill: parent
-                                    background: Rectangle{
-                                        anchors.fill: parent
-                                        radius: 8
+                            //     Button{
+                            //         anchors.fill: parent
+                            //         background: Rectangle{
+                            //             anchors.fill: parent
+                            //             radius: 8
 
-                                    }
-                                    icon.source: "qrc:/images/Icon/refresh.svg"
+                            //         }
+                            //         icon.source: "qrc:/images/Icon/refresh.svg"
 
 
-                                }
+                            //     }
 
-                                MouseArea {
-                                    id: maupdateBatch
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-                                    onClicked: {
+                            //     MouseArea {
+                            //         id: maupdateBatch
+                            //         anchors.fill: parent
+                            //         hoverEnabled: true
+                            //         onClicked: {
 
-                                    }
-                                }
+                            //         }
+                            //     }
                                 
-                            }
+                            // }
 
                             Rectangle{
                                 id: deleteProductChoice

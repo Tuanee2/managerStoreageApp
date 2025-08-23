@@ -181,7 +181,7 @@ Item {
                                 anchors.left: parent.left
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: "Tên: " + modelData["name"]
-                                font.pixelSize: rootWindow.baseFontSize*0.9
+                                font.pixelSize: parent.height * 0.4
                                 color: "black"
                             }
                         }
@@ -211,7 +211,7 @@ Item {
                                 anchors.left: parent.left
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: "SĐT: " + modelData["phone_number"]
-                                font.pixelSize: rootWindow.baseFontSize*0.9
+                                font.pixelSize: parent.height * 0.4
                                 color: "black"
                             }
                         }

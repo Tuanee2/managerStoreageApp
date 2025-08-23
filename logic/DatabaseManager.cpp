@@ -80,6 +80,7 @@ bool DatabaseManager::initialize(){
             "export_date TEXT NOT NULL,"
             "data TEXT NOT NULL,"
             "debt TEXT NOT NULL,"
+                                         ""
             "notes TEXT NOT NULL"
             ")";
 
@@ -926,7 +927,7 @@ QList<Order*> DatabaseManager::getOrderByPage(cmdContext cmd, const QString& key
 Order* DatabaseManager::getOrderById(const QString& id){
     Order* order = new Order();
     QSqlQuery query;
-    QString sql = "SELECT customer_name, phone_number, export_date, data, notes FROM orders WHERE id = :id";
+    QString sql = "SELECT customer_name, phone_number, export_date, data, debt, notes FROM orders WHERE id = :id";
     query.prepare(sql);
     query.bindValue(":id",id);
 
@@ -940,7 +941,8 @@ Order* DatabaseManager::getOrderById(const QString& id){
         order->setCustomerPhoneNumber(query.value(1).toString());
         order->setPurchaseTime(QDateTime::fromString(query.value(2).toString(), "yyyy-MM-dd"));
         order->setListItem(Order::QStringToItems(query.value(3).toString()));
-        order->setNote(query.value(4).toString());
+        order->setDebt(query.value(4).toString());
+        order->setNote(query.value(5).toString());
     }
 
     return order;

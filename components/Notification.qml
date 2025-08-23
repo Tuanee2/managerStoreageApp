@@ -7,13 +7,17 @@ Item {
     id: rootNotification
     anchors.fill: parent
 
-    property int currentPage: 0
+    property int currentPageBatch: 0
+    property int currentPageOrder: 0
     property int itemPerPage: 6
     property bool isLeft: false
     property bool isRight: false
     property int pointer: 0
 
+    property string idBatchDelete: ""
+
     property var batches: []
+    property var orders: []
 
     Component.onCompleted: {
         let cmdData = {
@@ -21,7 +25,7 @@ Item {
             typelist: "EXPIREDDATE",
             duration: "AMONTH"
         }
-        controller.requestBatchList(cmdData, "", "", rootNotification.itemPerPage, rootNotification.currentPage)
+        controller.requestBatchList(cmdData, "", "", rootNotification.itemPerPage, rootNotification.currentPageBatch)
 
     }
 
@@ -30,6 +34,10 @@ Item {
         function onBatchListReady(list, cmd){
             rootNotification.batches = list;
             updatePageFlags(list.length)
+        }
+        function onOrderListReady(list, cmd){
+            rootNotification.orders = list;
+            
         }
     }
 
@@ -75,7 +83,7 @@ Item {
                 onClicked: {
                     if(rootNotification.pointer != 0){
                         rootNotification.pointer = 0
-                        rootNotification.currentPage = 0
+                        // rootNotification.currentPage = 0
                         let cmdData = {
                             cmd: "LIST",
                             typelist: "EXPIREDDATE",
@@ -113,7 +121,7 @@ Item {
                 onClicked: {
                     if(rootNotification.pointer != 1){
                         rootNotification.pointer = 1
-                        rootNotification.currentPage = 0
+                        // rootNotification.currentPageOrder = 0
                         let cmdData = {
                             command: "GET",
                             target: "ORDER",
@@ -123,7 +131,7 @@ Item {
                             filters: {
                                 debt: ""
                             },
-                            page: rootNotification.currentPage,
+                            page: rootNotification.currentPageOrder,
                             pageSize: rootNotification.itemPerPage
                         }
                         controller.requestOrderList(cmdData)
@@ -148,7 +156,7 @@ Item {
             spacing: notificationList.height*0.01
 
             Repeater{
-                model: rootNotification.batches
+                model: (rootNotification.pointer === 0) ? rootNotification.batches : rootNotification.orders
 
                 delegate: Loader {
                     property var itemData: modelData 
@@ -162,7 +170,7 @@ Item {
                     width: notificationList.width
                     height: notificationList.height*0.15
                     radius: 8
-                    color: "white"
+                    color: maExpiredDelegate.containsMouse ?  "#e6f0ff" : "white"
                     border.width: 1
                     border.color: Qt.rgba(0, 0, 0, 0.2)
 
@@ -244,6 +252,16 @@ Item {
                             font.pixelSize: parent.height*0.4
                         }
 
+                    }
+
+                    MouseArea {
+                        id: maExpiredDelegate
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onClicked: {
+                            rootNotification.idBatchDelete = itemData.id
+                            throughBatch.open()
+                        }
 
                     }
                 }
@@ -363,6 +381,17 @@ Item {
             }
         }
 
+    }
+
+    Dialog {
+        id: throughBatch
+        title: "Bạn có muốn bỏ lô hàng ko"
+        standardButtons: Dialog.Yes | Dialog.No
+        anchors.centerIn: parent
+        visible: false
+        onAccepted: {
+
+        }
     }
 
 }

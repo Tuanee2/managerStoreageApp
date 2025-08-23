@@ -69,9 +69,11 @@ Item {
                     border.color: Qt.rgba( 0, 0, 0, 0.2)
                     border.width: 1
                     Layout.fillWidth: true
+                    clip: true
 
 
                     Rectangle{
+                        id: proudctColInfo
                         anchors.left: parent.left
                         anchors.verticalCenter: parent.verticalCenter
                         height: parent.height
@@ -86,13 +88,13 @@ Item {
                             anchors.leftMargin: parent.width*0.05
                             Text {
                                 text: "Tên: " + modelData["productName"]
-                                font.pixelSize: rootWindow.baseFontSize*0.9
+                                font.pixelSize: proudctColInfo.height * 0.3
                                 color: ma4choice.containsMouse ? "#003366" : "black"
                             }
 
                             Text {
                                 text: "Giá: " + modelData["cost"] + " VND"
-                                font.pixelSize: rootWindow.baseFontSize*0.9
+                                font.pixelSize: proudctColInfo.height * 0.3
                                 color: ma4choice.containsMouse ? "#003366" : "black"
                             }
                         }
@@ -108,7 +110,7 @@ Item {
                             anchors.left: parent.left
                             anchors.verticalCenter: parent.verticalCenter
                             text: "số hàng còn trong kho: " + modelData["numOfProduct"]
-                            font.pixelSize: rootWindow.baseFontSize*0.9
+                            font.pixelSize: parent.height * 0.3
                             color: ma4choice.containsMouse ? "#003366" : "black"
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
