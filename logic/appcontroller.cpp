@@ -283,6 +283,13 @@ void appcontroller::requestOrderCommand(QVariantMap cmdData){
         order.setPurchaseTime(QDateTime::fromString(cmdData["data"].toMap().value("purchasetime").toString(), "dd-MM-yyyy"));
         order.setNote(cmdData["data"].toMap().value("note").toString());
         order.setDebt(cmdData["data"].toMap().value("debt").toString());
+        order.setTotalCents(order.getTotalPrice());
+        order.setDiscount(cmdData["data"].toMap().value("discount").toDouble());
+        if(order.getDebt() == Debt::NO_DEBT){
+            order.setPaidCents(order.getTotalPrice() - order.getDiscount());
+        }else{
+            order.setPaidCents(0);
+        }
         QVariantMap outerData = cmdData.value("data").toMap(); 
         outerData["data"] = order.toJson(); 
         cmdData["data"] = outerData;

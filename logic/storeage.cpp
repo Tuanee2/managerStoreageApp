@@ -384,6 +384,8 @@ void storeage::handleOrderListRequest(BaseCommand cmd){
                 }
             }
             item["profit"] = profit;
+            item["paid_cents"] = order->getPaidCents();
+            item["discount"] = order->getDiscount();
             result.append(item);
             delete order;
         }else if(cmd.fetchMode == FetchMode::MULTIPLE){
@@ -404,6 +406,8 @@ void storeage::handleOrderListRequest(BaseCommand cmd){
                     }
                 }
                 item["profit"] = profit;
+                item["paid_cents"] = order->getPaidCents();
+                item["discount"] = order->getDiscount();
                 result.append(item);
                 delete order;
             }

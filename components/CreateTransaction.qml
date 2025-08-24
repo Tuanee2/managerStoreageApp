@@ -9,6 +9,7 @@ Item {
     property int numOfProduct: 0
     property int numOfItem: 0
     property int totalPrice: 0
+    property int discount: 0
     property var order: []
 
 
@@ -664,7 +665,8 @@ Item {
                     phonenumber: phoneSearch.text,
                     purchasetime: purchaseTimeTextField.text,
                     note: forNote.text,
-                    debt: debtMode
+                    debt: debtMode,
+                    discount: tf4promotion.text
                 }
             }
             controller.requestOrderCommand(cmdData);

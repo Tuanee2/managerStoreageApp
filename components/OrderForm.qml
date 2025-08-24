@@ -29,7 +29,6 @@ Item {
         function onOrderListReady(object, cmd){
             if(cmd.getType === "LIST"){
                 rootOrderForm.orderObject = object[0];
-                console.log(rootOrderForm.orderObject["debt"])
             }
         }
     }
@@ -398,6 +397,19 @@ Item {
                             font.bold: true
                         }
 
+                    }
+
+                    Rectangle {
+                        width: mainContentOrderInfo.width
+                        height: mainContentOrderInfo.height*0.07
+                        color: "transparent"
+                        Text {
+                            anchors.left: parent.left
+                            anchors.leftMargin: mainContentOrderInfo.width*0.01
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: "Giảm giá: " + rootOrderForm.formatMoney(rootOrderForm.orderObject["discount"]) + " VNĐ"
+                            font.pixelSize: parent.height*0.4
+                        }
                     }
 
                     Rectangle {

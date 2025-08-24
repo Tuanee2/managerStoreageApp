@@ -79,8 +79,10 @@ bool DatabaseManager::initialize(){
             "phone_number TEXT NOT NULL,"
             "export_date TEXT NOT NULL,"
             "data TEXT NOT NULL,"
+            "total_cents REAL NOT NULL,"
+            "paid_cents REAL NOT NULL,"
+            "discount REAL NOT NULL,"
             "debt TEXT NOT NULL,"
-                                         ""
             "notes TEXT NOT NULL"
             ")";
 
@@ -738,7 +740,8 @@ bool DatabaseManager::insertOrder(Order& order){
 
     QString phone = order.getCustomerPhoneNumber();
     if (phone.isEmpty()) {
-        phone = "0000000000";  // nếu thiếu số điện thoại, dùng toàn số 0
+        phone = "0000000000";
+        order.setCustomerPhoneNumber(phone);        // nếu thiếu số điện thoại, dùng toàn số 0
     }
 
     if(!order.getCustomerPhoneNumber().isEmpty()){
@@ -769,15 +772,17 @@ bool DatabaseManager::insertOrder(Order& order){
     QString orderId = QString("%1_%2_%3").arg(phone, date, numberStr);
 
     QSqlQuery query;
-    query.prepare("INSERT INTO orders (id, customer_name, phone_number, export_date, debt, data, notes) "
-                  "VALUES (?, ?, ?, ?, ?, ?, ?)");
+    query.prepare("INSERT INTO orders (id, customer_name, phone_number, export_date, debt, data, total_cents, paid_cents, discount, notes) "
+                  "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     query.addBindValue(orderId);
     query.addBindValue(name);
     query.addBindValue(order.getCustomerPhoneNumber());
     query.addBindValue(order.getPurchaseTime().toString("yyyy-MM-dd"));
     query.addBindValue(debtToQString(order.getDebt()));
-    qDebug() << debtToQString(order.getDebt());
     query.addBindValue(Order::itemToQString(order.getListItem()));
+    query.addBindValue(order.getTotalCents());
+    query.addBindValue(order.getPaidCents());
+    query.addBindValue(order.getDiscount());
     query.addBindValue(order.getNote());
 
     if (!query.exec()) {
@@ -824,7 +829,7 @@ bool DatabaseManager::deleteOrder(const QString& customerName, const QString& ph
 QList<Order*> DatabaseManager::getOrder(const QString& customerName, const QString& phoneNumber, const QDateTime& purchaseTime, int numOfOrder, int numpage){
     QList<Order*> list;
     QSqlQuery query;
-    QString sql = "SELECT customer_name, phone_number, export_date, data, notes FROM orders WHERE 1=1";
+    QString sql = "SELECT customer_name, phone_number, export_date, data, total_cents, paid_cents, discount, notes FROM orders WHERE 1=1";
 
     if (!customerName.isEmpty()) {
         sql += " AND customer_name = :customer_name";
@@ -863,13 +868,16 @@ QList<Order*> DatabaseManager::getOrder(const QString& customerName, const QStri
     }
 
     while (query.next()) {
-        Order* o = new Order();
-        o->setCustomerName(query.value(0).toString());
-        o->setCustomerPhoneNumber(query.value(1).toString());
-        o->setPurchaseTime(QDateTime::fromString(query.value(2).toString(), "yyyy-MM-dd"));
-        o->QStringToItems(query.value(3).toString());
-        o->setNote(query.value(4).toString());
-        list.append(o);
+        Order* order = new Order();
+        order->setCustomerName(query.value(0).toString());
+        order->setCustomerPhoneNumber(query.value(1).toString());
+        order->setPurchaseTime(QDateTime::fromString(query.value(2).toString(), "yyyy-MM-dd"));
+        order->QStringToItems(query.value(3).toString());
+        order->setTotalCents(query.value(4).toDouble());
+        order->setPaidCents(query.value(5).toDouble());
+        order->setDiscount(query.value(6).toDouble());
+        order->setNote(query.value(7).toString());
+        list.append(order);
     }
 
     return list;
@@ -927,7 +935,7 @@ QList<Order*> DatabaseManager::getOrderByPage(cmdContext cmd, const QString& key
 Order* DatabaseManager::getOrderById(const QString& id){
     Order* order = new Order();
     QSqlQuery query;
-    QString sql = "SELECT customer_name, phone_number, export_date, data, debt, notes FROM orders WHERE id = :id";
+    QString sql = "SELECT customer_name, phone_number, export_date, data, debt, total_cents, paid_cents, discount, notes FROM orders WHERE id = :id";
     query.prepare(sql);
     query.bindValue(":id",id);
 
@@ -942,7 +950,10 @@ Order* DatabaseManager::getOrderById(const QString& id){
         order->setPurchaseTime(QDateTime::fromString(query.value(2).toString(), "yyyy-MM-dd"));
         order->setListItem(Order::QStringToItems(query.value(3).toString()));
         order->setDebt(query.value(4).toString());
-        order->setNote(query.value(5).toString());
+        order->setTotalCents(query.value(5).toDouble());
+        order->setPaidCents(query.value(6).toDouble());
+        order->setDiscount(query.value(7).toDouble());
+        order->setNote(query.value(8).toString());
     }
 
     return order;
@@ -955,7 +966,7 @@ QList<Order*> DatabaseManager::getOrderByPeriod(const QString& customerName, con
 QList<Order*> DatabaseManager::getOrderByCustomCommand(BaseCommand command){
     QList<Order* > list;
     QSqlQuery query;
-    QString sql = "SELECT id, customer_name, phone_number, export_date, data, debt, notes FROM orders WHERE 1=1";
+    QString sql = "SELECT id, customer_name, phone_number, export_date, data, debt, total_cents, paid_cents, discount, notes FROM orders WHERE 1=1";
     if(command.filters.contains("phonenumber")){
         sql += " AND phone_number = :phoneNumber";
     }
@@ -1015,7 +1026,10 @@ QList<Order*> DatabaseManager::getOrderByCustomCommand(BaseCommand command){
         order->setPurchaseTime(QDateTime::fromString(query.value(3).toString(), "yyyy-MM-dd"));
         order->setListItem(Order::QStringToItems(query.value(4).toString()));
         order->setDebt(query.value(5).toString());
-        order->setNote(query.value(6).toString());
+        order->setTotalCents(query.value(6).toDouble());
+        order->setPaidCents(query.value(7).toDouble());
+        order->setDiscount(query.value(8).toDouble());
+        order->setNote(query.value(9).toString());
         list.append(order);
     }
     

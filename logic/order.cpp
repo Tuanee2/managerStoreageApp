@@ -20,7 +20,7 @@ Order::Order(const Order& other){
         this->item.append(new Products(*p));  // dùng copy constructor của Products
     }
     this->purchaseTime = other.purchaseTime;
-    this->note = note;
+    this->note = other.note;
 }
 
 Order::~Order() {
@@ -99,12 +99,29 @@ QList<Products*> Order::QStringToItems(const QString& data){
     return list;
 }
 
-double Order::getDebtAmount(){
-    return debtAmount;
+double Order::getTotalCents(){
+    return total_cents;
 }
 
-void Order::setDebtAmount(double amount){
-    this->debtAmount = amount;
+void Order::setTotalCents(double totalCents){
+    this->total_cents = totalCents;
+}
+
+double Order::getPaidCents(){
+    return paid_cents;
+}
+
+void Order::setPaidCents(double paidCents){
+    if(paidCents > this->total_cents) return;
+    this->paid_cents = paidCents;
+}
+
+double Order::getDiscount(){
+    return discount;
+}
+
+void Order::setDiscount(double discount){
+    this->discount = discount; 
 }
 
 QString Order::itemToQString(const QList<Products*>& item){
@@ -150,6 +167,9 @@ QJsonObject Order::toJson() const {
         itemArray.append(p->toJson());
     }
     obj["items"] = itemArray;
+    obj["total_cents"] = total_cents;
+    obj["paid_cents"] = paid_cents;
+    obj["discount"] = discount;
     obj["note"] = note;
     return obj;
 }
@@ -166,9 +186,13 @@ Order* Order::fromJson(const QJsonObject& obj) {
         list.append(Products::fromJson(val.toObject()));
     }
     o->setListItem(list);
+    o->setTotalCents(obj["total_cents"].toDouble());
+    o->setPaidCents(obj["paid_cents"].toDouble());
+    o->setDiscount(obj["discount"].toDouble());
     o->setNote(obj["note"].toString());
     return o;
 }
+
 QList<QVariant> Order::itemToListVariant(const QList<Products*>& item) {
     QList<QVariant> list;
     for (Products* p : item) {

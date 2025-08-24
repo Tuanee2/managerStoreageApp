@@ -25,7 +25,9 @@ private:
     QDateTime purchaseTime;
     QString note;
     Debt debt;
-    double debtAmount;
+    double total_cents = 0;
+    double paid_cents = 0;
+    int discount = 0;
 
 public:
     QString getId() const;
@@ -42,8 +44,12 @@ public:
     void setNote(const QString& note);
     Debt getDebt() const;
     void setDebt(const QString& debt);
-    double getDebtAmount();
-    void setDebtAmount(double amount);
+    double getTotalCents();
+    void setTotalCents(double totalCents);
+    double getPaidCents();
+    void setPaidCents(double paidCents);
+    double getDiscount();
+    void setDiscount(double discount);
     static QList<Products*> QStringToItems(const QString& data);
     static QString itemToQString(const QList<Products*>& item);
     static QList<QVariant> itemToListVariant(const QList<Products*>& item);
