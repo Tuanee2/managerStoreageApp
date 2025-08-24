@@ -17,6 +17,8 @@ Item {
     property bool isRight: false
     property string updateName: ""
     property int updatecost: 0
+    property string lastName: ""
+    property int lastPrice: 0
 
     Component.onCompleted: {
         let cmdData = {
@@ -46,10 +48,11 @@ Item {
         target: controller
         function onProductListReady(list, cmd) {
             if(cmd.mode === "SINGLE"){
-                console.log(list.length)
                 productDetail.products = list
                 productDetail.updateName = list[0].productName
+                productDetail.lastName = list[0].productName
                 productDetail.updatecost = list[0].cost
+                productDetail.lastPrice = list[0].cost
             }
         }
     }
@@ -75,6 +78,9 @@ Item {
             width: parent.width * 0.9
             height: parent.height * 0.2
             color: "transparent"
+            border.width: 1
+            border.color: "#80bfff"
+            radius: 8
 
             property bool editEnabled: false
 
@@ -82,6 +88,7 @@ Item {
                 width: parent.width*0.3
                 height: parent.height*0.4
                 anchors.left: parent.left
+                anchors.leftMargin: parent.width*0.01
                 anchors.top: parent.top
                 anchors.topMargin: parent.height*0.05
                 radius: 10
@@ -89,8 +96,8 @@ Item {
 
                 Text {
                     width: parent.width*0.3
-                    height: parent.height
                     anchors.left: parent.left
+                    anchors.leftMargin: parent.width*0.01
                     anchors.verticalCenter: parent.verticalCenter
                     color: "black"
                     text: "Tên :"
@@ -114,6 +121,7 @@ Item {
                 width: parent.width*0.3
                 height: parent.height*0.4
                 anchors.left: parent.left
+                anchors.leftMargin: parent.width*0.01
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: parent.height*0.05
                 radius: 10
@@ -121,8 +129,8 @@ Item {
 
                 Text {
                     width: parent.width*0.3
-                    height: parent.height
                     anchors.left: parent.left
+                    anchors.leftMargin: parent.width*0.01
                     anchors.verticalCenter: parent.verticalCenter
                     color: "black"
                     text: "Giá :"
@@ -142,10 +150,6 @@ Item {
 
             }
 
-            Rectangle{
-
-            }
-
             // 
             Rectangle{
                 id: lockUpdateInfo
@@ -155,6 +159,8 @@ Item {
                 anchors.top : parent.top
                 anchors.topMargin: parent.height*0.05
                 radius: 8
+                border.width: 1
+                border.color: baseInfo.editEnabled ? "transparent" : "black"
                 color: baseInfo.editEnabled ? 
                     (malockUpdateInfo.containsMouse ? Qt.rgba( 73/255, 145/255, 230/255, 1) : Qt.rgba( 53/255, 125/255, 210/255, 1) ) : 
                     (malockUpdateInfo.containsMouse ? Qt.rgba(1, 1, 1, 0.5) : Qt.rgba(1, 1, 1, 0.2))
@@ -162,7 +168,7 @@ Item {
                 Text {
                     anchors.centerIn: parent
                     text: baseInfo.editEnabled ? "Khoá" : "Mở khoá"
-                    color: "white" 
+                    color: baseInfo.editEnabled ? "white" : "black"
                     font.pixelSize: parent.height*0.4
 
                 }
@@ -190,6 +196,9 @@ Item {
                 anchors.bottom : parent.bottom
                 anchors.bottomMargin: parent.height*0.05
                 radius: 8
+                border.width: 1
+                border.color: baseInfo.editEnabled ? "transparent" : "black"
+
                 color: baseInfo.editEnabled ? 
                     (maupdateInfo.containsMouse ? Qt.rgba( 73/255, 145/255, 230/255, 1) : Qt.rgba( 53/255, 125/255, 210/255, 1) ) : 
                     Qt.rgba(1, 1, 1, 0.2)
@@ -210,6 +219,23 @@ Item {
                     onClicked: {
                         if(baseInfo.editEnabled){
                             baseInfo.editEnabled = !baseInfo.editEnabled
+                            if(nameField.text === productDetail.lastName && costField.text === productDetail.lastPrice.toString()){
+                                rootWindow.notification.showNotification("⚠️ Thông tin sản phẩm không thay đổi !!!");
+                            }else{
+                                let cmdData = {
+                                    command: "UPDATE",
+                                    target: "PRODUCT",
+                                    infoKind: "OBJECT",
+                                    mode: "SINGLE",
+                                    data: {
+                                        newName: nameField.text,
+                                        newPrice: costField.text,
+                                        lastName: productDetail.updateName
+                                    }
+                                }
+                                controller.requestProductCommand(cmdData)
+                            }
+
                         }else{
                              rootWindow.notification.showNotification("⚠️ Nhấn mở khoá để cập nhật !!!");
                         }
@@ -221,9 +247,10 @@ Item {
         Rectangle{
             id: batchInfo
             anchors.top: baseInfo.bottom
+            anchors.topMargin: parent.height*0.02
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width*0.9
-            height: parent.height*0.75
+            height: parent.height*0.7
             // liệt kê các lô sản phẩm 
             color: "transparent"
             clip: true
@@ -237,7 +264,9 @@ Item {
                 delegate: Rectangle{
                     width: batchInfo.width
                     height: batchInfo.height*0.18
-                    color: Qt.rgba(1, 1, 1, 0.3)
+                    color: Qt.rgba(245/255, 245/255, 250/255, 1)
+                    border.width: 1
+                    border.color: "#80bfff"
                     radius: 8
                     Rectangle {
                         anchors.left: parent.left
@@ -248,7 +277,7 @@ Item {
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "Số lượng: " + modelData.quantity
-                            color: "white"
+                            color: "black"
                             font.pixelSize: 20
                         }
 
@@ -265,7 +294,7 @@ Item {
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "| Giá 1 sản phẩm: " + Number(modelData.cost).toLocaleString(Qt.locale(), 'f', 0) + " VND"
-                            color: "white"
+                            color: "black"
                             font.pixelSize: 18
                         }
                     }
@@ -279,7 +308,7 @@ Item {
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "| Giá lô hàng: " + Number(modelData.cost * modelData.quantity).toLocaleString(Qt.locale(), 'f', 0) + " VND"
-                            color: "white"
+                            color: "black"
                             font.pixelSize: 18
                         }
                     }
@@ -295,7 +324,7 @@ Item {
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "| Ngày nhập hàng: " + Qt.formatDate(new Date(modelData.importdate), "dd-MM-yyyy")
-                            color: "white"
+                            color: "black"
                             font.pixelSize: 18
                         }
                     }
@@ -309,7 +338,7 @@ Item {
                         Text {
                             anchors.verticalCenter: parent.verticalCenter
                             text: "| Ngày hết hạn: " + Qt.formatDate(new Date(modelData.expireddate), "dd-MM-yyyy")
-                            color: "white"
+                            color: "black"
                             font.pixelSize: 18
                         }
                     }

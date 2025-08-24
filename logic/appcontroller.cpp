@@ -296,6 +296,8 @@ void appcontroller::requestOrderCommand(QVariantMap cmdData){
 
         command = MapToBaseCommand(cmdData);
         order.clean();
+    } else if(cmdData["command"].toString() == "UPDATE") {
+
     }
     emit orderCommandRequested(command);
 }

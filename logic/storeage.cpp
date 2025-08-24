@@ -61,6 +61,10 @@ void storeage::handleProductCommand(BaseCommand cmd) {
             qWarning() << "❌ Xoá sản phẩm thất bại:" << productName;
         }
     }else if(cmd.command == CommandType::UPDATE){
+        Products pro;
+        pro.setProductName(cmd.data.value("newName").toString());
+        pro.setCost(cmd.data.value("newPrice").toDouble());
+        done = db->updateProduct(pro, cmd.data.value("lastName").toString());
 
     }else if(cmd.command == CommandType::CHECK){
         QString productName = cmd.data.value("name").toString();
@@ -383,7 +387,7 @@ void storeage::handleOrderListRequest(BaseCommand cmd){
                     profit += (p->getCost() - b->getCost()) * b->getQuantity();
                 }
             }
-            item["profit"] = profit;
+            item["profit"] = profit - order->getDiscount();
             item["paid_cents"] = order->getPaidCents();
             item["discount"] = order->getDiscount();
             result.append(item);
@@ -405,7 +409,7 @@ void storeage::handleOrderListRequest(BaseCommand cmd){
                         profit += (p->getCost() - b->getCost()) * b->getQuantity();
                     }
                 }
-                item["profit"] = profit;
+                item["profit"] = profit - order->getDiscount();
                 item["paid_cents"] = order->getPaidCents();
                 item["discount"] = order->getDiscount();
                 result.append(item);

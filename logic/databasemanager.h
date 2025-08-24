@@ -22,6 +22,7 @@ public:
     bool initialize();
     bool insertProduct(const Products& product);
     bool checkProductNameExists(const QString& name);
+    bool updateProduct(const Products& product, const QString& name);
 
     // ****< xoá sản phẩm >****
     bool deleteProduct(const QString& pro);

@@ -227,6 +227,20 @@ bool DatabaseManager::updateBatch(const QString& productName, const Batch& batch
     return true;
 }
 
+bool DatabaseManager::updateProduct(const Products& product, const QString& name){
+    QSqlQuery query;
+    query.prepare("UPDATE products SET product_name = :newName, cost = :newPrice WHERE product_name = :oldName");
+    query.bindValue(":newName", product.getProductName());
+    query.bindValue(":newPrice", product.getCost());
+    query.bindValue(":oldName", name);
+
+    if (!query.exec()) {
+        qWarning() << "Lỗi khi cập nhật sản phẩm:" << query.lastError().text();
+    } else {
+        qDebug() << "Cập nhật thành công.";
+    }
+}
+
 // ****< xoá sản phẩm >****
 bool DatabaseManager::deleteProduct(const QString& pro){
     QSqlQuery query;
