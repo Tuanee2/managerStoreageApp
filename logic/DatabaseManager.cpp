@@ -239,6 +239,16 @@ bool DatabaseManager::updateProduct(const Products& product, const QString& name
     } else {
         qDebug() << "Cập nhật thành công.";
     }
+
+    query.prepare("UPDATE product_batches SET product_name = :newName WHERE product_name = :oldName");
+    query.bindValue(":newName",  product.getProductName());
+    query.bindValue(":oldName", name);
+
+    if (!query.exec()) {
+        qWarning() << "Lỗi cập nhật batch:" << query.lastError().text();
+    } else {
+        qDebug() << "Cập nhật sản phẩm và các batch thành công.";
+    }
 }
 
 // ****< xoá sản phẩm >****
