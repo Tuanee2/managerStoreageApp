@@ -9,7 +9,7 @@ Window {
     width: Screen.width * 0.99
     height: Screen.height * 0.99
     visible: true
-    title: qsTr("App quản lý")
+    title: qsTr("Quản lý kho")
 
 
     property string currentNavigation: "Bảng thông tin"
@@ -53,7 +53,7 @@ Window {
 
     Rectangle{
         anchors.fill: parent
-        color: "white"
+        color: Qt.rgba(215/255, 215/255, 215/255, 1)
     }
 
 
@@ -67,25 +67,6 @@ Window {
             rootWindow.numOfNotification = result
         }
     }
-
-    // Ảnh nền
-    // Image {
-    //     id: background
-    //     width: parent.width + 40
-    //     height: parent.height + 40
-    //     source: "qrc:/images/Backgrounds/fix.jpg"
-    //     fillMode: Image.PreserveAspectCrop  // Crop đẹp hơn để phủ toàn bộ
-    //     visible: true  // Ẩn để tránh ảnh gốc lộ ra
-    // }
-
-    // MultiEffect {
-    //     source: background
-    //     anchors.fill: parent
-    //     blurEnabled: true
-    //     blurMax: 50
-    //     blur: 1
-    //     brightness: -0.15
-    // }
 
     Rectangle {
         id: blurBackground
@@ -109,14 +90,24 @@ Window {
         brightness: -0.1
     }
 
+    RectangularShadow {
+        anchors.fill: mainWindow
+        offset.x: -5
+        offset.y: -5
+        radius: mainWindow.radius
+        blur: 30
+        spread: 10
+        color: Qt.darker(mainWindow.color, 1.6)
+    }
+
     Rectangle{
         id: mainWindow
-        width: parent.width*0.98
-        height: parent.height*0.98
+        width: parent.width*0.94
+        height: parent.height*0.94
         anchors.centerIn: parent
         radius: 15
         border.width: 1
-        border.color: Qt.rgba( 0, 0, 0, 0.2)
+        border.color: Qt.rgba( 0, 0, 0, 0.1)
         color: "#f8f8f8"
         clip: true
 

@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls.Material
+import QtQuick.Effects
 
 Item {
     anchors.fill: parent
@@ -193,6 +194,17 @@ Item {
                     border.color: Qt.rgba( 0, 0, 0, 0.1)
                     border.width: 1
                     Layout.fillWidth: true
+
+                    RectangularShadow {
+                        anchors.fill: colInfo
+                        offset.x: -5
+                        offset.y: -5
+                        radius: colInfo.radius
+                        blur: 30
+                        spread: 10
+                        color: Qt.darker(colInfo.color, 1.6)
+                    }
+
 
                     Rectangle{
                         id: colInfo

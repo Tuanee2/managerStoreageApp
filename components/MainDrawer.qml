@@ -71,8 +71,7 @@ Item {
                 hoverEnabled: true
 
                 onClicked: {
-                    console.log(ThemeApp.corner)
-                    rootWindow.currentNavigation = PathConfig.drawer.icon.dashboard
+                    rootWindow.currentNavigation = Title.drawer.element.dashboard
                     pageLoader.source = PathConfig.page.dashboard
                 }
             }
