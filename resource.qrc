@@ -25,4 +25,7 @@
         <file>Icon/id-card.svg</file>
         <file>Icon/phone-rotary.svg</file>
     </qresource>
+    <qresource prefix="/">
+        <file>Theme/Theme.qml</file>
+    </qresource>
 </RCC>

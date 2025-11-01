@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls
 import QtQuick.Controls.Material
 import QtQuick.Effects
+import LanHuyStore 1.0
 
 Item {
     id: rootDrawer
@@ -37,10 +38,8 @@ Item {
             id: button01
             width: navigationDrawer.width*0.9
             height: width/4
-            radius: 4
-            color: mouseArea01.containsMouse ? "#e6f0ff" : "transparent"
-            border.width: 1
-            border.color: mouseArea01.containsMouse ? "#80bfff" : "transparent"
+            radius: Style.button.corner
+            color: mouseArea01.containsMouse ? Style.button.hoverBackground : Style.button.background
 
             Button {
                 id: icon01
@@ -53,16 +52,16 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/Icon/cuida--clipboard-text-outline.svg"
-                icon.color: mouseArea01.containsMouse ? "#007bff" : "#6c757d"
+                icon.source: PathConfig.drawer.icon.dashboard
+                icon.color: mouseArea01.containsMouse ? Style.drawer.icon.hoverBackground : Style.drawer.icon.background
 
             }
 
             Text{
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: icon01.right
-                text: "Bảng thông tin"
-                color:  mouseArea01.containsMouse ? "#003366" : "#6c757d"
+                text: Title.drawer.element.dashboard
+                color:  mouseArea01.containsMouse ? Style.drawer.title.hoverBackground : Style.drawer.title.background
                 font.pixelSize: rootWindow.drawerFontSize
             }
 
@@ -71,22 +70,10 @@ Item {
                 anchors.fill: parent
                 hoverEnabled: true
 
-                onEntered:{
-
-                }
-
-                onExited:{
-
-                }
-
-                onReleased:{
-
-                }
-
                 onClicked: {
-
-                    rootWindow.currentNavigation = "Bảng thông tin"
-                    pageLoader.source = "components/Dashboard.qml"
+                    console.log(ThemeApp.corner)
+                    rootWindow.currentNavigation = PathConfig.drawer.icon.dashboard
+                    pageLoader.source = PathConfig.page.dashboard
                 }
             }
         }
@@ -96,10 +83,8 @@ Item {
             id: button02
             width: navigationDrawer.width*0.9
             height: width/4
-            radius: 4
-            color: mouseArea02.containsMouse ? "#e6f0ff" : "transparent"
-            border.width: 1
-            border.color: mouseArea02.containsMouse ? "#80bfff" : "transparent"
+            radius: Style.corner
+            color: mouseArea02.containsMouse ? Style.button.hoverBackground : Style.button.background
 
             Button {
                 id: icon02
@@ -112,15 +97,15 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/Icon/cuida--package-outline.svg"
-                icon.color: mouseArea02.containsMouse ? "#007bff" : "#6c757d"
+                icon.source: PathConfig.drawer.icon.product
+                icon.color: mouseArea02.containsMouse ? Style.drawer.icon.hoverBackground : Style.drawer.icon.background
             }
 
             Text{
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: icon02.right
-                text: "Sản phẩm"
-                color:  mouseArea02.containsMouse ? "#003366" : "#6c757d"
+                text: Title.drawer.element.product
+                color:  mouseArea02.containsMouse ? Style.drawer.title.hoverBackground : Style.drawer.title.background
                 font.pixelSize: rootWindow.drawerFontSize
             }
 
@@ -129,23 +114,11 @@ Item {
                 anchors.fill: parent
                 hoverEnabled: true
 
-                onEntered:{
-
-                }
-
-                onExited:{
-
-                }
-
-                onReleased:{
-
-                }
-
                 onClicked: {
 
-                    rootWindow.currentNavigation = "Danh sách sản phẩm"
-                    pageLoader.source = "components/ProductList.qml"
-                    drawerLoader.source = "components/ProductDrawer.qml"
+                    rootWindow.currentNavigation = Title.drawer.element.product
+                    pageLoader.source = PathConfig.page.productList
+                    drawerLoader.source = PathConfig.drawer.type.product
                 }
             }
         }
@@ -154,10 +127,8 @@ Item {
             id: button03
             width: navigationDrawer.width*0.9
             height: width/4
-            radius: 4
-            color: mouseArea03.containsMouse ? "#e6f0ff" : "transparent"
-            border.width: 1
-            border.color: mouseArea03.containsMouse ? "#80bfff" : "transparent"
+            radius: Style.corner
+            color: mouseArea03.containsMouse ? Style.button.hoverBackground : Style.button.background
 
             Button {
                 id: icon03
@@ -170,8 +141,8 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/Icon/users01.svg"
-                icon.color: mouseArea03.containsMouse ? "#007bff" : "#6c757d"
+                icon.source: PathConfig.drawer.icon.customer
+                icon.color: mouseArea03.containsMouse ? Style.drawer.icon.hoverBackground : Style.drawer.title.background
 
             }
 
@@ -179,8 +150,8 @@ Item {
             Text{
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: icon03.right
-                text: "Khách hàng"
-                color: mouseArea03.containsMouse ? "#003366" : "#6c757d"
+                text: Title.drawer.element.customer
+                color: mouseArea03.containsMouse ? Style.drawer.title.hoverBackground : Style.drawer.title.background
                 font.pixelSize: rootWindow.drawerFontSize
             }
 
@@ -189,22 +160,10 @@ Item {
                 anchors.fill: parent
                 hoverEnabled: true
 
-                onEntered:{
-
-                }
-
-                onExited:{
-
-                }
-
-                onReleased:{
-
-                }
-
                 onClicked: {
-                    rootWindow.currentNavigation = "Danh sách khách hàng"
-                    pageLoader.source = "components/CustomerList.qml"
-                    drawerLoader.source = "components/CustomerDrawer.qml"
+                    rootWindow.currentNavigation = Title.drawer.element.customer
+                    pageLoader.source = PathConfig.page.customerList
+                    drawerLoader.source = PathConfig.drawer.type.customer
                 }
             }
         }
@@ -213,10 +172,8 @@ Item {
             id: button04
             width: navigationDrawer.width*0.9
             height: width/4
-            radius: 4
-            color: mouseArea04.containsMouse ? "#e6f0ff" : "transparent"
-            border.width: 1
-            border.color: mouseArea04.containsMouse ? "#80bfff" : "transparent"
+            radius: Style.corner
+            color: mouseArea04.containsMouse ? Style.button.hoverBackground : Style.button.background
 
             Button {
                 id: icon04
@@ -229,16 +186,16 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/Icon/coins.svg"
-                icon.color: mouseArea04.containsMouse ? "#007bff" : "#6c757d"
+                icon.source: PathConfig.drawer.icon.revenue
+                icon.color: mouseArea04.containsMouse ? Style.drawer.icon.hoverBackground : Style.drawer.title.background
 
             }
 
             Text{
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: icon04.right
-                text: "Doanh thu"
-                color: mouseArea04.containsMouse ? "#003366" : "#6c757d"
+                text: Title.drawer.element.revenue
+                color: mouseArea04.containsMouse ? Style.drawer.title.hoverBackground : Style.drawer.title.background
                 font.pixelSize: rootWindow.drawerFontSize
             }
 
@@ -247,22 +204,10 @@ Item {
                 anchors.fill: parent
                 hoverEnabled: true
 
-                onEntered:{
-
-                }
-
-                onExited:{
-
-                }
-
-                onReleased:{
-
-                }
-
                 onClicked: {
 
-                    rootWindow.currentNavigation = "Doanh thu"
-                    pageLoader.source = "components/Sales.qml"
+                    rootWindow.currentNavigation = Title.drawer.element.revenue
+                    pageLoader.source = PathConfig.page.revenue
 
                 }
             }
@@ -272,10 +217,8 @@ Item {
             id: button05
             width: navigationDrawer.width*0.9
             height: width/4
-            radius: 4
-            color: mouseArea05.containsMouse ? "#e6f0ff" : "transparent"
-            border.width: 1
-            border.color: mouseArea05.containsMouse ? "#80bfff" : "transparent"
+            radius: Style.corner
+            color: mouseArea05.containsMouse ? Style.button.hoverBackground : Style.button.background
 
             Button {
                 id: icon05
@@ -288,16 +231,16 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/Icon/cuida--chart-column-outline.svg"
-                icon.color: mouseArea05.containsMouse ? "#007bff" : "#6c757d"
+                icon.source: PathConfig.drawer.icon.transactionHistory
+                icon.color: mouseArea05.containsMouse ? Style.drawer.icon.hoverBackground : Style.drawer.title.background
 
             }
 
             Text{
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: icon05.right
-                text: "Lịch sử giao dịch"
-                color: mouseArea05.containsMouse ? "#003366" : "#6c757d"
+                text: Title.drawer.element.transactionHistory
+                color: mouseArea05.containsMouse ? Style.drawer.title.hoverBackground : Style.drawer.title.background
                 font.pixelSize: rootWindow.drawerFontSize
             }
 
@@ -306,21 +249,9 @@ Item {
                 anchors.fill: parent
                 hoverEnabled: true
 
-                onEntered:{
-
-                }
-
-                onExited:{
-
-                }
-
-                onReleased:{
-
-                }
-
                 onClicked: {
-                    rootWindow.currentNavigation = "Lịch sử giao dịch"
-                    pageLoader.source = "components/TransactionHistory.qml"
+                    rootWindow.currentNavigation = Title.drawer.element.transactionHistory
+                    pageLoader.source = PathConfig.page.transactionHistory
 
                 }
             }
@@ -330,10 +261,8 @@ Item {
             id: button06
             width: navigationDrawer.width*0.9
             height: width/4
-            radius: 4
-            color: mouseArea06.containsMouse ? "#e6f0ff" : "transparent"
-            border.width: 1
-            border.color: mouseArea06.containsMouse ? "#80bfff" : "transparent"
+            radius: Style.corner
+            color: mouseArea06.containsMouse ? Style.button.hoverBackground : Style.button.background
 
             Button {
                 id: icon06
@@ -346,16 +275,16 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/Icon/settings01.svg"
-                icon.color: mouseArea06.containsMouse ? "#007bff" : "#6c757d"
+                icon.source: PathConfig.drawer.icon.setting
+                icon.color: mouseArea06.containsMouse ? Style.drawer.icon.hoverBackground : Style.drawer.title.background
 
             }
 
             Text{
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: icon06.right
-                text: "Cài đặt"
-                color: mouseArea06.containsMouse ? "#003366" : "#6c757d"
+                text: Title.drawer.element.setting
+                color: mouseArea06.containsMouse ? Style.drawer.title.hoverBackground : Style.drawer.title.background
                 font.pixelSize: rootWindow.drawerFontSize
             }
 
@@ -364,21 +293,9 @@ Item {
                 anchors.fill: parent
                 hoverEnabled: true
 
-                onEntered:{
-
-                }
-
-                onExited:{
-
-                }
-
-                onReleased:{
-
-                }
-
                 onClicked: {
-                    rootWindow.currentNavigation = "Cài đặt"
-                    pageLoader.source = "components/Setting.qml"
+                    rootWindow.currentNavigation = Title.drawer.element.setting
+                    pageLoader.source = PathConfig.page.setting
                 }
             }
         }
@@ -387,10 +304,9 @@ Item {
             id: button07
             width: navigationDrawer.width*0.9
             height: width/4
-            radius: 4
-            color: mouseArea07.containsMouse ? "#e6f0ff" : "transparent"
-            border.width: 1
-            border.color: mouseArea07.containsMouse ? "#80bfff" : "transparent"
+            radius: Style.corner
+            color: mouseArea07.containsMouse ? Style.button.hoverBackground : Style.button.background
+
 
             Button {
                 id: icon07
@@ -403,8 +319,8 @@ Item {
                     color: "transparent"
                 }
 
-                icon.source: "qrc:/images/Icon/leave.svg"
-                icon.color: mouseArea07.containsMouse ? "#007bff" : "#6c757d"
+                icon.source: PathConfig.drawer.icon.quit
+                icon.color: mouseArea07.containsMouse ? Style.drawer.icon.hoverBackground : Style.drawer.title.background
 
 
             }
@@ -412,8 +328,8 @@ Item {
             Text{
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: icon07.right
-                text: "Thoát"
-                color: mouseArea07.containsMouse ? "#003366" : "#6c757d"
+                text: Title.drawer.element.quit
+                color: mouseArea07.containsMouse ? Style.drawer.title.hoverBackground : Style.drawer.title.background
                 font.pixelSize: rootWindow.drawerFontSize
             }
 
@@ -421,18 +337,6 @@ Item {
                 id: mouseArea07
                 anchors.fill: parent
                 hoverEnabled: true
-
-                onEntered:{
-
-                }
-
-                onExited:{
-
-                }
-
-                onReleased:{
-
-                }
 
                 onClicked: {
                     quitProgram.open()

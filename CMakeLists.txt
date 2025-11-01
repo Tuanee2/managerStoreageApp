@@ -23,6 +23,13 @@ qt_add_executable(appLanHuyStore
     main.cpp
 )
 
+set_source_files_properties(
+    Config/Theme/Style.qml
+    Config/Path/PathConfig.qml
+    Config/Title/Title.qml
+    PROPERTIES QT_QML_SINGLETON_TYPE TRUE
+)
+
 qt_add_qml_module(appLanHuyStore
     URI LanHuyStore
     VERSION 1.0
@@ -53,6 +60,9 @@ qt_add_qml_module(appLanHuyStore
         components/TransactionHistory.qml
         components/OrderForm.qml
         components/CustomerForm.qml
+        Config/Theme/Style.qml
+        Config/Path/PathConfig.qml
+        Config/Title/Title.qml
     SOURCES
         logic/databasemanager.h logic/DatabaseManager.cpp
         logic/products.h logic/products.cpp
@@ -87,7 +97,7 @@ set(PostgreSQL_LIBRARY "/opt/homebrew/opt/libpq/lib/libpq.dylib")
 
 target_link_libraries(appLanHuyStore
     PRIVATE Qt6::Quick Qt6::Sql Qt6::Charts
-    /opt/homebrew/opt/libpq/lib/libpq.5.dylib
+    # /opt/homebrew/opt/libpq/lib/libpq.5.dylib
 )
 
 include(GNUInstallDirs)
