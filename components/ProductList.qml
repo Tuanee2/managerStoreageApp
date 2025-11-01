@@ -186,166 +186,170 @@ Item {
             Repeater {
                 model: products
 
-                delegate: Rectangle {
-                    width: productList.width*0.85/2
-                    height: productList.height * 0.08
-                    radius: 8
-                    color: "white"
-                    border.color: Qt.rgba( 0, 0, 0, 0.1)
-                    border.width: 1
-                    Layout.fillWidth: true
+                delegate: Item {
+                    id: cell
+                    width: productList.width * 0.85 / 2
+                    height: productList.height * 0.12
 
                     RectangularShadow {
-                        anchors.fill: colInfo
-                        offset.x: -5
-                        offset.y: -5
-                        radius: colInfo.radius
-                        blur: 30
-                        spread: 10
-                        color: Qt.darker(colInfo.color, 1.6)
+                        anchors.fill: contentCell
+                        offset.x: 3
+                        offset.y: 3
+                        radius: contentCell.radius
+                        blur: 10
+                        spread: 3
+                        color: Qt.darker(contentCell.color, 1.2)
                     }
 
+                    Rectangle {
+                        id: contentCell
+                        anchors.fill: parent
+                        color: "white"
+                        border.color: Qt.rgba( 0, 0, 0, 0.1)
+                        border.width: 1
+                        radius: 10
+                        Layout.fillWidth: true
 
-                    Rectangle{
-                        id: colInfo
-                        anchors.left: parent.left
-                        anchors.verticalCenter: parent.verticalCenter
-                        height: parent.height
-                        width: parent.width - 4*parent.height
-                        color: "transparent"
-                        clip: true
-
-                        Column {
-                            spacing: 4
-                            anchors.verticalCenter: parent.verticalCenter
+                        Rectangle{
+                            id: colInfo
                             anchors.left: parent.left
-                            anchors.leftMargin: parent.width*0.05
-                            Text {
-                                text: "Tên: " + modelData["productName"]
-                                font.pixelSize: colInfo.height * 0.3
-                                color: "black"
+                            anchors.verticalCenter: parent.verticalCenter
+                            height: parent.height
+                            width: parent.width - 2.4*parent.height
+                            color: "transparent"
+                            clip: true
+
+                            Column {
+                                spacing: 4
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.left: parent.left
+                                anchors.leftMargin: parent.width*0.05
+                                Text {
+                                    text: "Tên: " + modelData["productName"]
+                                    font.pixelSize: colInfo.height * 0.2
+                                    color: "black"
+                                }
+
+                                Text {
+                                    text: "Giá: " + rootProductList.formatMoney(modelData["cost"]) + " VND / " + modelData["unit"]
+                                    font.pixelSize: colInfo.height * 0.2
+                                    color: "black"
+                                }
+                            }
+                        }
+
+                        Button{
+                            id: detailhButton
+                            width: parent.height*0.6
+                            height: parent.height*0.6
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: addBatchButton.left
+
+                            background: Rectangle{
+                                anchors.fill: parent
+                                color: madetailhButton.containsMouse ? Qt.rgba(200/255, 180/255, 80/255, 0.4) : "transparent"
+                                radius: 8
                             }
 
-                            Text {
-                                text: "Giá: " + rootProductList.formatMoney(modelData["cost"]) + " VND / " + modelData["unit"]
-                                font.pixelSize: colInfo.height * 0.3
-                                color: "black"
+                            icon.source: "qrc:/images/Icon/file-circle-info.svg"
+                            icon.color: madetailhButton.containsMouse ? Qt.rgba(240/255, 200/255, 100/255, 1) : "#007bff"
+
+                            MouseArea{
+                                id: madetailhButton
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onClicked: {
+                                    pageLoader.setSource("ProductForm.qml", {
+                                        productName: modelData["productName"]
+                                    })
+                                }
+
+                            }
+
+                        }
+
+                        Button{
+                            id: addBatchButton
+                            width: parent.height*0.6
+                            height: parent.height*0.6
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: saleButton.left
+
+                            background: Rectangle{
+                                anchors.fill: parent
+                                color: maaddBatchButton.containsMouse ? Qt.rgba(1, 1, 1, 0.3) : "transparent"
+                                radius: 8
+                            }
+
+                            icon.source: "qrc:/images/Icon/add.svg"
+                            icon.color: "#007bff"
+
+                            MouseArea{
+                                id: maaddBatchButton
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onClicked: {
+                                    pageLoader.setSource("ImportBatch.qml", {
+                                        productName: modelData["productName"]
+                                    })
+
+                                }
+
+                            }
+
+                        }
+
+                        Button{
+                            id: saleButton
+                            width: parent.height*0.6
+                            height: parent.height*0.6
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: deleteProductButton.left
+                            background: Rectangle{
+                                anchors.fill: parent
+                                color: masaleButton.containsMouse ? Qt.rgba(1, 1, 1, 0.3) : "transparent"
+                                radius: 8
+
+                            }
+                            icon.source: "qrc:/images/Icon/minus-circle.svg"
+                            icon.color: "#007bff"
+
+                            MouseArea{
+                                id: masaleButton
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onClicked: {
+
+                                }
+                            }
+                        }
+                        Button{
+                            id: deleteProductButton
+                            width: parent.height*0.6
+                            height: parent.height*0.6
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: parent.right
+                            background: Rectangle{
+                                anchors.fill: parent
+                                color: madeleteProductButton.containsMouse ? Qt.rgba(1, 1, 1, 0.3) : "transparent"
+                                radius: 8
+                            }
+
+                            icon.source: "qrc:/images/Icon/cross-circle.svg"
+                            icon.color: "#007bff"
+                            MouseArea{
+                                id: madeleteProductButton
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onClicked: {
+                                    selectedProductName = modelData["productName"]
+                                    deleteProductConfirmDialog.open()
+                                }
                             }
                         }
                     }
 
-                    Button{
-                        id: detailhButton
-                        width: parent.height
-                        height: parent.height
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.right: parent.right
-                        anchors.rightMargin: 3*parent.height
-
-                        background: Rectangle{
-                            anchors.fill: parent
-                            color: madetailhButton.containsMouse ? Qt.rgba(200/255, 180/255, 80/255, 0.4) : "transparent"
-                            radius: 8
-                        }
-
-                        icon.source: "qrc:/images/Icon/file-circle-info.svg"
-                        icon.color: madetailhButton.containsMouse ? Qt.rgba(240/255, 200/255, 100/255, 1) : "#007bff"
-
-                        MouseArea{
-                            id: madetailhButton
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: {
-                                pageLoader.setSource("ProductForm.qml", {
-                                    productName: modelData["productName"]
-                                })
-                            }
-
-                        }
-
-                    }
-
-                    Button{
-                        id: addBatchButton
-                        width: parent.height
-                        height: parent.height
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.right: parent.right
-                        anchors.rightMargin: 2*parent.height
-
-                        background: Rectangle{
-                            anchors.fill: parent
-                            color: maaddBatchButton.containsMouse ? Qt.rgba(1, 1, 1, 0.3) : "transparent"
-                            radius: 8
-                        }
-
-                        icon.source: "qrc:/images/Icon/add.svg"
-                        icon.color: "#007bff"
-
-                        MouseArea{
-                            id: maaddBatchButton
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: {
-                                pageLoader.setSource("ImportBatch.qml", {
-                                    productName: modelData["productName"]
-                                })
-
-                            }
-
-                        }
-
-                    }
-
-                    Button{
-                        id: saleButton
-                        width: parent.height
-                        height: parent.height
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.right: parent.right
-                        anchors.rightMargin: parent.height
-                        background: Rectangle{
-                            anchors.fill: parent
-                            color: masaleButton.containsMouse ? Qt.rgba(1, 1, 1, 0.3) : "transparent"
-                            radius: 8
-
-                        }
-                        icon.source: "qrc:/images/Icon/minus-circle.svg"
-                        icon.color: "#007bff"
-
-                        MouseArea{
-                            id: masaleButton
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: {
-
-                            }
-                        }
-                    }
-                    Button{
-                        id: deleteProductButton
-                        width: parent.height
-                        height: parent.height
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.right: parent.right
-                        background: Rectangle{
-                            anchors.fill: parent
-                            color: madeleteProductButton.containsMouse ? Qt.rgba(1, 1, 1, 0.3) : "transparent"
-                            radius: 8
-                        }
-
-                        icon.source: "qrc:/images/Icon/cross-circle.svg"
-                        icon.color: "#007bff"
-                        MouseArea{
-                            id: madeleteProductButton
-                            anchors.fill: parent
-                            hoverEnabled: true
-                            onClicked: {
-                                selectedProductName = modelData["productName"]
-                                deleteProductConfirmDialog.open()
-                            }
-                        }
-                    }
+                    
                 }
             }
         }

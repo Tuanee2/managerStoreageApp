@@ -92,8 +92,8 @@ Window {
 
     RectangularShadow {
         anchors.fill: mainWindow
-        offset.x: -5
-        offset.y: -5
+        offset.x: 5
+        offset.y: 5
         radius: mainWindow.radius
         blur: 30
         spread: 10
