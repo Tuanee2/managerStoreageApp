@@ -22,8 +22,9 @@ jobs:
             qt_host: "windows"
             qt_target: "desktop"
             qt_arch: "win64_msvc2022_64"
-            qt_dir: "win64_mingw"
+            qt_dir: "msvc2022_64"
             qt_ver: "6.9.3"
+            app_name: "appLanHuyStore"
             
           # macOS 15 (Sequoia) target
           - os: macos-15
@@ -36,6 +37,7 @@ jobs:
             qt_arch: "clang_64"
             qt_dir: "macos"
             qt_ver: "6.9.3"
+            app_name: "appLanHuyStore"
 
     runs-on: ${{ matrix.os }}
 
@@ -95,12 +97,12 @@ jobs:
       - name: Bundle (Windows)
         if: runner.os == 'Windows'
         run: |
-          "${{ env.QT_BIN }}/windeployqt.exe" --release "${{ steps.strings.outputs.build-output-dir }}\\ManagerStorageApp.exe" --qmldir=.
+          "${{ env.QT_BIN }}/windeployqt.exe" --release "${{ steps.strings.outputs.build-output-dir }}\\${{ matrix.app_name }}.exe" --qmldir=.
 
       - name: Bundle (macOS)
         if: runner.os == 'macOS'
         run: |
-          "${{ env.QT_BIN }}/macdeployqt" "${{ steps.strings.outputs.build-output-dir }}/ManagerStorageApp.app" -qmldir=. -dmg
+          "${{ env.QT_BIN }}/macdeployqt" "${{ steps.strings.outputs.build-output-dir }}/${{ matrix.app_name }}.app" -qmldir=. -dmg
 
       # ---- Upload artifacts ----
       - name: Upload artifacts
