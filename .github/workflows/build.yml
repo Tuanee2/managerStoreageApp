@@ -32,7 +32,7 @@ jobs:
             osx_deployment: "15.0"
             qt_host: "mac" 
             qt_target: "desktop"
-            qt_dir: "clang_64"
+            qt_dir: "macos"
             qt_ver: "6.9.3"
 
     runs-on: ${{ matrix.os }}
