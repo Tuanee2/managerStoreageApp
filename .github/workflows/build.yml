@@ -86,7 +86,13 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $QT_PREFIX = "${env:CMAKE_PREFIX_PATH}"
+          $QT_PREFIX = "$env:USERPROFILE\Qt\${{ matrix.qt_ver }}\${{ matrix.qt_dir }}"
+          # debug: xác nhận file Qt6Config.cmake tồn tại
+          if (-not (Test-Path "$QT_PREFIX\lib\cmake\Qt6\Qt6Config.cmake")) {
+            Write-Host "Qt6Config.cmake NOT FOUND at $QT_PREFIX\lib\cmake\Qt6"
+            Get-ChildItem "$QT_PREFIX\lib\cmake" -Recurse -Filter Qt6Config.cmake
+            exit 1
+          }
           cmake -S $env:GITHUB_WORKSPACE -B $env:GITHUB_WORKSPACE\build -G Ninja `
             -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
             -DCMAKE_C_COMPILER=cl `
@@ -107,13 +113,17 @@ jobs:
             -DCMAKE_OSX_ARCHITECTURES="arm64" \
             -DCMAKE_PREFIX_PATH="$QT_PREFIX" \
             -DQt6_DIR="$QT_PREFIX/lib/cmake/Qt6" \
-            echo "-DCMAKE_OSX_DEPLOYMENT_TARGET=${{ matrix.osx_deployment }}") 
+            echo "-DCMAKE_OSX_DEPLOYMENT_TARGET=${{ matrix.osx_deployment }}"
 
             
       - name: Build (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
-        run: cmake --build $env:GITHUB_WORKSPACE\build --config ${{ matrix.build_type }}
+        run: |
+          $BUILD = "$env:GITHUB_WORKSPACE\build"
+          & "$env:USERPROFILE\Qt\${{ matrix.qt_ver }}\${{ matrix.qt_dir }}\bin\windeployqt.exe" `
+            --release "$BUILD\${{ matrix.app_name }}.exe" `
+            --qmldir=$env:GITHUB_WORKSPACE
 
       - name: Build (macOS)
         if: runner.os == 'macOS'
