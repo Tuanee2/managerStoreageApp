@@ -1,0 +1,108 @@
+name: Build Qt App (Qt 6.9, macOS 15, Win10)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Windows 10 target (MSVC)
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+            build_type: Release
+            winver: "10.0"
+            qt_os: "windows desktop"
+            qt_dir: "win64_msvc2019_64"
+          # macOS 15 (Sequoia) target
+          - os: macos-15
+            c_compiler: clang
+            cpp_compiler: clang++
+            build_type: Release
+            osx_deployment: "15.0"
+            qt_os: "mac desktop"
+            qt_dir: "clang_64"
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+      # ---- Install Qt 6.9 via aqt ----
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install aqt + ninja
+        run: pip install aqtinstall ninja
+
+      - name: Install Qt 6.9 + QML modules
+        shell: bash
+        run: |
+          python -m aqt install-qt --outputdir $HOME/Qt \
+            "${{ matrix.qt_os }}" 6.9.0 "${{ matrix.qt_dir }}" \
+            --modules qtbase qtdeclarative qtshadertools qtquickcontrols2
+
+          echo "QT_BIN=$HOME/Qt/6.9.0/${{ matrix.qt_dir }}/bin" >> $GITHUB_ENV
+          echo "CMAKE_PREFIX_PATH=$HOME/Qt/6.9.0/${{ matrix.qt_dir }}" >> $GITHUB_ENV
+
+      # ---- Configure & Build ----
+      - name: Configure CMake
+        shell: bash
+        run: |
+          args="-S ${{ github.workspace }} -B ${{ steps.strings.outputs.build-output-dir }} \
+            -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+            -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
+            -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
+            -DCMAKE_PREFIX_PATH='${{ env.CMAKE_PREFIX_PATH }}'"
+
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+            args="$args -DCMAKE_OSX_DEPLOYMENT_TARGET=${{ matrix.osx_deployment }}"
+            # Bật universal2 (chạy cả Intel + Apple Silicon) nếu muốn:
+            # args="$args -DCMAKE_OSX_ARCHITECTURES='x86_64;arm64'"
+          fi
+
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            args="$args -DCMAKE_SYSTEM_VERSION=${{ matrix.winver }}"
+          fi
+
+          cmake $args
+
+      - name: Build
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+
+      # ---- Bundle Qt runtime ----
+      - name: Bundle (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          "${{ env.QT_BIN }}/windeployqt.exe" --release "${{ steps.strings.outputs.build-output-dir }}\\ManagerStorageApp.exe" --qmldir=.
+
+      - name: Bundle (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          "${{ env.QT_BIN }}/macdeployqt" "${{ steps.strings.outputs.build-output-dir }}/ManagerStorageApp.app" -qmldir=. -dmg
+
+      # ---- Upload artifacts ----
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ runner.os }}-artifacts
+          path: |
+            ${{ steps.strings.outputs.build-output-dir }}/**/*.exe
+            ${{ steps.strings.outputs.build-output-dir }}/**/*.dll
+            ${{ steps.strings.outputs.build-output-dir }}/**/*.app
+            ${{ steps.strings.outputs.build-output-dir }}/**/*.dmg
+            ${{ steps.strings.outputs.build-output-dir }}/**/ManagerStorageApp*
