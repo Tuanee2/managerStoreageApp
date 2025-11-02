@@ -59,32 +59,32 @@ jobs:
         run: |
           python -m aqt install-qt --outputdir $HOME/Qt \
             "${{ matrix.qt_host }}" "${{ matrix.qt_target }}" "${{ matrix.qt_ver }}" "${{ matrix.qt_dir }}" \
-            --modules qtshadertools 
+            --modules qtcharts 
 
           echo "QT_BIN=$HOME/Qt/6.9.3/${{ matrix.qt_dir }}/bin" >> $GITHUB_ENV
           echo "CMAKE_PREFIX_PATH=$HOME/Qt/6.9.3/${{ matrix.qt_dir }}" >> $GITHUB_ENV
+
+      - name: debug Qt path
+        shell: bash
+        run: |
+          echo "CMAKE_PREFIX_PATH=${{ env.CMAKE_PREFIX_PATH }}"
+          ls -la "${{ env.CMAKE_PREFIX_PATH }}" || true
+          find "${{ env.CMAKE_PREFIX_PATH }}" -maxdepth 3 -name "Qt6Config.cmake" -print || true
 
       # ---- Configure & Build ----
       - name: Configure CMake
         shell: bash
         run: |
-          args="-S ${{ github.workspace }} -B ${{ steps.strings.outputs.build-output-dir }} \
-            -G Ninja -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+          QT_PREFIX="${{ env.CMAKE_PREFIX_PATH }}"
+          cmake -S ${{ github.workspace }} -B ${{ steps.strings.outputs.build-output-dir }} \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
             -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
             -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
-            -DCMAKE_PREFIX_PATH='${{ env.CMAKE_PREFIX_PATH }}'"
-
-          if [[ "$RUNNER_OS" == "macOS" ]]; then
-            args="$args -DCMAKE_OSX_DEPLOYMENT_TARGET=${{ matrix.osx_deployment }}"
-            # Bật universal2 (chạy cả Intel + Apple Silicon) nếu muốn:
-            # args="$args -DCMAKE_OSX_ARCHITECTURES='x86_64;arm64'"
-          fi
-
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            args="$args -DCMAKE_SYSTEM_VERSION=${{ matrix.winver }}"
-          fi
-
-          cmake $args
+            -DCMAKE_PREFIX_PATH="$QT_PREFIX" \
+            -DQt6_DIR="$QT_PREFIX/lib/cmake/Qt6" \
+            $([ "$RUNNER_OS" = "macOS" ] && echo "-DCMAKE_OSX_DEPLOYMENT_TARGET=${{ matrix.osx_deployment }}") \
+            $([ "$RUNNER_OS" = "Windows" ] && echo "-DCMAKE_SYSTEM_VERSION=${{ matrix.winver }}")
 
       - name: Build
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
