@@ -58,6 +58,12 @@ jobs:
       - name: Install aqt + ninja
         run: pip install aqtinstall ninja
 
+      - name: find valuable arch for macOS
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          aqt list-qt mac desktop --arch 6.9.3
+
       - name: Install Qt 6.9 + QML modules
         shell: bash
         run: |
