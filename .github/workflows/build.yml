@@ -21,7 +21,8 @@ jobs:
             winver: "10.0"
             qt_host: "windows"
             qt_target: "desktop"
-            qt_dir: "win64_msvc2019_64"
+            qt_arch: "win64_msvc2022_64"
+            qt_dir: "win64_mingw"
             qt_ver: "6.9.3"
             
           # macOS 15 (Sequoia) target
@@ -32,6 +33,7 @@ jobs:
             osx_deployment: "15.0"
             qt_host: "mac" 
             qt_target: "desktop"
+            qt_arch: "clang_64"
             qt_dir: "macos"
             qt_ver: "6.9.3"
 
@@ -58,7 +60,7 @@ jobs:
         shell: bash
         run: |
           python -m aqt install-qt --outputdir $HOME/Qt \
-            "${{ matrix.qt_host }}" "${{ matrix.qt_target }}" "${{ matrix.qt_ver }}" "${{ matrix.qt_dir }}" \
+            "${{ matrix.qt_host }}" "${{ matrix.qt_target }}" "${{ matrix.qt_ver }}" "${{ matrix.qt_arch }}" \
             --modules qtcharts 
 
           echo "QT_BIN=$HOME/Qt/6.9.3/${{ matrix.qt_dir }}/bin" >> $GITHUB_ENV
