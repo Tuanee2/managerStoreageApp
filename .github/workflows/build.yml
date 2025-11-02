@@ -77,7 +77,7 @@ jobs:
 
       # ---- Configure & Build ----
       - name: Configure CMake (Windows)
-        if: runner.os == "Windows"
+        if: runner.os == 'Windows'
         shell: pwsh
         run: |
           $QT_PREFIX = "${env:CMAKE_PREFIX_PATH}"
@@ -89,7 +89,7 @@ jobs:
 
         
       - name: Configure CMake (macOS)
-        if: runner.os == "macOS"
+        if: runner.os == 'macOS'
         shell: bash
         run: |
           QT_PREFIX="${{ env.CMAKE_PREFIX_PATH }}"
@@ -105,12 +105,12 @@ jobs:
 
             
       - name: Build (Windows)
-        if: runner.os == "Windows"
+        if: runner.os == 'Windows'
         shell: pwsh
         run: cmake --build $env:GITHUB_WORKSPACE\build --config ${{ matrix.build_type }}
 
       - name: Build (macOS)
-        if: runner.os == "macOS"
+        if: runner.os == 'macOS'
         shell: bash
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
