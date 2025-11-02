@@ -34,7 +34,7 @@ jobs:
             osx_deployment: "15.0"
             qt_host: "mac" 
             qt_target: "desktop"
-            qt_arch: "clang_64"
+            qt_arch: "clang_arm64"
             qt_dir: "macos"
             qt_ver: "6.9.3"
             app_name: "appLanHuyStore"
@@ -76,7 +76,20 @@ jobs:
           find "${{ env.CMAKE_PREFIX_PATH }}" -maxdepth 3 -name "Qt6Config.cmake" -print || true
 
       # ---- Configure & Build ----
-      - name: Configure CMake
+      - name: Configure CMake (Windows)
+        if: runner.os == "Windows"
+        shell: pwsh
+        run: |
+          $QT_PREFIX = "${env:CMAKE_PREFIX_PATH}"
+          cmake -S $env:GITHUB_WORKSPACE -B $env:GITHUB_WORKSPACE\build -G Ninja `
+            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
+            -DCMAKE_PREFIX_PATH="$QT_PREFIX" `
+            -DQt6_DIR="$QT_PREFIX\lib\cmake\Qt6" `
+            -DCMAKE_SYSTEM_VERSION=${{ matrix.winver }}
+
+        
+      - name: Configure CMake (macOS)
+        if: runner.os == "macOS"
         shell: bash
         run: |
           QT_PREFIX="${{ env.CMAKE_PREFIX_PATH }}"
@@ -85,12 +98,20 @@ jobs:
             -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
             -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
             -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
+            -DCMAKE_OSX_ARCHITECTURES="arm64" \
             -DCMAKE_PREFIX_PATH="$QT_PREFIX" \
             -DQt6_DIR="$QT_PREFIX/lib/cmake/Qt6" \
-            $([ "$RUNNER_OS" = "macOS" ] && echo "-DCMAKE_OSX_DEPLOYMENT_TARGET=${{ matrix.osx_deployment }}") \
-            $([ "$RUNNER_OS" = "Windows" ] && echo "-DCMAKE_SYSTEM_VERSION=${{ matrix.winver }}")
+            echo "-DCMAKE_OSX_DEPLOYMENT_TARGET=${{ matrix.osx_deployment }}") 
 
-      - name: Build
+            
+      - name: Build (Windows)
+        if: runner.os == "Windows"
+        shell: pwsh
+        run: cmake --build $env:GITHUB_WORKSPACE\build --config ${{ matrix.build_type }}
+
+      - name: Build (macOS)
+        if: runner.os == "macOS"
+        shell: bash
         run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
       # ---- Bundle Qt runtime ----
