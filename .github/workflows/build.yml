@@ -19,16 +19,21 @@ jobs:
             cpp_compiler: cl
             build_type: Release
             winver: "10.0"
-            qt_os: "windows desktop"
+            qt_host: "windows"
+            qt_target: "desktop"
             qt_dir: "win64_msvc2019_64"
+            qt_ver: "6.9.3"
+            
           # macOS 15 (Sequoia) target
           - os: macos-15
             c_compiler: clang
             cpp_compiler: clang++
             build_type: Release
             osx_deployment: "15.0"
-            qt_os: "mac desktop"
+            qt_host: "mac" 
+            qt_target: "desktop"
             qt_dir: "clang_64"
+            qt_ver: "6.9.3"
 
     runs-on: ${{ matrix.os }}
 
@@ -53,7 +58,7 @@ jobs:
         shell: bash
         run: |
           python -m aqt install-qt --outputdir $HOME/Qt \
-            "${{ matrix.qt_os }}" 6.9.0 "${{ matrix.qt_dir }}" \
+            "${{ matrix.qt_host }}" "${{ matrix.qt_target }}" "${{ matrix.qt_ver }}" "${{ matrix.qt_dir }}" \
             --modules qtbase qtdeclarative qtshadertools qtquickcontrols2
 
           echo "QT_BIN=$HOME/Qt/6.9.0/${{ matrix.qt_dir }}/bin" >> $GITHUB_ENV
