@@ -34,7 +34,7 @@ jobs:
             osx_deployment: "15.0"
             qt_host: "mac" 
             qt_target: "desktop"
-            qt_arch: "clang_arm64"
+            qt_arch: "clang_64"
             qt_dir: "macos"
             qt_ver: "6.9.3"
             app_name: "appLanHuyStore"
@@ -58,11 +58,12 @@ jobs:
       - name: Install aqt + ninja
         run: pip install aqtinstall ninja
 
-      - name: find valuable arch for macOS
+      - name: find valuable arch and module for macOS
         if: runner.os == 'macOS'
         shell: bash
         run: |
           aqt list-qt mac desktop --arch 6.9.3
+          aqt list-qt mac desktop --modules 6.9.3
 
       - name: Install Qt 6.9 + QML modules
         shell: bash
@@ -82,6 +83,12 @@ jobs:
           find "${{ env.CMAKE_PREFIX_PATH }}" -maxdepth 3 -name "Qt6Config.cmake" -print || true
 
       # ---- Configure & Build ----
+      - name: Setup MSVC dev cmd
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+          
       - name: Configure CMake (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
@@ -89,10 +96,10 @@ jobs:
           $QT_PREFIX = "${env:CMAKE_PREFIX_PATH}"
           cmake -S $env:GITHUB_WORKSPACE -B $env:GITHUB_WORKSPACE\build -G Ninja `
             -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} `
+            -DCMAKE_C_COMPILER=cl `
+            -DCMAKE_CXX_COMPILER=cl `
             -DCMAKE_PREFIX_PATH="$QT_PREFIX" `
-            -DQt6_DIR="$QT_PREFIX\lib\cmake\Qt6" `
-            -DCMAKE_SYSTEM_VERSION=${{ matrix.winver }}
-
+            -DQt6_DIR="$QT_PREFIX\lib\cmake\Qt6"
         
       - name: Configure CMake (macOS)
         if: runner.os == 'macOS'
